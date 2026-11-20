@@ -229,7 +229,7 @@ const geo = {
   lobe:new THREE.IcosahedronGeometry(1,2),rock:new THREE.IcosahedronGeometry(1,0),
   stone:new THREE.DodecahedronGeometry(1,0),cyl:new THREE.CylinderGeometry(1,1,1,10),
   taper:new THREE.CylinderGeometry(.63,1,1,8),cone:new THREE.ConeGeometry(1,1,12),
-  blade:bladeGeometry(),flower:blossomGeometry(),fleece:fleeceGeometry(),horn:hornGeometry(),spray:leafSprayGeometry(),canopy:canopyGeometry(),plane:new THREE.PlaneGeometry(1,1),ring:new THREE.RingGeometry(.82,1,48)
+  blade:bladeGeometry(),flower:blossomGeometry(),fleece:fleeceGeometry(),horn:hornGeometry(),sow:sowGeometry(),pigEar:foldEarGeometry(),pigTail:curlyTailGeometry(),spray:leafSprayGeometry(),canopy:canopyGeometry(),plane:new THREE.PlaneGeometry(1,1),ring:new THREE.RingGeometry(.82,1,48)
 };
 let washTexture, shadeTexture;
 const paintMaterials = new Map();
@@ -1010,6 +1010,46 @@ function wool(actor,variant){
   }
   return [cream,colors[1],colors[2],cream];
 }
+function sowGeometry(){
+  const g=new THREE.SphereGeometry(1,28,18),p=g.attributes.position;
+  for(let i=0;i<p.count;i++){
+    const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+    const hip=1+.15*Math.exp(-((z+.50)**2)*6.5);
+    const girth=1+.10*Math.exp(-((z-.20)**2)*7);
+    p.setXYZ(i,x*hip*girth,y+.055*(1-z*z)*(1-2*y*y),z);
+  }
+  g.computeVertexNormals();return g;
+}
+function foldEarGeometry(){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute([
+    -.10,-.068,0,.067,-.06,.009,-.111,.125,.012,.079,.114,.024,
+    -.133,.218,.069,-.013,.227,.065,-.086,.290,.104,-.049,.337,.091,.017,.282,.058,
+    -.04,.069,.044,-.034,.193,.085
+  ],3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute([.14,0,.82,0,.12,.42,.88,.37,.02,.63,.48,.66,.23,.86,.35,1,.64,.85,.39,.33,.47,.58],2));
+  const front=[0,1,9,1,3,9,3,5,10,3,10,9,0,9,2,2,9,10,2,10,4,4,10,6,6,10,5,6,5,7,7,5,8];
+  g.setIndex(front);
+  g.computeVertexNormals();
+  return g;
+}
+function curlyTailGeometry(){
+  const rings=39,sides=8,positions=[],uv=[],indices=[];
+  for(let n=0;n<=rings;n++){
+    const t=n/rings,a=t*7.0,r=.049*(1-.24*t);
+    const cx=Math.sin(a)*r,cy=.044+(1-Math.cos(a))*r,cz=-.18*t;
+    const tube=.027*(1-.68*t);
+    for(let i=0;i<=sides;i++){
+      const u=i/sides,b=u*TAU;
+      positions.push(cx+Math.cos(b)*tube,cy+Math.sin(b)*tube,cz+.009*Math.cos(b)*t);
+      uv.push(u,t);
+      if(n&&i){const j=n*(sides+1)+i;indices.push(j-sides-2,j-sides-1,j,j-sides-2,j,j-1);}
+    }
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(indices);g.computeVertexNormals();return g;
+}
 
 function sheepModel(actor,variant){
   const coat=wool(actor,variant);
@@ -1134,17 +1174,14 @@ function goatModel(actor,variant){
 function pigModel(actor,variant){
   const tones=['#d9a698','#e5b4a0','#d3a18e','#e8c0a8'];
   const coat=tones[variant%4],light='#eac2ad',hoof='#9b7367';
-  mesh(actor,'ball',coat,0,.522,-.076,.414,.390,.688);
-  mesh(actor,'ball',light,0,.458,.368,.329,.277,.377);
+  mesh(actor,'sow',coat,0,.521,-.077,.401,.383,.697);
+  mesh(actor,'ball',light,0,.455,.378,.297,.252,.365).rotation.x=-.13;
   const head=group(actor,0,.599,.356);
-  mesh(head,'ball',coat,0,0,.111,.298,.262,.305);
+  mesh(head,'ball',coat,0,0,.111,.275,.249,.319).rotation.x=-.16;
   mesh(head,'ball',light,0,-.080,.323,.207,.159,.188);
-  mesh(head,'ball','#d38e83',0,-.068,.464,.174,.104,.056);
+  mesh(head,'ball','#d09385',0,-.068,.471,.171,.098,.052);
   const tail=group(actor,0,.651,-.718);
-  for(let i=0;i<9;i++){
-    const a=i*.61;
-    mesh(tail,'ball',coat,.064*Math.sin(a),.057+.057*Math.cos(a),-.022-i*.016,.034,.035,.044);
-  }
+  mesh(tail,'pigTail',coat,0,0,-.012,1,1,1);
   const eyes=[],ears=[];
   for(const side of [-1,1]){
     mesh(head,'ball','#926660',side*.057,-.060,.503,.025,.030,.017);
@@ -1154,8 +1191,8 @@ function pigModel(actor,variant){
     mesh(eye,'ball',eyeLight,side*.01,.017,.025,.013,.014,.011);
     eyes.push(eye);
     const ear=group(head,side*.183,.191,.040);
-    mesh(ear,'lobe',coat,side*.038,.098,0,.114,.163,.071).rotation.z=-side*.28;
-    mesh(ear,'ball','#c48a82',side*.043,.097,.035,.073,.101,.037).rotation.z=-side*.29;
+    const flap=mesh(ear,'pigEar',coat,0,0,0,-side,1,1);flap.rotation.y=side*.54;flap.material.side=THREE.DoubleSide;
+    mesh(ear,'ball','#c29585',side*.030,.091,.027,.041,.082,.021).rotation.z=-side*.21;
     ears.push(ear);
   }
   return {head,tail,eyes,ears,legs:barnLegs(actor,false,coat,hoof)};

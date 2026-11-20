@@ -1,6 +1,6 @@
 const scope=new URL(self.registration.scope);
 const prefix='le-petit-berger:'+scope.pathname+':';
-const cacheName=prefix+'5f2a8d143b7bb';
+const cacheName=prefix+'daa290d6355a9';
 const entries=["index.html", "manifest.webmanifest", "three.min.js", "assets.js", "game.js", "launch.js", "icon-180.png", "icon-192.png", "icon-512.png"].map(path=>new URL(path,scope).href);
 const home=new URL('index.html',scope).href;
 self.addEventListener('install',event=>{
