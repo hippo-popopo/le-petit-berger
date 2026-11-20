@@ -6,6 +6,12 @@ La texture de prairie intégrée dans `assets.js` a été créée avec l’outil
 
 Le papier aquarelle, le paysage de la ferme, les illustrations de la carte et les études du troupeau et des accessoires ont été créés avec ImageGen. Les icônes d’équipement réutilisent la planche en format miniature. Les silhouettes du ciel, les nuages et les mouvements des végétaux sont générés dans le jeu.
 
+## Mouton, bergerie et col
+
+Le mouton est sculpté par sections dans le jeu. Son tronc et son visage ont chacun un maillage continu. La laine reçoit une carte de relief de 128 px et utilise un maillage allégé au loin. Les appuis, les oreilles et le museau gardent leurs pivots d’animation.
+
+Le kit de bergerie en châtaignier a été créé dans Blender. Les poteaux, traverses et chapeaux sont exportés en buffers indexés dans `game.js`. Le battant garde sa charnière. Les sapins neigeux et les crêtes sont générés lors du chargement des scènes. Dans l’archive, le dossier `sources-3d` contient le modèle Blender et les scripts de ces ressources.
+
 ## Modèle jouable de Nuage
 
 [border collie dog(mesh hair)](https://sketchfab.com/3d-models/border-collie-dogmesh-hair-516a1a06c6f248b6b8c28801eb1397ac) par [imdjs](https://sketchfab.com/imdjs), sous licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Adaptation pour Le Petit Berger avec ajout du squelette et des animations, ajustement des accessoires, variantes de couleur, textures réduites et matériaux adaptés au rendu Web.

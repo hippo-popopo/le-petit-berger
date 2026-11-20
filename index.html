@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="56cc64b035197">
+<meta name="berger-version" content="33e68c6c824e0">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -319,6 +319,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
         <button id="hint" class="circle" type="button" aria-label="Obtenir un indice"><canvas data-icon="compass" width="48" height="48" aria-hidden="true"></canvas></button>
       </div>
       <div id="counts" class="progress" role="status" aria-live="polite" aria-atomic="true"></div>
+      <aside class="tutorial-coach" id="tutorial-coach" role="status" aria-live="polite" aria-atomic="true" hidden>
+        <small id="tutorial-step"></small><strong id="tutorial-title"></strong><p id="tutorial-help"></p>
+      </aside>
       <div class="help-strip">
         <div class="note-wrap" id="notes-wrap"><p id="mission-note" class="notes"></p></div>
         <div class="map-wrap">
@@ -329,9 +332,6 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
         <div class="hint-compass" id="hint-compass" hidden aria-hidden="true"><b id="compass-arrow">↑</b><span id="compass-distance"></span></div>
       </div>
     </div>
-    <aside class="tutorial-coach" id="tutorial-coach" role="status" aria-live="polite" aria-atomic="true" hidden>
-      <small id="tutorial-step"></small><strong id="tutorial-title"></strong><p id="tutorial-help"></p>
-    </aside>
     <div class="map-label overlay" id="map-label" hidden aria-hidden="true"></div>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <div class="move-zone" id="move-zone" aria-hidden="true"><div class="joystick" id="joystick"><span class="joystick-thumb" id="joystick-thumb"></span></div></div>
@@ -539,9 +539,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three.min.js?v=56cc64b035197"></script>
-<script defer src="./assets.js?v=56cc64b035197"></script>
-<script defer src="./game.js?v=56cc64b035197"></script>
-<script defer src="./launch.js?v=56cc64b035197"></script>
+<script defer src="./three.min.js?v=33e68c6c824e0"></script>
+<script defer src="./assets.js?v=33e68c6c824e0"></script>
+<script defer src="./game.js?v=33e68c6c824e0"></script>
+<script defer src="./launch.js?v=33e68c6c824e0"></script>
 </body>
 </html>
