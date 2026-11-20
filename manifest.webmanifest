@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "Le Petit Berger",
+  "short_name": "Petit Berger",
+  "description": "Le jeu mobile de Nuage et de ses troupeaux, en 3D et en paysage.",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "theme_color": "#29483c",
+  "background_color": "#f9f3e4",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
