@@ -200,12 +200,12 @@ const alpine={
   landmarks:[[-34,-5,'Le lac gelé'],[-43,-29,'Les hauts alpages'],[12,-16,'Le col']]
 };
 const worldNames=[
-  {name:'Les prés',summary:'Premiers troupeaux, portillons et chemins de traverse.',terrain:'Prairie'},
-  {name:'Le verger',summary:'Des murets à contourner et des traces à suivre.',terrain:'Verger d’automne'},
-  {name:'Les landes',summary:'La météo et des troupeaux à séparer.',terrain:'Lande humide'},
-  {name:'La forêt',summary:'Des clairières étroites sous de grands sapins.',terrain:'Forêt de conifères'},
-  {name:'Les salines',summary:'Des dunes, des canards et un pont au-dessus du chenal.',terrain:'Littoral atlantique'},
-  {name:'Le col',summary:'Des pâturages d’altitude, de la neige et des plaques de glace.',terrain:'Alpage enneigé'}
+  {name:'Les prés',summary:'Du hameau de pierre à la mare aux saules et au val du ruisseau.',terrain:'Prairie'},
+  {name:'Le verger',summary:'Un moulin, des pommiers en terrasses et des terres basses boueuses.',terrain:'Verger d’automne'},
+  {name:'Les landes',summary:'Une bergerie exposée au vent et trois fermes sur le plateau.',terrain:'Lande humide'},
+  {name:'La forêt',summary:'De grandes sapinières, une grotte traversante et deux clairières.',terrain:'Forêt de conifères'},
+  {name:'Les salines',summary:'Deux ponts sur le chenal, des levées et des vasières entre les dunes.',terrain:'Littoral atlantique'},
+  {name:'Le col',summary:'Un lac gelé, un tunnel sous les Roches Blanches et un col balayé par le vent.',terrain:'Alpage enneigé'}
 ];
 const regionNames=worldNames.map(world=>world.name);
 function outing(base,id,title,label,description,note,animals,changes={}){
@@ -260,6 +260,207 @@ levels.push(
     [['sheep',1,-14],['sheep',4,-12],['sheep',4,-16],['sheep',-15,9],['sheep',-12,8],['goat',-10,-3],['goat',-8,-3],['goat',5,16],['goat',7,16]],
     {gust:true,ice:[[9,7,6.4,3.4],[-19,2,5.9,4]],bonus:'correct',challenge:'Aucune erreur d’enclos',seconds:415})
 );
+// Each mission has a fixed layout. Regions supply the climate and vegetation palette.
+const missionMaps={
+  portillon:{
+    place:'Le hameau des pierres claires',half:[57,48],seed:71103,start:[-22,27,2.77],house:[36,10],
+    hills:[[-36,-25,7,18,16],[22,-33,6,16,14],[-4,34,4,19,10]],
+    ponds:[[-37,18,6.8,5.7,-.52]],pens:{sheep:[20,33,-7,8,.6,6.3]},
+    trails:[[[-22,36],[-22,19],[-21,4],[-14,-8],[-1,-5],[12,.6],[20,.6],[29,.6],[35,8]]],
+    groves:[[-39,-17,9,12,10],[40,-18,8,13,9],[7,32,14,9,9]],
+    walls:[[[-38,-4],[-32,-6],[-25,-6]],[[-10,9],[-6,13],[2,13]],[[14,-18],[21,-16],[28,-16]]],
+    landmarks:[[-32,-14,'Le hameau'],[8,-12,'Les murs de pierre sèche']],
+    animals:[['sheep',-18,3],['sheep',-20.4,6],['sheep',-16.5,5],['sheep',-23,-13],['sheep',-19,-12]]
+  },
+  tri:{
+    place:'La mare aux saules',half:[68,55],seed:71111,start:[-28,19,2.27],house:[45,21],
+    hills:[[-46,-34,5.8,18,18],[36,-37,6.5,21,17],[-12,41,4.7,18,14],[45,39,4.2,17,14]],
+    ponds:[[0,0,9.3,6.2,-.81],[43,-28,7.2,4.5,-.65]],pens:{sheep:[24,40,-23,-10,-16.5,6.3],duck:[26,42,18,32,25,6.2]},
+    trails:[[[-32,28],[-25,12],[-16,2],[-9,-9],[5,-12],[24,-16.5],[35,-17]],[[-16,2],[-10,11],[9,17],[26,25],[40,24]]],
+    groves:[[-30,-20,12,10,10],[43,-9,10,8,8],[-38,39,12,10,10]],
+    walls:[[[-10,-29],[1,-28],[12,-25]],[[13,30],[17,34],[26,37]]],
+    landmarks:[[-4,7,'La mare aux saules'],[32,-30,'La prairie sèche']],
+    animals:[['sheep',-23,-4],['sheep',-20,-6],['sheep',-22,0],['sheep',-18,-1],['duck',-20,5],['duck',-18,6],['duck',-15,4]]
+  },
+  ruisseau:{
+    place:'Le val du ruisseau',half:[73,51],seed:71141,start:[-47,32,2.83],house:[48,-31],
+    hills:[[-49,-24,8.5,14,12],[-47,37,5.4,16,14],[32,-34,5.6,20,17],[37,32,7.5,23,14]],
+    ponds:[[47,20,8.4,5.6,-.62]],pens:{sheep:[29,45,-25,-10,-17.5,6.1]},
+    stream:{x:1,width:9,z:5,gap:6.8},
+    trails:[[[-48,36],[-41,17],[-28,8],[-16,5],[-5,5],[7,5],[17,-3],[29,-17.5],[43,-21]]],
+    groves:[[-38,-33,11,10,9],[-36,33,13,10,10],[43,32,7,9,8],[24,-34,10,10,8]],
+    walls:[[[-49,5],[-43,7],[-34,7]],[[12,-27],[19,-27],[25,-29]]],
+    landmarks:[[-32,-13,'La berge ouest'],[17,12,'Le val']],
+    animals:[['sheep',-27,3],['sheep',-24,6],['sheep',-30,7],['sheep',-38,-1],['sheep',-34,-4]]
+  },
+  empreintes:{
+    place:'Le verger en terrasses',half:[75,56],seed:71229,start:[-52,16,2.85],house:[49,23],mill:[-26,-40],
+    hills:[[-45,-36,10,24,16],[-16,-24,5.2,17,15],[25,-39,8,17,15],[42,36,6.4,20,16]],
+    ponds:[[35,5,8,5.5,-.65]],pens:{sheep:[27,46,-12,4,-3.5,6.5]},
+    trails:[[[-55,36],[-52,17],[-50,2],[-43,-10],[-33,-18],[-18,-20],[-5,-14],[8,-13],[19,-7],[27,-3.5],[41,-3]],
+      [[-18,-20],[-20,-34],[-26,-39]],[[-6,-14],[-3,5],[-15,18],[-26,24]]],
+    groves:[[-48,-21,12,10,17],[-29,-16,10,10,12],[-7,-31,10,11,12],[25,-31,10,10,9],[48,28,12,10,12]],
+    walls:[[[-57,-1],[-48,-2],[-40,-4]],[[-37,-9],[-30,-11],[-20,-12]],[[-16,-16],[-11,-18],[-4,-17]],[[1,8],[12,8],[17,12]]],
+    landmarks:[[-36,-17,'Les pommiers en terrasses'],[-26,-40,'Le moulin des hauteurs']],
+    hideouts:[[-43,-20,'bush'],[-26,-32,'hay'],[-21,25,'bush']],
+    clues:[[-44,-10,0],[-19,-24,1],[-11,14,2]],
+    description:'Suis les empreintes des trois brebis éparpillées dans le verger, puis ramène-les avec les agneaux.',
+    note:'Les moutons sont marqués en blanc sur la carte. Examine les traces ambrées si tu veux un repère de direction.',
+    animals:[['sheep',-42,-17],['sheep',-24,-29],['sheep',-19,25],['sheep',-17,5,null,'lamb'],['sheep',-14,6,null,'lamb']]
+  },
+  boue:{
+    place:'Les terres basses',half:[61,49],seed:71263,start:[-37,26,2.94],house:[34,-30],mill:null,
+    hills:[[-46,-29,6,17,15],[44,-34,5.2,18,13],[-42,30,4.8,14,13],[39,32,4,18,15]],
+    ponds:[[-11,-9,7.5,5,-.67],[9,17,5.2,7,-.63]],pens:{pig:[26,44,1,16,8.2,6]},
+    trails:[[[-39,35],[-36,18],[-30,8],[-23,3],[-13,3],[-5,-2],[7,-2],[18,4],[26,8.2],[42,9]]],
+    groves:[[-37,-26,13,12,11],[-5,-32,14,10,10],[39,30,10,9,9],[38,-37,10,9,8]],
+    walls:[[[-31,-8],[-26,-12],[-21,-13]],[[19,-19],[21,-12],[24,-8]]],
+    landmarks:[[-20,8,'Les terres basses'],[5,-21,'Le sentier sec']],
+    mud:[[-26,8,6.2,4.1],[-7,1,5.4,3.8],[13,3,5.5,4.1]],
+    animals:[['pig',-26,9],['pig',-23,7],['pig',-10,.6],['pig',-6,1.3]]
+  },
+  derniertour:{
+    place:'Le plateau des trois fermes',half:[88,67],seed:71352,start:[-48,26,2.71],house:[57,-9],
+    hills:[[-47,-42,10,22,18],[-5,-38,5.4,16,14],[45,-53,7.2,23,15],[-52,47,5.4,22,14],[50,41,8,22,14]],
+    ponds:[[-30,1,9.9,7.4,-.79],[26,23,7.7,6.4,-.62]],
+    pens:{sheep:[26,45,-32,-17,-24.5,6.0],duck:[35,53,24,42,33,6.2],goat:[26,46,-3,13,5,6.2]},
+    trails:[[[-51,38],[-46,16],[-40,-5],[-24,-16],[-6,-14],[10,-20],[26,-24.5],[44,-26]],
+      [[-6,-14],[1,1],[12,3],[26,5],[42,6]],[[1,1],[4,21],[14,34],[35,33],[51,34]]],
+    groves:[[-56,-22,13,14,11],[-17,-36,11,14,10],[-32,43,15,12,12],[55,38,10,12,10],[45,-49,12,12,10]],
+    walls:[[[-26,-24],[-17,-22],[-10,-23]],[[2,13],[11,12],[18,10]],[[-6,33],[-5,40],[5,46]]],
+    landmarks:[[-25,-28,'La lande haute'],[5,29,'Les fermes du plateau']],
+    animals:[['sheep',-30,-14],['sheep',-26,-12],['sheep',-24,-18],['sheep',-20,-16],
+      ['duck',-22,22],['duck',-20,24],['duck',-19,20],['goat',-32,9],['goat',-35,12],['goat',-37,9]]
+  },
+  'sous-bois':{
+    title:'Les brebis sous la roche',place:'Le vallon de la Grotte',half:[77,63],seed:71478,start:[-43,17,2.42],house:[46,28],
+    label:'Traverser une grotte',
+    description:'Deux brebis se tiennent sous une arche rocheuse. Passe sous la montagne et ramène-les avec le reste du troupeau.',
+    note:'La grotte a deux ouvertures. Approche par l’entrée ouest et pousse les brebis vers la lumière.',
+    hills:[[-47,-35,12,17,18],[-11,-30,10,22,14],[17,41,7,19,12],[49,-25,10,15,18]],
+    ponds:[[-30,29,8.5,6,-.62]],pens:{sheep:[27,43,6,21,13.3,6.4]},
+    trails:[[[-43,35],[-43,16],[-40,1],[-36,-9],[-27,-10],[-17,-10],[-5,-9],[10,-1],[27,13.3],[42,14]],
+      [[-6,-9],[5,-21],[21,-26],[35,-28]]],
+    groves:[[-47,-26,11,12,18],[-21,-35,13,12,17],[-16,28,13,12,19],[38,-22,14,13,15],[48,39,11,10,16]],
+    walls:[[[-48,-12],[-43,-15],[-39,-16]],[[5,15],[12,16],[19,19]]],
+    landmarks:[[-29,-17,'La grotte des sapins'],[11,-16,'Le sentier forestier']],
+    cave:{x:-22,z:-10,length:16,width:7.8,height:5.15},
+    clues:[[-40,-7,0],[-34,-10,1]],hideouts:[],
+    animals:[['sheep',-25,-11.2],['sheep',-20,-8.7],['sheep',2,-1],['sheep',5,1.3]]
+  },
+  clairiere:{
+    place:'Les deux clairières',half:[76,56],seed:71499,start:[-41,-1,1.31],house:[50,18],
+    hills:[[-48,-35,10,17,15],[-5,-37,7,17,15],[31,34,10,19,17],[-37,34,7,16,16]],
+    ponds:[[2,-5,9,6.5,-.69]],pens:{sheep:[20,38,-30,-15,-22.5,6],goat:[31,48,13,30,21.5,6.5]},
+    trails:[[[-52,1],[-39,0],[-23,-7],[-16,-16],[-.5,-21],[20,-22.5],[35,-22]],
+      [[-24,-7],[-17,4],[-8,13],[9,16],[31,21.5],[45,22]]],
+    groves:[[-49,-29,12,12,14],[-33,25,12,14,17],[12,31,16,13,14],[41,-40,14,9,15],[53,3,9,13,15]],
+    walls:[[[-18,-27],[-7,-24],[4,-23]],[[12,21],[19,19],[25,19]]],
+    landmarks:[[-26,-21,'La clairière haute'],[-20,17,'La clairière des chèvres']],
+    animals:[['sheep',-22,-12],['sheep',-20,-10],['sheep',-25,-14],['goat',-22,7],['goat',-19,9],['goat',-24,8]]
+  },
+  maree:{
+    place:'Le chenal aux deux ponts',label:'Choisir la traversée',
+    description:'Fais traverser le chenal à cinq canards. Choisis l’un des deux ponts et ramène-les au canardier.',
+    note:'La passerelle sud est plus large. Aligne les canards avec l’entrée avant de les pousser.',
+    stream:{x:-10,width:8,z:0,gap:6.4,alternate:{z:19,gap:8.8}},
+    trails:[[[-31,-16],[-28,-4],[-17,0],[-5,0],[12,6],[25,30],[36,30]],
+      [[-32,42],[-24,26],[-16,19],[-5,19],[11,23],[25,30]]]
+  },
+  roseaux:{
+    place:'Les îlots des roseaux',half:[72,61],seed:71522,start:[-45,4,1.75],house:[47,-28],
+    hills:[[-56,-35,8,18,14],[-54,40,5.6,14,18],[43,40,6.9,18,15],[42,-43,5.5,22,14]],
+    ponds:[[-20,-13,12.5,8.2,-.81],[-18,9,11.1,8.1,-.72],[13,12,9.9,7.5,-.70]],
+    pens:{duck:[25,42,-19,-4,-11.5,6.4]},
+    trails:[[[-49,1],[-34,-1],[-19,-1],[-4,-1],[8,-2],[25,-11.5],[37,-11]],
+      [[-32,-4],[-34,-19],[-26,-27],[-12,-26],[4,-16]]],
+    groves:[[-49,-27,10,11,6],[-49,28,11,10,5],[37,26,12,12,7],[59,-4,9,17,8]],
+    walls:[[[-30,-30],[-24,-30],[-19,-30]],[[1,-9],[9,-12],[15,-14]]],
+    landmarks:[[-12,-2,'La levée des roseaux'],[14,17,'La mare des dunes']],
+    hideouts:[[-28,-26,'bush'],[-1,20,'bush']],
+    label:'Suivre une levée',description:'Rassemble cinq canards séparés par des mares. Guide-les le long de la levée de terre.',
+    note:'Entre les deux mares, resserre le groupe sur le sentier et avance dans son axe.',
+    animals:[['duck',-40,-1],['duck',-37,-2],['duck',-34,-.5],['duck',-26,-24],['duck',-4,9]]
+  },
+  dunes:{
+    place:'La dune et les vasières',half:[81,62],seed:71555,start:[-48,29,2.7],house:[51,7],
+    hills:[[-52,-32,12.5,17,19],[-17,-42,8,20,15],[27,-42,6.8,19,18],[42,41,9,22,15],[-43,41,4,14,13]],
+    ponds:[[-33,14,9.9,6.3,-.74],[1,-2,7.6,5.5,-.76]],
+    pens:{duck:[26,42,25,41,33,6.5],pig:[31,49,-29,-14,-21.5,6.2]},
+    trails:[[[-49,37],[-43,29],[-28,26],[-15,17],[-7,9],[9,9],[19,24],[26,33],[42,34]],
+      [[9,9],[13,-7],[19,-17],[31,-21.5],[46,-20]]],
+    groves:[[-53,-35,10,11,5],[-7,-34,11,9,6],[40,-31,13,12,8],[56,24,10,10,7]],
+    walls:[[[-20,-19],[-11,-19],[-7,-17]],[[9,37],[17,39],[25,42]]],
+    landmarks:[[-37,-13,'Le versant des dunes'],[-11,16,'Les vasières']],
+    mud:[[-20,5,6,4.7],[-7,-16,5.8,3.7],[19,-10,4.4,4.2]],
+    animals:[['pig',-21,6],['pig',-18,4],['pig',-9,-15],['pig',-5,-16],['duck',-23,26],['duck',-20,24],['duck',-17,24]]
+  },
+  refuge:{
+    place:'Le refuge des Roches Blanches',half:[72,57],seed:71646,start:[-42,14,2.21],house:[46,-25],
+    hills:[[-46,-40,22,19,16],[7,-35,13,19,16],[48,-35,17,16,16],[-34,37,11,16,16],[39,35,12,17,14]],
+    ponds:[[1,23,7.5,5.5,-.68]],pens:{goat:[26,45,-17,0,-8.5,6.7]},
+    trails:[[[-49,26],[-42,14],[-36,7],[-28,2],[-18,2],[-8,2],[5,1],[15,-5],[26,-8.5],[43,-9]]],
+    groves:[[-46,-22,10,13,12],[-41,33,10,9,10],[17,-31,10,9,9],[37,28,15,10,10]],
+    walls:[[[-38,16],[-29,19],[-20,19]],[[5,-21],[13,-20],[18,-20]]],
+    landmarks:[[-26,-5,'Les Roches Blanches'],[26,-21,'Le refuge']],
+    cave:{x:-17,z:2,length:14,width:6.8,height:4.7},
+    note:'Traverse le tunnel des Roches Blanches, puis ouvre le portillon du refuge.',
+    animals:[['goat',-21,.5],['goat',-16,3.1],['goat',-12,1],['goat',2,-9],['goat',7,-11]]
+  },
+  col:{
+    place:'La traversée du grand col',half:[89,69],seed:71676,start:[-52,31,2.66],house:[52,-28],
+    hills:[[-52,-44,27,21,18],[-17,-58,17,22,15],[28,-46,24,21,20],[57,-31,13,16,19],[-45,42,11,19,15],[51,38,13,21,17]],
+    ponds:[[-25,-4,10,7.1,-.79],[16,21,7.4,5.5,-.67]],pens:{sheep:[29,49,-24,-8,-16,6.3],goat:[35,53,24,41,32.5,6.8]},
+    trails:[[[-56,40],[-50,25],[-39,11],[-24,12],[-13,6],[-7,-6],[10,-12],[29,-16],[44,-16]],
+      [[-13,6],[-6,20],[1,31],[16,33],[35,32.5],[53,33]]],
+    groves:[[-47,-21,12,10,14],[-37,39,14,11,12],[44,-39,13,10,11],[53,43,9,11,12]],
+    walls:[[[-30,24],[-22,23],[-14,21]],[[10,-31],[17,-30],[23,-31]]],
+    landmarks:[[-25,8,'Le lac des crêtes'],[-4,-21,'Le passage du vent']],
+    ice:[[-12,5,6.6,4.1],[12,-10,6.7,4.5]],
+    animals:[['sheep',-30,10],['sheep',-27,12],['sheep',-24,11],['sheep',-11,-9],['sheep',-8,-10],
+      ['goat',-24,22],['goat',-21,21],['goat',-22,25],['goat',-17,21]]
+  }
+};
+for(const level of levels)Object.assign(level,missionMaps[level.id]);
+
+const bonusRoutes=[
+  {id:'bonus-pres',title:'La grande prairie',count:32,from:[-38,4],to:[47,1],half:[66,45],seed:72017},
+  {id:'bonus-verger',title:'La récolte des brebis',count:40,from:[-50,-11],to:[60,-3],half:[83,53],seed:72043},
+  {id:'bonus-landes',title:'La longue lande',count:44,from:[-57,7],to:[64,-3],half:[87,61],seed:72083},
+  {id:'bonus-foret',title:'La clairière sans fin',count:48,from:[-60,-10],to:[68,-1],half:[94,60],seed:72109},
+  {id:'bonus-salines',title:'La plaine des marées',count:56,from:[-49,1],to:[72,9],half:[100,56],seed:72149},
+  {id:'bonus-col',title:'La grande descente',count:64,from:[-71,1],to:[79,-5],half:[105,64],seed:72161}
+];
+function bigFlockMission(base,region,route){
+  const [x,z]=route.from,[tx,tz]=route.to,[hx,hz]=route.half;
+  const count=route.count,columns=Math.ceil(Math.sqrt(count*1.25)),rows=Math.ceil(count/columns);
+  const spread=seeded(route.seed);
+  const animals=Array.from({length:count},(_,i)=>['sheep',
+    x+(i%columns-(columns-1)/2)*1.38+(spread()-.5)*.49,
+    z+(Math.floor(i/columns)-(rows-1)/2)*1.46+(spread()-.5)*.53
+  ]);
+  const opening=13+region*1.4;
+  return outing(base,route.id,route.title,'Grand troupeau',
+    'Guide les '+count+' moutons du pâturage jusqu’au grand enclos.',
+    'Passe derrière le troupeau et avance au pas. La grande porte t’attend au bout du chemin.',
+    animals,{
+      region,place:route.title,half:route.half,seed:route.seed,bigFlock:true,bonus:'calm',challenge:'Sans affoler le troupeau',
+      victory:'Les '+count+' moutons sont à l’abri.',start:[region===4?Math.max(-63,x-17):x-17,z,Math.PI/2],house:[tx+6,tz-24],mill:null,
+      hills:[[-hx*.63,-hz*.73,5+region*1.21,21,12],[hx*.20,-hz*.79,5.4+region*1.3,28,16],
+        [-hx*.30,hz*.77,4.1+region*.77,23,16],[hx*.53,hz*.74,5.8+region*1.40,26,16]],
+      ponds:[],pens:{sheep:[tx,tx+18,tz-opening*.5-5,tz+opening*.5+5,tz,opening]},
+      trails:[[[x-20,z],[x,z],[mix(x,tx,.36),mix(z,tz,.36)],[mix(x,tx,.68),mix(z,tz,.68)],[tx,tz],[tx+14,tz]]],
+      groves:[[-hx*.35,-hz*.77,22,11,10],[hx*.36,-hz*.72,25,11,12],[hx*.06,hz*.78,28,11,12]],
+      walls:[],landmarks:[[mix(x,tx,.62),mix(z,tz,.62)-16,'Grand enclos →']],
+      hideouts:[],locks:[],clues:[],stream:null,cave:null,mud:[],ice:[],gust:false,track:false
+    });
+}
+for(const [region,route] of bonusRoutes.entries()){
+  const base=[...regions,woodland,coast,alpine][region];
+  const last=levels.findLastIndex(level=>level.region===region);
+  levels.splice(last+1,0,bigFlockMission(base,region,route));
+}
+
 const lesson={
   ...regions[0],id:'lecon',region:0,title:'Premier pas',start:[-3,13,Math.PI],house:[25,-12],half:[27,25],seed:716,
   pens:{sheep:[4,14,-6,5,-.4,5.9]},description:'Accompagne un mouton jusqu’à la bergerie.',
@@ -278,7 +479,7 @@ const stick = {x:0,y:0,id:null};
 let tap = null;
 let renderer,scene,camera,map,decor,props,dog,animals,pens,colliders,grid,random,chapter=0;
 let won=false, storm=false, gameTime=0, barkTime=-10, hintUntil=-1, hintObject=null, toastId;
-let openDialogTrigger, soundEnabled=false, audio, returnCount=0, lastMapTime=-1;
+let openDialogTrigger, soundEnabled=false, audio, lastMapTime=-1;
 function choose(list){return list[Math.floor(random()*list.length)];}
 function seeded(seed){
   return () => {
@@ -535,6 +736,10 @@ function buildLandData(config){
   flattening=[];
   for(const [x,z,rx,rz,y] of config.ponds)flattening.push({x,z,rx:rx*1.06,rz:rz*1.08,y,inner:.98,outer:1.31});
   for(const [l,r,b,f] of Object.values(config.pens))flattening.push({x:(l+r)/2,z:(b+f)/2,rx:(r-l)*.82,rz:(f-b)*.83,y:rawHeight((l+r)/2,(b+f)/2),inner:.92,outer:1.55});
+  if(config.cave){
+    const {x,z,length,width}=config.cave;
+    flattening.push({x,z,rx:length*.77,rz:width*1.1,y:rawHeight(x,z),inner:.86,outer:1.31});
+  }
   for(const [x,z] of [config.house,config.mill].filter(Boolean))flattening.push({x,z,rx:6.5,rz:5.6,y:rawHeight(x,z),inner:.83,outer:1.74});
 }
 function rawHeight(x,z){
@@ -1015,7 +1220,7 @@ function tree(x,z,size,autumn,kind='oak'){
   shade(x+.42*s,z+.30*s,5.8*s,4.4*s,.50);
 }
 function paintSetDressing(config){
-  if(config.region===0&&!config.stream){
+  if(config.id==='premier'||config.id==='lecon'){
     for(const [x,z,scale] of [[8.4,31.6,1.36],[-12.2,26.5,1.14],[12.9,13.9,1.24]]){
       if(!blocked(x,z,1.23))tree(x,z,scale,false,x<0?'birch':'oak');
     }
@@ -1184,8 +1389,8 @@ function fir(x,z,size,snow){
   }
   obstacle(x,z,.36*size,h);shade(x+.4*size,z+.25*size,3.9*size,4*size,.52);
 }
-function lighthouse(){
-  const [x,z]=[-57,-34];
+function lighthouse(config){
+  const [x,z]=config.id==='maree'?[-57,-34]:config.id==='roseaux'?[-58,-41]:config.id==='dunes'?[-56,-22]:[-56,-43];
   const g=group(decor,x,groundY(x,z),z);
   mesh(g,'cyl','#b5ad90',0,.39,0,2.14,.75,2.14);
   mesh(g,'taper','#f4e5ca',0,3.4,0,1.29,6.6,1.29);
@@ -1254,7 +1459,7 @@ function regionalTree(config,x,z,size,rim){
 
 function decorate(config){
   farmhouse(...config.house);
-  if(config.biome==='coast')lighthouse();
+  if(config.biome==='coast')lighthouse(config);
   if(config.biome==='snow')snowPeaks(config);
   paintIce(config);
   if(config.mill)mill(...config.mill);
@@ -1281,9 +1486,9 @@ function decorate(config){
       else tree(xx,zz,1.1+random()*.89,config.region===1,i%5===0?'birch':'oak');
     }
   }
-  for(let i=0;i<240;i++){
+  for(let i=0;i<(config.bigFlock?58:240);i++){
     const x=(random()*2-1)*hx*.96,z=(random()*2-1)*hz*.96;
-    if(blocked(x,z,1.15)||nearTrail(x,z,1.67)||Object.values(pens).some(p=>p.inside({x,z}))||config.animals.some(([,xx,zz])=>Math.hypot(x-xx,z-zz)<2.4))continue;
+    if((config.bigFlock&&nearTrail(x,z,18))||blocked(x,z,1.15)||nearTrail(x,z,1.67)||Object.values(pens).some(p=>p.inside({x,z}))||config.animals.some(([,xx,zz])=>Math.hypot(x-xx,z-zz)<2.4))continue;
     if(i%7===0)bush(x,z,.58+random()*.60);
     else if(i%13===0)rocks(x,z,4,.85+random()*.55,true);
     else if(config.biome!=='snow')flowers(x,z,3+Math.floor(random()*9),.67+random()*.38);
@@ -1299,7 +1504,7 @@ function decorate(config){
     const x=sx+Math.cos(a)*r,z=sz+Math.sin(a)*r;
     if(!blocked(x,z,.22)&&!nearTrail(x,z,1.4))grass(x,z,.83);
   }
-  if(activeMission().region===0&&!activeMission().stream)signboard(6.8,7.9,'Bergerie ↗',null,.11);
+  if(config.id==='premier')signboard(6.8,7.9,'Bergerie ↗',null,.11);
   const house=config.house;
   strawShelter(house[0]+7.7,house[1]+1.95);
   for(let i=0;i<8;i++){
@@ -1312,6 +1517,7 @@ function decorate(config){
   paintSetDressing(config);
 }
 function nearTrail(x,z,threshold){
+  if(caveClearance(activeMission().cave,x,z))return true;
   for(const trail of activeMission().trails){
     for(let i=1;i<trail.length;i++){
       if(segmentDistance(x,z,{x1:trail[i-1][0],z1:trail[i-1][1],x2:trail[i][0],z2:trail[i][1]})<threshold)return true;
@@ -2018,7 +2224,155 @@ function batchAnimalParts(parent){
     batch.computeBoundingSphere();parent.add(batch);
   }
 }
-function makeMover(type,x,z,hidden=false,variant=0){
+const flockTones=['#f0e2c4','#e7d8bd','#d3c4ae','#f3e7d0'];
+const flockFaces=['#665244','#514640','#74665c','#786552'];
+
+let herdParts=null,herdDrive=null;
+const sheepMouth=new THREE.Object3D();
+const sheepRootMatrix=new THREE.Object3D();
+const partMatrix=new THREE.Matrix4();
+
+function makeBonusBatches(count){
+  const wool=new THREE.MeshLambertMaterial({color:'#fff8eb',map:washTexture||null,vertexColors:true});
+  const plainWool=new THREE.MeshLambertMaterial({color:'#fff8eb',map:washTexture||null});
+  const dark=new THREE.MeshLambertMaterial({color:'#fff8eb'});
+  const contact=new THREE.MeshBasicMaterial({map:shadeTexture,transparent:true,opacity:.46,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});
+  const body=livestockLoft(fleeceSections,20,24,.75);
+  const muzzle=livestockLoft(faceSections,12,16,0);
+  const tuft=new THREE.IcosahedronGeometry(1,1);
+  const leg=new THREE.CylinderGeometry(.74,1,1,6);
+  return [
+    ['body',body,wool],['face',muzzle,dark],['tuft',tuft,plainWool],
+    ['ears',tuft,dark,2],['legs',leg,dark,4],['feet',tuft,dark,4],
+    ['shade',geo.plane,contact]
+  ].reduce((parts,[name,geometry,material,copies=1])=>{
+    const mesh=new THREE.InstancedMesh(geometry,material,count*copies);
+    mesh.name='Grand troupeau · '+name;
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    mesh.frustumCulled=false;
+    mesh.castShadow=name==='body';
+    mesh.receiveShadow=name!=='shade';
+    map.add(mesh);
+    parts[name]=mesh;
+    return parts;
+  },{});
+}
+function setBonusColors(m){
+  const color=new THREE.Color();
+  herdParts.body.setColorAt(m.mass,color.set(flockTones[m.variant]));
+  herdParts.tuft.setColorAt(m.mass,color);
+  color.set(flockFaces[m.variant]);
+  herdParts.face.setColorAt(m.mass,color);
+  for(let i=0;i<2;i++)herdParts.ears.setColorAt(m.mass*2+i,color);
+  for(let i=0;i<4;i++){
+    herdParts.legs.setColorAt(m.mass*4+i,color);
+    herdParts.feet.setColorAt(m.mass*4+i,color.clone().multiplyScalar(.69));
+  }
+}
+function setSheepPart(name,index,x,y,z,sx,sy,sz,rx=0,rz=0){
+  sheepMouth.position.set(x,y,z);
+  sheepMouth.scale.set(sx,sy,sz);
+  sheepMouth.rotation.set(rx,0,rz);
+  sheepMouth.updateMatrix();
+  partMatrix.multiplyMatrices(sheepRootMatrix.matrix,sheepMouth.matrix);
+  herdParts[name].setMatrixAt(index,partMatrix);
+}
+function animateBonusSheep(m,time,dt){
+  const pace=clamp(m.speed/2.7,0,1),still=prefersStill?.55:1;
+  m.cycle=(m.cycle+dt*(2.0+Math.min(m.speed,8)*2.24))%TAU;
+  const stride=m.cycle;
+  const bob=still*(pace*.023*(1-Math.cos(stride*2))+.012*Math.sin(time*2.7+m.phase));
+  const size=.82+m.variant*.041;
+  const y=groundY(m.x,m.z);
+  sheepRootMatrix.position.set(m.x,y+bob,m.z);
+  sheepRootMatrix.rotation.y=m.heading;
+  sheepRootMatrix.scale.setScalar(size);
+  sheepRootMatrix.updateMatrix();
+  const i=m.mass;
+  setSheepPart('body',i,0,0,0,1,1,1);
+  const grazing=!m.safe&&m.react<.22&&pace<.12;
+  const nod=grazing?smooth(-.23,.86,Math.sin(time*.57+m.phase))*.56:0;
+  setSheepPart('face',i,0,1.04-nod*.18,.515,1,1,1,nod);
+  setSheepPart('tuft',i,0,1.255-nod*.23,.56,.211,.119,.201,nod);
+  for(let j=0;j<2;j++){
+    const side=j?1:-1;
+    setSheepPart('ears',i*2+j,side*.305,1.145-nod*.26,.58,.181,.045,.080,.16+nod,-side*.22);
+  }
+  for(let j=0;j<4;j++){
+    const side=j%2?1:-1,fore=j<2;
+    const phase=stride+((j===0||j===3)?0:Math.PI);
+    const swing=Math.sin(phase)*pace*.16*still;
+    const lift=Math.max(0,Math.cos(phase))*pace*.13*still;
+    const x=side*.273,z=fore?.40:-.408;
+    setSheepPart('legs',i*4+j,x,.325+lift*.48,z+swing*.43,.065,.586-lift,.071,-swing*1.82);
+    setSheepPart('feet',i*4+j,x,.081+lift,z+swing,.081,.070,.095);
+  }
+  setSheepPart('shade',i,.07,.040-bob,.02,1.50,1.64,1,-Math.PI/2);
+}
+function flushFlockBatches(){
+  if(!herdParts)return;
+  for(const part of Object.values(herdParts))part.instanceMatrix.needsUpdate=true;
+}
+
+function guideLargeFlock(){
+  let cx=0,cz=0,count=0,nearest=Infinity;
+  for(const animal of animals){
+    if(animal.safe)continue;
+    cx+=animal.x;cz+=animal.z;count++;
+    nearest=Math.min(nearest,distance(animal,dog));
+  }
+  if(!count||nearest>=14.8)return null;
+  cx/=count;cz/=count;
+  const dx=cx-dog.x,dz=cz-dog.z;
+  const range=Math.hypot(dx,dz);
+  if(range<.35)return null;
+  const push=(1-smooth(5.3,14.8,nearest))*(1-smooth(19,31,range));
+  return {x:dx/range,z:dz/range,push};
+}
+function largeFlockInfluence(m,pen){
+  if(!herdDrive)return [0,0];
+  const {x,z,push}=herdDrive;
+  const dist=pen.left-m.x;
+  const liningUp=(1-smooth(4.5,19,dist))*smooth(.08,.72,x)*push;
+  return [x*2.36*push, z*2.36*push*(1-.59*liningUp)+clamp((pen.z-m.z)*.26,-1.65,1.65)*liningUp];
+}
+function flockStall(pen,index){
+  const cols=9,rows=Math.ceil(animals.length/cols);
+  const lane=(index%cols)/(cols-1);
+  const rank=Math.floor(index/cols)/Math.max(1,rows-1);
+  return point(mix(pen.left+3.1,pen.right-2.7,rank),mix(pen.back+3.1,pen.front-3.1,lane)
+    +Math.sin(index*2.39)*.28);
+}
+function drawFlockCounts(ctx,mapX,mapZ){
+  const remaining=new Set(animals);
+  while(remaining.size){
+    const first=remaining.values().next().value;
+    const group=[first];
+    remaining.delete(first);
+    for(let i=0;i<group.length;i++){
+      const current=group[i];
+      for(const nearby of remaining){
+        if(nearby.safe!==current.safe||distance(nearby,current)>3.3)continue;
+        group.push(nearby);
+        remaining.delete(nearby);
+      }
+    }
+    if(group.length<4)continue;
+    const x=mapX(group.reduce((sum,m)=>sum+m.x,0)/group.length);
+    const z=mapZ(group.reduce((sum,m)=>sum+m.z,0)/group.length)-9;
+    ctx.fillStyle=first.safe?'#286b47':'#314b40';
+    ctx.beginPath();ctx.roundRect(x-8,z-5,16,10,3);ctx.fill();
+    ctx.fillStyle='#fffae7';ctx.font='700 7.7px ui-sans-serif, sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(group.length),x,z+.15);
+  }
+  ctx.textBaseline='alphabetic';
+}
+
+function makeMover(type,x,z,variant=0,mass=null){
+  const state={type,x,z,mass,variant,safe:false,speed:0,heading:random()*TAU,
+    home:null,origin:point(x,z),phase:random()*TAU,cycle:0,react:0,stress:0,vx:0,vz:0,
+    desiredX:0,desiredZ:0,path:null,between:null};
+  if(mass!==null){setBonusColors(state);return state;}
   const root=group(map,x,groundY(x,z),z),actor=group(root);
   const shadowMat=new THREE.MeshBasicMaterial({map:shadeTexture,transparent:true,opacity:.64,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});
   const shadow=mesh(root,'plane',shadowMat,.15,.04,.028,type==='duck'?1.64:2.1,type==='dog'?2.63:1.91,1);
@@ -2027,13 +2381,12 @@ function makeMover(type,x,z,hidden=false,variant=0){
   if(type!=='dog')batchAnimalParts(actor);
   actor.traverse(object=>{if(object.isMesh){object.castShadow=type!=='dog'||object.name==='Nuage';object.receiveShadow=true;}});
   const size=type==='dog'?.84:type==='duck'?.76:type==='goat'?.91:type==='pig'?.83:variant===3?.68:.81+(variant%3)*.048;
-  root.scale.setScalar(size);root.visible=!hidden;
-  return {root,actor,shadow,type,x,z,hidden,found:false,safe:false,speed:0,heading:random()*TAU,
-    home:null,origin:point(x,z),phase:random()*TAU,cycle:0,react:0,stress:0,vx:0,vz:0,
-    desiredX:0,desiredZ:0,path:null,between:null,...parts};
+  root.scale.setScalar(size);
+  return {root,actor,shadow,...state,...parts};
 }
 function animateMover(m,time,dt=0){
   if(m.type==='dog'){animateDog(m,time,dt);return;}
+  if(m.mass!==null){animateBonusSheep(m,time,dt);return;}
   const duck=m.type==='duck',moving=clamp(m.speed/2.7,0,1);
   const energy=prefersStill?.55:1;
   if(m.type==='sheep'){
@@ -2109,7 +2462,7 @@ function indexColliders(){
 function colliderAt(x,z,radius,c){
   if(c.enabled===false)return false;
   if(c.stream){
-    return Math.abs(x-c.stream.x)<c.stream.width*.5+radius&&Math.abs(z-c.stream.z)>c.stream.gap*.5-radius;
+    return Math.abs(x-c.stream.x)<c.stream.width*.5+radius&&bridgeCrossings(c.stream).every(span=>Math.abs(z-span.z)>span.gap*.5-radius);
   }
   if(c.radius!==undefined)return (x-c.x)**2+(z-c.z)**2<(c.radius+radius)**2;
   if(c.rx)return ((x-c.x)/(c.rx+radius))**2+((z-c.z)/(c.rz+radius))**2<1;
@@ -2536,38 +2889,126 @@ function mudAt(x,z){
   }
   return null;
 }
-function creekHeight(x,z,y){
-  const s=activeMission().stream;
-  if(!s)return y;
-  const b=1-smooth(s.width*.5,s.width*.5+2.2,Math.abs(x-s.x));
-  if(b<=0)return y;
-  const deck=1-smooth(s.gap*.5-.17,s.gap*.5+.75,Math.abs(z-s.z));
-  return mix(y,mix(-.66,.26,deck),b);
+function bridgeCrossings(stream){
+  return stream.alternate?[stream,stream.alternate]:[stream];
 }
-function buildRules(config){
-  if(config.stream){
-    const s=config.stream,[,hz]=config.half,rx=s.width*.5;
-    colliders.push({stream:s,minX:s.x-rx,maxX:s.x+rx,minZ:-hz-1,maxZ:hz+1,height:0});
-    const waterMat=new THREE.MeshLambertMaterial({color:'#83acaa',map:washTexture||null});
-    const water=mesh(props,'plane',waterMat,s.x,-.39,0,s.width,2*hz+6,1);water.rotation.x=-Math.PI/2;
-    for(let i=0;i<25;i++){
-      const x=s.x-mix(rx+.76,-rx-.76,(i+.5)/25);
-      const y=groundY(x,s.z);
-      mesh(decor,'box',i%3===0?'#c39a67':'#b68f60',x,y+.015,s.z,(s.width+1.7)/25+.017,.19,s.gap+.39);
-      if(i%5===0)for(const side of [-1,1]){
-        mesh(decor,'stone','#a9a089',x,groundY(x,s.z+side*(s.gap*.5+.35))+.23,s.z+side*(s.gap*.5+.35),.38,.29,.28);
-      }
+function creekHeight(x,z,height){
+  const stream=activeMission().stream;
+  if(!stream)return height;
+  const bank=1-smooth(stream.width*.5,stream.width*.5+2.2,Math.abs(x-stream.x));
+  if(bank<=0)return height;
+  const deck=Math.max(...bridgeCrossings(stream).map(span=>1-smooth(span.gap*.5-.17,span.gap*.5+.75,Math.abs(z-span.z))));
+  return mix(height,mix(-.66,.26,deck),bank);
+}
+function bridgeChannel(config){
+  const stream=config.stream;
+  if(!stream)return;
+  const [,hz]=config.half,rx=stream.width*.5,spans=bridgeCrossings(stream);
+  colliders.push({stream,minX:stream.x-rx,maxX:stream.x+rx,minZ:-hz-1,maxZ:hz+1,height:0});
+  const waterMat=new THREE.MeshLambertMaterial({color:'#83acaa',map:washTexture||null});
+  const water=mesh(props,'plane',waterMat,stream.x,-.39,0,stream.width,2*hz+6,1);
+  water.rotation.x=-Math.PI/2;
+  for(const [index,span] of spans.entries()){
+    const width=stream.width+1.6,planks=Math.ceil(width/.42);
+    for(let i=0;i<planks;i++){
+      const x=stream.x-width*.5+(i+.5)*width/planks;
+      const color=i%4===0?'#c9ab7f':i%3===0?'#bc9469':'#b28b60';
+      chestnut(decor,'penRail',color,x,groundY(x,span.z)+.018,span.z,width/planks+.012,.175,span.gap+.41);
     }
     for(const side of [-1,1]){
-      fence(s.x-rx-.74,s.z+side*s.gap*.5,s.x+rx+.74,s.z+side*s.gap*.5);
+      const z=span.z+side*span.gap*.5;
+      fence(stream.x-rx-.78,z,stream.x+rx+.78,z);
+      for(const bank of [-1,1]){
+        const x=stream.x+bank*(rx+.6);
+        mesh(decor,'stone','#b0a393',x,groundY(x,z)+.11,z,.58,.29,.45);
+      }
     }
-    for(let i=0;i<53;i++){
-      const side=i%2===0?1:-1;
-      const x=s.x+side*(rx+.48+random()*.38),z=(2*random()-1)*hz;
-      if(Math.abs(z-s.z)>s.gap*.5+1.1){grass(x,z,1.15);if(i%4===0)rocks(x,z,2,.62);}
-    }
-    signboard(s.x+rx+1.62,s.z-4.56,'Le pont',null,.27);
+    const label=spans.length===1?'Le pont':index===0?'Passerelle nord':'Passerelle sud';
+    signboard(stream.x+rx+1.6,span.z-span.gap*.5-1.6,label,null,.27);
   }
+  for(let i=0;i<58;i++){
+    const side=i%2===0?1:-1;
+    const x=stream.x+side*(rx+.48+random()*.38),z=(random()*2-1)*hz;
+    if(spans.every(span=>Math.abs(z-span.z)>span.gap*.5+1.35)){
+      grass(x,z,1.15);
+      if(i%4===0)rocks(x,z,2,.62);
+    }
+  }
+}
+function caveClearance(cave,x,z){
+  return cave&&Math.abs(x-cave.x)<cave.length*.5+7&&Math.abs(z-cave.z)<cave.width*.5+3.4;
+}
+function buildCave(config){
+  const cave=config.cave;
+  if(!cave)return;
+  const {x,z,length,width,height}=cave;
+  const half=width*.5,rows=12,sides=20;
+  const position=[],color=[],uv=[],indices=[];
+  const snow=config.biome==='snow';
+  const rock=new THREE.Color(snow?'#8f999c':'#80725d');
+  const weathered=new THREE.Color(snow?'#dce4e2':'#a3a37b');
+  const inside=new THREE.Color(snow?'#536771':'#514c43');
+  const colorAt=new THREE.Color();
+  const surface=(row,side,outer)=>{
+    const progress=row/rows,angle=side/sides*Math.PI,section=Math.cos(angle);
+    const arch=Math.sin(angle);
+    const xx=x+(progress-.5)*length+(outer?.15:.21)*Math.sin(5.3*angle+progress*12);
+    const jagged=.33*Math.sin(progress*22+angle*5.7)+.18*Math.cos(angle*11-progress*14);
+    const cross=half+(outer?2.45:.05)+jagged*(outer?1.26:.45);
+    const zz=z+cross*section;
+    const base=groundY(xx,zz)-.19;
+    const envelope=Math.pow(arch,.73);
+    const roof=outer?height+(Math.sin(progress*Math.PI)*1.24)+jagged*.85:height*.77+jagged*.36;
+    const y=base+envelope*roof;
+    const spread=.48+.20*Math.sin(progress*18+angle*8)+.20*Math.cos(progress*43-angle*15);
+    const frost=outer?smooth(.14,.83,arch)*spread:0;
+    colorAt.copy(outer?rock:inside).lerp(weathered,frost).multiplyScalar(.88+.21*spread+(outer?.025:0));
+    position.push(xx,y,zz);color.push(colorAt.r,colorAt.g,colorAt.b);uv.push(progress,side/sides);
+  };
+  const perFace=(rows+1)*(sides+1);
+  for(const outer of [true,false]){
+    for(let row=0;row<=rows;row++)for(let side=0;side<=sides;side++){
+      surface(row,side,outer);
+      if(row&&side){
+        const i=position.length/3-1,q=i-sides-1;
+        indices.push(q-1,i-1,q,q,i-1,i);
+      }
+    }
+  }
+  // Close the stone thickness around each mouth while leaving the tunnel open.
+  for(const row of [0,rows]){
+    const p=row*(sides+1);
+    for(let i=0;i<sides;i++){
+      const outer=p+i,inner=outer+perFace;
+      indices.push(outer,outer+1,inner,inner,outer+1,inner+1);
+    }
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(position,3));
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(color,3));
+  geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  const stone=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({
+    vertexColors:true,map:washTexture||null,side:THREE.DoubleSide
+  }));
+  stone.castShadow=stone.receiveShadow=true;props.add(stone);
+  for(const side of [-1,1]){
+    const wallZ=z+side*(half-.13);
+    colliders.push({x1:x-length*.5,z1:wallZ,x2:x+length*.5,z2:wallZ,height:height+1,thickness:.31});
+    for(let i=0;i<11;i++){
+      const xx=x+length*(i/10-.5)+(random()-.5)*.8;
+      const zz=z+side*(half+1.1+random()*1.08);
+      const rock=mesh(decor,'stone',choose(snow?['#a8b7b9','#95a7aa','#c3cbca']:['#7c7b66','#8e8b70','#9d9178']),
+        xx,groundY(xx,zz)+.56+random()*.82,zz,.57+random(),.77+random()*.90,.60+random()*.46);
+      rock.rotation.y=random()*TAU;
+    }
+  }
+  shade(x,z,length+1.3,width*.9,.77,groundY(x,z)+.049);
+}
+
+function buildRules(config){
+  bridgeChannel(config);
+  buildCave(config);
   for(const [x,z,rx,rz] of config.mud||[]){
     const sections=49;
     const vertices=[x,groundY(x,z)+.038,z],indices=[];
@@ -2645,7 +3086,7 @@ function interact(){
     m.tracked=true;
     hintObject={get x(){return m.x;},get z(){return m.z;},height:1.9,label:'La piste continue'};
     hintUntil=gameTime+26;
-    setNote('Suis le repère et aboie près de la cachette.');
+    setNote('Le repère te montre où se trouve la brebis. Contourne-la pour la guider.');
     showMessage('Piste trouvée · '+runStats.clues+' / '+clues.length);
     soundEffect('found');
   }
@@ -2674,11 +3115,7 @@ function gateCrossing(m,x,z){
   }
 }
 
-function reveal(m){
-  m.hidden=false;m.root.visible=true;m.found=true;m.startle=gameTime+.82;
-  showMessage('Animal retrouvé.');
-  soundEffect('found');
-}
+
 function bark(){
   if(playPaused()||gameTime-barkTime<.94)return;
   barkTime=gameTime;barkOrigin=point(dog.x,dog.z);runStats.barks++;
@@ -2686,11 +3123,7 @@ function bark(){
   for(const m of animals){
     if(m.safe||m.escape)continue;
     const d=distance(dog,m);
-    if(m.hidden&&d<9){
-      if(!activeMission().track||m.tracked)reveal(m);
-      else setNote('Une piste mène à cette cachette. Examine les empreintes ambrées.');
-    }
-    if(!m.hidden&&d<13.5){m.found=true;m.startle=gameTime+.95;}
+    if(d<13.5)m.startle=gameTime+.95;
   }
   renderCounts();
 }
@@ -2714,18 +3147,19 @@ function escapedMutton(){
   renderCounts();
 }
 function markSafe(m){
-  m.safe=true;m.found=true;m.vx=m.vz=0;m.react=0;
+  m.safe=true;m.vx=m.vz=0;m.react=0;
   const pen=pens[m.type];
   const i=animals.indexOf(m);
-  m.home=point(pen.left+4.1+(i%4)*2.15,clamp(pen.z+Math.sin(i*2.4)*5.5,pen.back+1.4,pen.front-1.4));
+  m.home=activeMission().bigFlock?flockStall(pen,i):point(pen.left+4.1+(i%4)*2.15,clamp(pen.z+Math.sin(i*2.4)*5.5,pen.back+1.4,pen.front-1.4));
   renderCounts();
-  returnCount++;
   const count=animals.filter(a=>a.safe).length;
-  soundEffect('score');
+  if(!activeMission().bigFlock||count%5===0||count===animals.length)soundEffect('score');
   if(activeMission().gust&&!storm&&animals.filter(a=>a.safe&&a.type==='sheep').length===2){
     escapedMutton();return;
   }
-  showMessage('Un '+pen.singular+' à l’abri · '+count+' / '+animals.length);
+  if(activeMission().bigFlock){
+    if(count%5===0||count===animals.length)showMessage(count+' / '+animals.length+' moutons à l’abri');
+  }else showMessage('Un '+pen.singular+' à l’abri · '+count+' / '+animals.length);
   if(count===animals.length)finish();
 }
 function flockIntent(m,dt){
@@ -2737,12 +3171,13 @@ function flockIntent(m,dt){
   const radius=trait.flight+flight*1.65;
   const pressure=1-smooth(2.5,radius,d);
   const barkPressure=barking*(1-smooth(4,13.5,barkDistance));
-  const panic=clamp((1-smooth(1.15,3.3,d))*(.61+.37*flight)+barkPressure*.54,0,1);
+  const crowd=m.mass!==null;
+  const panic=clamp((1-smooth(1.15,3.3,d))*(.61+.37*flight)+barkPressure*.54,0,1)*(crowd?.79:1);
   m.react=Math.max(pressure,barkPressure);
   m.stress=mix(m.stress,panic,1-Math.exp(-dt*(panic>m.stress?6.1:2.0)));
   let near=0,cx=0,cz=0,vx=0,vz=0,sx=0,sz=0;
   for(const other of animals){
-    if(other===m||other.safe||other.hidden||other.escape||other.type!==m.type)continue;
+    if(other===m||other.safe||other.escape||other.type!==m.type)continue;
     const ax=other.x-m.x,az=other.z-m.z,ad=Math.hypot(ax,az);
     if(ad<trait.neighbours){
       const weight=1-.56*ad/trait.neighbours;
@@ -2763,7 +3198,7 @@ function flockIntent(m,dt){
     sx+=midX/Math.max(.1,dist)*pull+vx/near*(herding?.22:.05);
     sz+=midZ/Math.max(.1,dist)*pull+vz/near*(herding?.22:.05);
   }
-  const trot=Math.pow(pressure,.83)*trait.trot;
+  const trot=Math.pow(pressure,.83)*trait.trot*(crowd?.61:1);
   const flightSpeed=panic*(isDuck?1.4:1.35);
   const fly=trot+flightSpeed;
   const shake=(Math.sin(m.phase*4.16)+.35*Math.sin(gameTime*2.1+m.phase))*m.stress*(m.type==='goat'?2.66:1.64);
@@ -2778,6 +3213,10 @@ function flockIntent(m,dt){
   }
   const pen=pens[m.type];
   const approach=pen.left-m.x,offset=pen.z-m.z;
+  if(crowd&&herdDrive){
+    const [pushX,pushZ]=largeFlockInfluence(m,pen);
+    sx+=pushX;sz+=pushZ;
+  }
   if(approach>-.2&&approach<5.5&&Math.abs(offset)<pen.opening*.5+.95&&sx>.43){
     // A local nudge keeps a sheep that is already moving through the gate from brushing the post.
     const weight=(1-smooth(1.3,5.5,approach))*(1-smooth(pen.opening*.39,pen.opening*.5+.95,Math.abs(offset)));
@@ -2827,35 +3266,15 @@ function constrainedAnimalStep(m,dt){
   step(m,Math.sin(a)*pace*dt*throttle,Math.cos(a)*pace*dt*throttle,dt,radius);
 }
 function handleFlock(dt){
-  let discovery=false;
+  herdDrive=herdParts?guideLargeFlock():null;
   for(const m of animals){
-    if(m.safe||m.escape)continue;
-    const d=distance(dog,m);
-    if(m.hidden){
-      if(d<7.9&&!m.rustled){
-        m.rustled=true;
-        setNote(activeMission().track&&!m.tracked?'Tu entends un bêlement. Cherche les empreintes près d’ici.':'Tu entends un bêlement. Aboie près de la cachette.');
-        showMessage('Un bêlement tout près…');
-        soundEffect('baa');
-      }
-      continue;
-    }
-    if(d<16.5&&!m.found){
-      m.found=true;
-      discovery=true;
-      if(returnCount===0&&chapter===0&&gameTime>2){
-        setNote('Fais un arc autour du groupe, puis avance derrière lui.');
-      }
-    }
-    flockIntent(m,dt);
+    if(!m.safe&&!m.escape)flockIntent(m,dt);
   }
-  if(discovery)renderCounts();
   for(const m of animals){
     if(m.escape){
       if(!followPath(m,m.escape,5.72,dt)){m.escape=null;m.vx=m.vz=0;}
       continue;
     }
-    if(m.hidden)continue;
     if(m.safe){
       if(m.home&&distance(m,m.home)>.32){
         const trail=[m.home];followPath(m,trail,1.95,dt);
@@ -2938,22 +3357,23 @@ function showHint(){
   const config=activeMission();
   const clue=clues.filter(c=>!c.touched).sort((a,b)=>distance(dog,a)-distance(dog,b))[0];
   const remaining=animals.filter(a=>!a.safe);
-  const near=remaining.filter(a=>!a.hidden&&!a.escape).sort((a,b)=>distance(dog,a)-distance(dog,b))[0];
+  const near=remaining.filter(a=>!a.escape).sort((a,b)=>distance(dog,a)-distance(dog,b))[0];
   const remote=remaining.slice().sort((a,b)=>distance(dog,a)-distance(dog,b))[0];
   if(clue){
     hintObject={...clue,height:1.61,label:'Empreintes'};
     setNote('Approche et touche Examiner pour suivre la piste.');
   }else if(config.stream&&remaining.some(m=>!m.crossed)){
     const s=config.stream;
-    hintObject={x:s.x,z:s.z,height:1.81,label:'Le pont'};
+    const span=bridgeCrossings(s).slice().sort((a,b)=>Math.abs(a.z-dog.z)-Math.abs(b.z-dog.z))[0];
+    hintObject={x:s.x,z:span.z,height:1.81,label:'Le pont'};
     setNote('Place le groupe dans l’axe du pont avant de le pousser.');
   }else if(near&&distance(dog,near)<17){
     const pen=pens[near.type];
     hintObject={x:pen.left,z:pen.z,height:2.65,label:pen.block?.enabled?'Portillon':pen.label};
     setNote(pen.block?.enabled?'Approche de la poignée et ouvre le portillon.':'Garde les animaux entre Nuage et l’ouverture.');
   }else if(remote){
-    hintObject={get x(){return remote.x;},get z(){return remote.z;},height:2.14,label:remote.hidden?'Une cachette':species[remote.type].title};
-    setNote(remote.hidden?'Aboie près de la cachette.':'Suis le repère et approche au pas.');
+    hintObject={get x(){return remote.x;},get z(){return remote.z;},height:2.14,label:species[remote.type].title};
+    setNote('Suis le repère et approche au pas.');
   }
   hintUntil=gameTime+18;
   updateHint();
@@ -2971,12 +3391,13 @@ function renderCounts(){
   target.querySelectorAll('canvas').forEach(c=>paintIcon(c,c.dataset.icon));
 }
 
-function drawMiniMap(){
-  const c=$('mini-map'),ctx=c.getContext('2d');
+function drawMiniMap(c=$('mini-map')){
+  const ctx=c.getContext('2d');
+  ctx.save();ctx.scale(c.width/220,c.height/152);
   const config=activeMission(),[hx,hz]=config.half;
   const scale=Math.min(185/(hx*2),115/(hz*2));
   const x=n=>110+n*scale,z=n=>76+n*scale;
-  ctx.clearRect(0,0,c.width,c.height);
+  ctx.clearRect(0,0,220,152);
   ctx.fillStyle='#c4cda6';ctx.beginPath();ctx.roundRect(x(-hx),z(-hz),hx*2*scale,hz*2*scale,15);ctx.fill();
   for(const [px,pz,rx,rz] of config.ponds){
     ctx.fillStyle='#91b3b0';ctx.beginPath();ctx.ellipse(x(px),z(pz),rx*scale,rz*scale,0,0,TAU);ctx.fill();
@@ -2989,7 +3410,12 @@ function drawMiniMap(){
   if(config.stream){
     const s=config.stream;
     ctx.fillStyle='#7daca9';ctx.fillRect(x(s.x-s.width*.5),z(-hz),s.width*scale,hz*2*scale);
-    ctx.fillStyle='#d7aa71';ctx.fillRect(x(s.x-s.width*.5)-1,z(s.z-s.gap*.5),s.width*scale+2,s.gap*scale);
+    ctx.fillStyle='#d7aa71';
+    for(const span of bridgeCrossings(s))ctx.fillRect(x(s.x-s.width*.5)-1,z(span.z-span.gap*.5),s.width*scale+2,span.gap*scale);
+  }
+  if(config.cave){
+    const cave=config.cave;
+    ctx.fillStyle='#7d7160';ctx.fillRect(x(cave.x-cave.length*.5),z(cave.z-cave.width*.5),cave.length*scale,cave.width*scale);
   }
   for(const c of clues){
     if(c.touched)continue;
@@ -3008,14 +3434,24 @@ function drawMiniMap(){
     ctx.strokeStyle='#9f5535';ctx.lineWidth=2.8;
     ctx.beginPath();ctx.arc(x(hintObject.x),z(hintObject.z),7.8,0,TAU);ctx.stroke();
   }
+  const palette={sheep:'#fff6df',duck:'#e8b65b',goat:'#b47650',pig:'#db9695'};
+  const large=c.id==='flock-map';
+  ctx.lineWidth=large?.65:.95;ctx.strokeStyle='#4b4d40';
+  for(const a of animals){
+    ctx.fillStyle=a.safe?'#55906b':palette[a.type];
+    const radius=config.bigFlock?(large?.74:1.03):(large?1.13:1.72);
+    ctx.beginPath();ctx.arc(x(a.x),z(a.z),radius,0,TAU);ctx.fill();
+    if(!config.bigFlock)ctx.stroke();
+  }
+  if(large&&config.bigFlock)drawFlockCounts(ctx,x,z);
   ctx.fillStyle='#244735';ctx.strokeStyle='#fff5de';ctx.lineWidth=2.4;
-  const a=cameraYaw;
+  const a=cameraYaw,arrowScale=large?.68:1;
   ctx.beginPath();
-  ctx.moveTo(x(dog.x)+Math.sin(a)*9,z(dog.z)+Math.cos(a)*9);
-  ctx.lineTo(x(dog.x)+Math.sin(a+2.4)*6.5,z(dog.z)+Math.cos(a+2.4)*6.5);
-  ctx.lineTo(x(dog.x)+Math.sin(a-2.4)*6.5,z(dog.z)+Math.cos(a-2.4)*6.5);
+  ctx.moveTo(x(dog.x)+Math.sin(a)*9*arrowScale,z(dog.z)+Math.cos(a)*9*arrowScale);
+  ctx.lineTo(x(dog.x)+Math.sin(a+2.4)*6.5*arrowScale,z(dog.z)+Math.cos(a+2.4)*6.5*arrowScale);
+  ctx.lineTo(x(dog.x)+Math.sin(a-2.4)*6.5*arrowScale,z(dog.z)+Math.cos(a-2.4)*6.5*arrowScale);
   ctx.closePath();ctx.stroke();ctx.fill();
-  ctx.font='700 13px ui-sans-serif, sans-serif';ctx.fillStyle='#3c5a49';ctx.textAlign='center';ctx.fillText('N',201,30);
+  ctx.font='700 13px ui-sans-serif, sans-serif';ctx.fillStyle='#3c5a49';ctx.textAlign='center';ctx.fillText('N',201,30);ctx.restore();
 }
 
 function showMessage(message,duration=2500){
@@ -3376,15 +3812,16 @@ function renderMissionMap(){
   levels.forEach((level,i)=>{
     if(level.region!==selectedWorld)return;
     const record=profile.records[level.id];
-    const locked=missionView==='story'&&i>open&&!record;
+    const locked=level.bigFlock?!bonusUnlocked(level):missionView==='story'&&i>open&&!record;
     const row=document.createElement('li'),button=document.createElement('button');
     button.type='button';button.className='outing-row';button.disabled=locked;
+    if(level.bigFlock)button.dataset.bonus='true';
     const title=document.createElement('strong'),info=document.createElement('small'),stack=document.createElement('span'),result=document.createElement('span');
     title.textContent=level.title;
-    info.textContent=level.label+' · '+level.animals.length+' bêtes';
+    info.textContent=level.bigFlock?'Bonus · '+level.animals.length+' moutons · Sans chrono':level.label+' · '+level.animals.length+' bêtes';
     stack.append(title,info);
     result.className='outing-status';
-    result.textContent=record?record.stars+' / 3 ★':locked?'À débloquer':'Jouer';
+    result.textContent=record?record.stars+' / 3 ★':locked?(level.bigFlock?'Termine ce biome':'À débloquer'):'Jouer';
     button.append(stack,result);
     button.onclick=()=>{pendingMode=missionView;openBrief(i,button);};
     row.append(button);rows.append(row);
@@ -3464,8 +3901,8 @@ function recenterCamera(){
   cameraInput.elevation=.30;
 }
 function storyMission(){
-  const first=levels.findIndex(level=>!profile.records[level.id]);
-  return first<0?levels.length-1:first;
+  const first=levels.findIndex(level=>!level.bigFlock&&!profile.records[level.id]);
+  return first<0?levels.findLastIndex(level=>!level.bigFlock):first;
 }
 
 let collarGeometry,collarMaterial,collarTag,collarMetal;
@@ -3564,7 +4001,7 @@ function useBiscuit(){
 }
 function useWhistle(){
   if(playPaused()||!profile.whistle||gameTime<whistleReady)return;
-  const nearby=animals.filter(m=>!m.safe&&!m.hidden&&!m.escape&&distance(dog,m)<17);
+  const nearby=animals.filter(m=>!m.safe&&!m.escape&&distance(dog,m)<17);
   nearby.sort((a,b)=>distance(dog,a)-distance(dog,b));
   const chosen=nearby[0];
   const members=nearby.filter(m=>chosen&&m.type===chosen.type&&distance(m,chosen)<13);
@@ -3708,13 +4145,31 @@ function openBook(trigger){
   populateChapters();
   openModal($('chapter-dialog'),trigger);
 }
+function bonusUnlocked(config){
+  return levels.every(level=>level.region!==config.region||level.bigFlock||profile.records[level.id]);
+}
+function nextCampaignStep(){
+  if(runMode!=='story')return -1;
+  const current=activeMission();
+  if(!current.bigFlock){
+    const bonus=levels.findIndex(level=>level.region===current.region&&level.bigFlock&&!profile.records[level.id]);
+    if(bonus>=0&&bonusUnlocked(levels[bonus]))return bonus;
+  }
+  return levels.findIndex((level,i)=>i>chapter&&!level.bigFlock&&!profile.records[level.id]);
+}
+function missionChallenge(config){
+  return config.bigFlock?'Sans chrono imposé · Une étoile sans aboyer, une autre sans affoler le troupeau.':
+    'Étoiles bonus · '+timeLabel(config.seconds)+' ou moins · '+config.challenge;
+}
 function openBrief(index,trigger){
-  pendingMission=index;
   const config=levels[index];
+  if(config.bigFlock&&!bonusUnlocked(config))return;
+  pendingMission=index;
   $('brief-title').textContent=config.title;
+  $('brief-place').textContent=config.bigFlock?worldNames[config.region].name+' · Bonus':config.place;
   $('brief-text').textContent=config.description;
   $('brief-note').textContent=dogText(config.note);
-  $('brief-challenge').textContent='Étoiles bonus · '+timeLabel(config.seconds)+' ou moins · '+config.challenge;
+  $('brief-challenge').textContent=missionChallenge(config);
   openModal($('brief-dialog'),trigger);
 }
 function startMission(index,mode=pendingMode){
@@ -3730,7 +4185,7 @@ function openPause(){
   const config=activeMission();
   $('pause-goal').textContent=dogText(config.description+' '+config.note);
   $('pause-challenge').hidden=chapter<0;
-  $('pause-challenge').textContent=chapter<0?'':'Étoiles bonus · '+timeLabel(config.seconds)+' ou moins · '+config.challenge;
+  $('pause-challenge').textContent=chapter<0?'':missionChallenge(config);
   $('pause-book').hidden=chapter<0;
   openModal($('pause-dialog'),$('pause'));
 }
@@ -3753,23 +4208,27 @@ function finish(){
   const config=activeMission();
   const record=profile.records[config.id];
   const elapsed=runStats.time;
-  const timeStar=elapsed<=config.seconds,bonusStar=extraStar(config,runStats);
+  const timeStar=config.bigFlock?runStats.barks===0:elapsed<=config.seconds,bonusStar=extraStar(config,runStats);
   const stars=1+Number(timeStar)+Number(bonusStar);
   profile.records[config.id]={stars:Math.max(stars,record?.stars||0),time:Math.min(elapsed,record?.time??Infinity)};
-  const reward=(record?3:12)+Math.max(0,stars-(record?.stars||0))*4;
+  const reward=(record?3:config.bigFlock?24:12)+Math.max(0,stars-(record?.stars||0))*4;
   profile.coins=Math.min(999999,profile.coins+reward);
   profile.last=config.id;saveProfile();
   $('win-reward').textContent='+'+reward+' graines · '+profile.coins+' en réserve';
-  $('win-title').textContent='Mission réussie';
+  $('win-title').textContent=config.bigFlock?'Grand troupeau à l’abri':'Mission réussie';
   $('win-text').textContent=dogText(config.victory)+' · '+timeLabel(elapsed);
   $('win-awards').innerHTML='';
-  for(const [label,earned] of [['Tous les animaux à l’abri',true],['Terminer en '+timeLabel(config.seconds)+' ou moins',timeStar],[config.challenge,bonusStar]]){
+  for(const [label,earned] of [['Tous les animaux à l’abri',true],[config.bigFlock?'Aucun aboiement':'Terminer en '+timeLabel(config.seconds)+' ou moins',timeStar],[config.challenge,bonusStar]]){
     const row=document.createElement('li'),star=document.createElement('b'),text=document.createElement('span');
     row.dataset.earned=String(earned);
     star.setAttribute('aria-label',earned?'Étoile gagnée':'Étoile non obtenue');star.textContent=earned?'★':'☆';
     text.textContent=label;row.append(star,text);$('win-awards').append(row);
   }
-  $('next').textContent=runMode==='story'&&chapter<levels.length-1?'Suite de l’histoire':'Retour à la ferme';
+  const next=nextCampaignStep();
+  $('next').textContent=next<0?'Retour à la ferme':levels[next].bigFlock?'Découvrir le bonus':'Mission suivante';
+  const itinerary=$('win-unlock');
+  itinerary.hidden=next<0||Boolean(record);
+  itinerary.textContent=next<0?'':'À suivre · '+levels[next].title+' · '+levels[next].label;
   setNote('Tous les animaux sont à l’abri.',4);
   soundEffect('win');openModal($('win-dialog'),canvas);
 }
@@ -3787,8 +4246,9 @@ function populateChapters(){
     const li=document.createElement('li'),button=document.createElement('button');
     button.type='button';
     if(i===chapter)button.setAttribute('aria-current','step');
+    if(config.bigFlock&&!bonusUnlocked(config))button.disabled=true;
     const record=profile.records[config.id];
-    button.innerHTML='<span class="chapter-index" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span><span><strong>'+config.title+'</strong><small>'+config.label+'</small></span>'+(record?'<span class="mission-stars" aria-label="'+record.stars+' étoiles sur 3">'+'★'.repeat(record.stars)+'☆'.repeat(3-record.stars)+'</span>':'');
+    button.innerHTML='<span class="chapter-index" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span><span><strong>'+config.title+'</strong><small>'+config.label+(button.disabled?' · Termine ce biome':'')+'</small></span>'+(record?'<span class="mission-stars" aria-label="'+record.stars+' étoiles sur 3">'+'★'.repeat(record.stars)+'☆'.repeat(3-record.stars)+'</span>':'');
     button.onclick=()=>{
       $('chapter-dialog').close();
       openBrief(i,$('home').hidden?$('pause'):$('chapters'));
@@ -3801,6 +4261,14 @@ function bindMenu(){
   $('chapters').onclick=()=>{pendingMode='mission';openBook($('chapters'));};
   $('pause').onclick=openPause;
   $('hint').onclick=showHint;
+  $('open-flock-map').onclick=()=>{
+    if(playPaused())return;
+    drawMiniMap($('flock-map'));
+    const sheep=animals.filter(animal=>animal.type==='sheep');
+    $('flock-map-caption').textContent=sheep.length?sheep.length+' moutons · '+sheep.filter(animal=>animal.safe).length+' à l’abri. Les moutons sont en blanc. Les animaux rentrés sont en vert.':
+      animals.length+' animaux sur la carte. Les animaux rentrés sont en vert.';
+    openModal($('flock-map-dialog'),$('open-flock-map'));
+  };
   $('interact').onclick=interact;
   $('sky-mode').onclick=changeWeather;
   $('bark').onclick=event=>{if(event.detail===0)bark();};
@@ -3821,8 +4289,9 @@ function bindMenu(){
   $('home-button').onclick=()=>{$('pause-dialog').close();showHome();};
   $('next').onclick=()=>{
     $('win-dialog').close();
-    if(runMode==='story'&&chapter<levels.length-1){pendingMode='story';showHome();openBrief(chapter+1,$('farm-continue'));}
-    else showHome();
+    const next=nextCampaignStep();
+    showHome();
+    if(next>=0){pendingMode='story';openBrief(next,$('farm-continue'));}
   };
   $('win-dialog').addEventListener('close',()=>{
     if(won&&!document.querySelector('dialog[open]'))showHome();
@@ -3861,16 +4330,17 @@ function disposeMap(){
   scene.remove(map);
 }
 function loadLevel(i){
-  chapter=i;guideMarker=null;setGuide(-1);weatherMode=0;won=storm=false;gameTime=returnCount=0;barkTime=-10;stormAt=-1;hintUntil=-1;hintObject=null;nextCoach=0;
+  chapter=i;guideMarker=null;setGuide(-1);weatherMode=0;won=storm=false;gameTime=0;barkTime=-10;stormAt=-1;hintUntil=-1;hintObject=null;nextCoach=0;
   stopInput();clearTimeout(toastId);
   resetGear();runStats=emptyRun();lastTimer=-1;lastInteractionUpdate=-1;
   $('toast').hidden=$('map-label').hidden=$('hint-compass').hidden=true;
   const config=activeMission();
-  $('chapter-kicker').textContent=i<0?'Tutoriel':worldNames[config.region].name+' · '+(i+1)+' / '+levels.length;
+  $('chapter-kicker').textContent=i<0?'Tutoriel':worldNames[config.region].name+' · '+(config.bigFlock?'Bonus':levels.filter((level,index)=>level.region===config.region&&!level.bigFlock&&index<=i).length+' / '+levels.filter(level=>level.region===config.region&&!level.bigFlock).length);
   $('mission-title').textContent=config.title;
   setNote(config.note,10);
   $('weather').textContent=config.weather;$('weather-icon').textContent=config.icon;
   $('stage').dataset.level=String(chapter);
+  $('stage').dataset.flock=String(Boolean(config.bigFlock));
   random=seeded(config.seed);
   disposeMap();
   const [sx,sz,heading]=config.start;
@@ -3888,14 +4358,17 @@ function loadLevel(i){
   dog=makeMover('dog',sx,sz);
   dog.heading=heading;
   cameraReady=false;
-  animals=config.animals.map(([type,x,z,hidden,kind],index)=>{
-    const m=makeMover(type,x,z,hidden,kind==='lamb'?3:index%7===4?3:index%6===3?2:index%2);
+  herdParts=config.bigFlock?makeBonusBatches(config.animals.length):null;herdDrive=null;
+  animals=config.animals.map(([type,x,z,,kind],index)=>{
+    const variant=kind==='lamb'?3:index%7===4?3:index%6===3?2:index%2;
+    const m=makeMover(type,x,z,variant,config.bigFlock?index:null);
     if(blocked(m.x,m.z,.43)){
       const node=grid[nearestGrid(m)];
       if(node){m.x=node.x;m.z=node.z;}
     }
     m.origin=point(m.x,m.z);
-    m.found=!hidden&&distance(dog,m)<17;
+    m.crossed=Boolean(config.stream&&m.x>config.stream.x+config.stream.width*.5+.2);
+    if(m.crossed)runStats.crossed++;
     return m;
   });
   rain=makeRain();airborne=makeAirSeeds();shadowStamp=-1;weatherName='';animateWeather(0,true);
@@ -3904,7 +4377,7 @@ function loadLevel(i){
   const pulseMaterial=new THREE.MeshBasicMaterial({color:'#fff0b1',transparent:true,opacity:.66,side:THREE.DoubleSide,depthWrite:false});
   barkRing=new THREE.Mesh(geo.ring.clone(),pulseMaterial);
   barkRing.frustumCulled=false;barkRing.visible=false;props.add(barkRing);
-  animateMover(dog,0);animals.forEach(m=>animateMover(m,0));
+  animateMover(dog,0);animals.forEach(m=>animateMover(m,0));flushFlockBatches();
   renderCounts();refreshTimer();lastMapTime=-1;resize();drawMiniMap();updateInteraction();
 }
 
@@ -3949,7 +4422,8 @@ function frame(now){
     gameTime+=dt;
     steer(dt);handleFlock(dt);
     animateMover(dog,gameTime,dt);
-    animals.forEach(m=>{if(!m.hidden)animateMover(m,gameTime,dt);});
+    animals.forEach(m=>animateMover(m,gameTime,dt));
+    flushFlockBatches();
     updatePulse();
     $('bark').dataset.cooling=String(gameTime-barkTime<.94);
     if(gameTime>noteUntil)$('notes-wrap').hidden=true;

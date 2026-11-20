@@ -12,6 +12,8 @@ Le mouton est sculpté par sections dans le jeu. Son tronc et son visage ont cha
 
 Le kit de bergerie en châtaignier a été créé dans Blender. Les poteaux, traverses et chapeaux sont exportés en buffers indexés dans `game.js`. Le battant garde sa charnière. Les sapins neigeux et les crêtes sont générés lors du chargement des scènes. Dans l’archive, le dossier `sources-3d` contient le modèle Blender et les scripts de ces ressources.
 
+Les grandes sorties dessinent les moutons dans sept groupes de maillages instanciés. Chaque mouton garde sa position et ses appuis animés. Les grottes utilisent une voûte ouverte aux deux extrémités, avec des collisions continues sur les flancs.
+
 ## Modèle jouable de Nuage
 
 [border collie dog(mesh hair)](https://sketchfab.com/3d-models/border-collie-dogmesh-hair-516a1a06c6f248b6b8c28801eb1397ac) par [imdjs](https://sketchfab.com/imdjs), sous licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Adaptation pour Le Petit Berger avec ajout du squelette et des animations, ajustement des accessoires, variantes de couleur, textures réduites et matériaux adaptés au rendu Web.

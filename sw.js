@@ -1,7 +1,7 @@
 const scope=new URL(self.registration.scope);
 const prefix='le-petit-berger:'+scope.pathname+':';
-const cacheName=prefix+'95a0ff22d34d1';
-const entries=["index.html", "manifest.webmanifest", "three.min.js?v=95a0ff22d34d1", "assets.js?v=95a0ff22d34d1", "game.js?v=95a0ff22d34d1", "launch.js?v=95a0ff22d34d1", "icon-180.png", "icon-192.png", "icon-512.png"].map(path=>new URL(path,scope).href);
+const cacheName=prefix+'0ee1393c98d45';
+const entries=["index.html", "manifest.webmanifest", "three.min.js?v=0ee1393c98d45", "assets.js?v=0ee1393c98d45", "game.js?v=0ee1393c98d45", "launch.js?v=0ee1393c98d45", "icon-180.png", "icon-192.png", "icon-512.png"].map(path=>new URL(path,scope).href);
 const home=new URL('index.html',scope).href;
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
@@ -18,7 +18,7 @@ self.addEventListener('activate',event=>{
   })());
 });
 self.addEventListener('message',event=>{
-  if(event.data==='berger-version')event.source?.postMessage({type:'berger-version',version:'95a0ff22d34d1'});
+  if(event.data==='berger-version')event.source?.postMessage({type:'berger-version',version:'0ee1393c98d45'});
 });
 self.addEventListener('fetch',event=>{
   const request=event.request;
@@ -32,7 +32,7 @@ self.addEventListener('fetch',event=>{
     const cache=await caches.open(cacheName);
     try{
       const response=await fetch(request,{cache:'no-cache'});
-      if(response.ok&&(!navigation||(await response.clone().text()).includes('name="berger-version" content="95a0ff22d34d1"'))){
+      if(response.ok&&(!navigation||(await response.clone().text()).includes('name="berger-version" content="0ee1393c98d45"'))){
         await cache.put(navigation?home:request,response.clone()).catch(()=>{});
         return response;
       }

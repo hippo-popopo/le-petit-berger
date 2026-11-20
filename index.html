@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="95a0ff22d34d1">
+<meta name="berger-version" content="0ee1393c98d45">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -299,6 +299,17 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 }
 .tutorial-coach{position:static}
 .stage[data-tutorial]:not([data-tutorial=""]) #mission-timer{display:none}
+.stage[data-flock="true"] #mission-timer{display:none}
+.flock-map-button{position:relative;display:block;padding:0;border:0;border-radius:10px;background:transparent;touch-action:manipulation}
+.flock-map-button canvas{display:block}
+.flock-map-button span{position:absolute;inset:auto 4px 4px auto;padding:2px 5px;background:#f9f0d7;color:#314531;border-radius:5px;font-size:9px;font-weight:800}
+#flock-map-dialog{width:min(520px,calc(100% - 24px));max-height:calc(100dvh - 14px);overflow:auto}
+#flock-map{display:block;width:auto;height:auto;max-height:min(63dvh,350px);max-width:100%;margin:auto;background:#ede9d3;border-radius:12px}
+#flock-map-caption{margin:8px 0 0;font-size:12px;color:#40523e}
+.outing-row[data-bonus="true"]{background:#e8e8d5;padding-inline:9px;min-height:54px}
+.outing-row[data-bonus="true"] .outing-status{color:#4d5134}
+.win-unlock{color:#43513c;font-size:13px;font-weight:720}
+.brief-place{margin:0 40px 5px 0;color:#586045;font-size:12px;font-weight:750}
 @media(max-height:445px) and (orientation:landscape){
   .wardrobe .robe-options{grid-template-columns:repeat(3,minmax(0,1fr))}
   .robe-options button{display:grid;justify-items:start;gap:2px;min-height:54px;font-size:11px}
@@ -327,7 +338,10 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
       <div class="help-strip">
         <div class="note-wrap" id="notes-wrap"><p id="mission-note" class="notes"></p></div>
         <div class="map-wrap">
-          <canvas class="mini-map" id="mini-map" width="220" height="152" aria-hidden="true"></canvas>
+          <button type="button" class="flock-map-button" id="open-flock-map" aria-label="Agrandir la carte des troupeaux" aria-haspopup="dialog">
+            <canvas class="mini-map" id="mini-map" width="220" height="152" aria-hidden="true"></canvas>
+            <span aria-hidden="true">Carte ↗</span>
+          </button>
           <button class="circle recenter" id="recenter" type="button" aria-label="Recentrer la caméra">↻</button>
           <span class="weather-chip" aria-hidden="true"><span id="weather-icon">☀</span> <span id="weather"></span></span>
         </div>
@@ -385,7 +399,7 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
           <p id="farm-description" class="farm-description"></p>
           <button class="primary farm-cta" id="farm-continue" type="button" disabled>Partir avec Nuage</button>
           <button class="quiet-button" id="open-missions" type="button">Voir la carte des missions</button>
-          <label class="farm-progress" for="farm-progress"><span id="home-progress">0 sur 18 sorties terminées</span><progress id="farm-progress" value="0" max="18"></progress></label>
+          <label class="farm-progress" for="farm-progress"><span id="home-progress"></span><progress id="farm-progress" value="0"></progress></label>
         </section>
         <section data-farm-panel="missions" aria-labelledby="missions-title" hidden>
           <div class="panel-top"><div class="farm-heading"><h2 id="missions-title" tabindex="-1">Missions</h2></div>
@@ -510,11 +524,18 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 </dialog>
 <dialog id="brief-dialog" aria-labelledby="brief-title">
 <button type="button" class="circle dialog-close" aria-label="Fermer la fiche de mission" data-close>×</button>
+<p class="brief-place" id="brief-place"></p>
 <h2 id="brief-title"></h2>
 <p id="brief-text"></p>
 <div class="control-explainer"><p id="brief-note"></p></div>
 <p class="challenge" id="brief-challenge"></p>
 <button id="start-mission" class="primary" type="button">Partir avec Nuage</button>
+</dialog>
+<dialog id="flock-map-dialog" aria-labelledby="flock-map-title">
+  <button type="button" class="circle dialog-close" aria-label="Fermer la carte" data-close autofocus>×</button>
+  <h2 id="flock-map-title">Carte des troupeaux</h2>
+  <canvas id="flock-map" width="660" height="456" role="img" aria-labelledby="flock-map-title" aria-describedby="flock-map-caption"></canvas>
+  <p id="flock-map-caption"></p>
 </dialog>
 <dialog id="pause-dialog" aria-labelledby="pause-title">
 <button type="button" class="circle dialog-close" aria-label="Reprendre la mission" data-close>×</button>
@@ -535,15 +556,16 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <h2 id="win-title"></h2>
 <p id="win-text"></p>
 <p class="win-reward" id="win-reward"></p>
+<p id="win-unlock" class="win-unlock" hidden></p>
 <ul id="win-awards" class="award-list"></ul>
 <div class="dialog-buttons">
 <button id="next" class="primary" type="button"></button>
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three.min.js?v=95a0ff22d34d1"></script>
-<script defer src="./assets.js?v=95a0ff22d34d1"></script>
-<script defer src="./game.js?v=95a0ff22d34d1"></script>
-<script defer src="./launch.js?v=95a0ff22d34d1"></script>
+<script defer src="./three.min.js?v=0ee1393c98d45"></script>
+<script defer src="./assets.js?v=0ee1393c98d45"></script>
+<script defer src="./game.js?v=0ee1393c98d45"></script>
+<script defer src="./launch.js?v=0ee1393c98d45"></script>
 </body>
 </html>
