@@ -14,10 +14,12 @@ La ferme garde des matières peintes et une lumière de plein air. Les quatre es
 | --- | --- |
 | Références | Planches de Nuage, du troupeau et des premiers accessoires |
 | Modèle et contrôles | Chien articulé, marche et sprint, joystick généreux, caméra indépendante et horizon droit |
-| Parcours mobile | Chargement animé, ferme, aperçu de Nuage, histoire en trois chapitres, carnet des missions, réglages |
-| Boucle de progression | Missions → jetons → équipement, biscuits et sifflet utilisables en jeu |
+| Parcours mobile | Chargement animé, tutoriel jouable au premier lancement, ferme, carte et réglages |
+| Campagne | Dix-huit missions dans six biomes et des sorties libres pour explorer ou rejouer |
+| Chien | Nom enregistré, trois silhouettes de races adaptées du modèle de Nuage et six robes |
+| Boucle de progression | Graines gagnées en mission, accessoires à équiper, croquettes et sifflet utilisables en jeu |
 | Vérifications | Reprise des sauvegardes, achats idempotents, inventaire, quatre contacts simultanés, publication et réouverture du site |
 
 ## Pistes après validation
 
-Les races avec leurs silhouettes, de nouvelles fermes et agrandissements, les outils plus élaborés et l’écriture des prochains chapitres viennent après les essais de cette base sur téléphone.
+De nouvelles fermes, des agrandissements, des outils plus élaborés et les prochains chapitres pourront s’appuyer sur les essais de cette campagne sur téléphone.

@@ -1,6 +1,6 @@
 # Le Petit Berger
 
-Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La ferme propose une histoire en trois chapitres, neuf sorties libres, un chien à personnaliser et une boutique en graines gagnées en jeu.
+Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La ferme propose une campagne de dix-huit missions dans six biomes, un mode sorties libres, un chien à personnaliser et une boutique en graines gagnées en jeu. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
 
 ## Jouer
 
@@ -13,7 +13,7 @@ Ouvre [le jeu publié](https://hippo-popopo.github.io/le-petit-berger/) dans Saf
 - **Ouvrir / Examiner** · apparaît près des portillons ou des traces
 - **Pause** · permet de comparer le temps clair, l’heure dorée et la pluie
 
-Au clavier, utilise les flèches, Maj, Espace, E pour interagir, R pour recentrer la caméra et P pour mettre en pause. La vitesse offerte par les croquettes et le regroupement du sifflet durent quelques secondes. Les anciennes étoiles sont récupérées au premier lancement.
+Au clavier, utilise les flèches, Maj, Espace, E pour interagir, J et L pour regarder, R pour recentrer la caméra et P pour mettre en pause. La vitesse offerte par les croquettes et le regroupement du sifflet durent quelques secondes. Les anciennes étoiles sont récupérées au premier lancement.
 
 ## Développement local
 

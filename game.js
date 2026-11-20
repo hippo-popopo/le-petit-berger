@@ -165,7 +165,109 @@ const levels=[
     ['goat',-45.1,24.7],['goat',-46.6,22.4],['goat',-27.2,-24.5]]
   }
 ];
-const regionNames=['Les prés', 'Le verger', 'Les landes'];
+const woodland={
+  region:3,biome:'wood',climate:3,place:'La forêt des brumes',weather:'Brume matinale',icon:'≋',
+  half:[75,62],start:[1,25,Math.PI],house:[34,-17],seed:1907,
+  grass:['#6f8b69','#4f6a50','#94a27c','#537863'],dirt:'#a98865',horizon:'#c7ddd1',sky:'#87aaac',fog:106,
+  hills:[[-42,-28,9,19,16],[15,-38,8,25,14],[46,24,9,17,25],[-43,38,5,11,16]],
+  ponds:[[-39,13,7,6,-.71]],pens:{sheep:[18,34,-18,-3,-10,5.6],goat:[27,45,15,31,23,5.8]},
+  trails:[[[0,61],[0,37],[-2,20],[-1,8],[5,-2],[12,-9],[18,-10],[31,-12]],[[0,11],[-16,0],[-31,-5],[-44,-16],[-59,-31]],[[3,5],[9,14],[18,22],[27,23],[39,22]]],
+  groves:[[-26,-24,16,14,17],[-48,-32,10,18,20],[32,-32,11,14,18],[49,29,15,10,15],[-22,34,14,12,14],[-48,0,10,9,12]],
+  walls:[[[-30,6],[-24,5],[-18,5]],[[8,-25],[17,-24],[24,-29]]],
+  landmarks:[[-39,13,'La mare des fées'],[-43,-29,'Les grands sapins'],[9,-16,'La clairière']]
+};
+const coast={
+  region:4,biome:'coast',climate:4,place:'La côte des salines',weather:'Brise marine',icon:'☀',
+  half:[76,57],start:[-26,24,Math.PI],house:[46,-17],seed:2036,
+  grass:['#bfc197','#b7bd87','#dbcd9d','#91ab85'],dirt:'#e2cb9e',horizon:'#ddebd9',sky:'#7fbbce',fog:174,
+  hills:[[-57,-31,9.5,14,21],[-57,34,5.6,15,23],[46,42,9,20,19],[29,-39,5.3,21,13]],
+  ponds:[[-48,-10,10,5.8,-.77],[43,9,8,4.5,-.57]],
+  pens:{sheep:[22,39,-15,-1,-8.1,5.7],duck:[25,41,24,37,30,5.9],pig:[28,45,-38,-22,-30.5,5.6]},
+  trails:[[[-27,51],[-25,24],[-24,10],[-17,1],[-10,0],[5,0],[19,-7],[22,-8.1],[38,-8],[44,-15]],[[19,-7],[22,12],[23,24],[25,30],[36,30]],[[-24,11],[-41,7],[-51,7],[-60,-15]]],
+  groves:[[-54,-31,10,10,6],[46,40,10,8,5],[49,-35,14,8,5],[-38,43,11,5,4]],
+  walls:[[[-60,-22],[-53,-25],[-47,-24]],[[7,25],[12,21],[16,20]],[[6,-32],[15,-34],[21,-32]]],
+  landmarks:[[-48,-10,'Les salines'],[-58,-34,'Le phare'],[8,24,'Les dunes basses']]
+};
+const alpine={
+  region:5,biome:'snow',climate:5,place:'Le col des neiges',weather:'Neige légère',icon:'❄',
+  half:[80,62],start:[-6,28,Math.PI],house:[47,-14],seed:4139,
+  grass:['#e4e6de','#bbcdd0','#f3eee2','#ccdbd8'],dirt:'#c4b8a5',horizon:'#dde7ed',sky:'#9ab9d1',fog:131,
+  hills:[[-58,-49,25,22,20],[-18,-56,20,22,16],[55,-43,19,23,16],[57,24,11,18,18],[-47,38,10,20,19]],
+  ponds:[[-34,-5,8.5,7,-.54]],pens:{sheep:[26,43,-21,-5,-13,6],goat:[22,40,13,29,21,5.7]},
+  trails:[[[-6,59],[-6,32],[-5,17],[-6,5],[3,-4],[15,-12],[26,-13],[43,-13]],[[3,-4],[-14,-7],[-24,-16],[-37,-25],[-55,-38]],[[1,11],[11,17],[22,21],[36,22]]],
+  groves:[[-28,-28,14,9,11],[40,-36,10,10,9],[-49,25,10,13,10],[49,37,14,9,8]],
+  walls:[[[-18,12],[-12,9],[-9,8]],[[2,-23],[9,-27],[16,-31]],[[12,38],[19,35],[26,36]]],
+  landmarks:[[-34,-5,'Le lac gelé'],[-43,-29,'Les hauts alpages'],[12,-16,'Le col']]
+};
+const worldNames=[
+  {name:'Les prés',summary:'Premiers troupeaux, portillons et chemins de traverse.',terrain:'Prairie'},
+  {name:'Le verger',summary:'Des murets à contourner et des traces à suivre.',terrain:'Verger d’automne'},
+  {name:'Les landes',summary:'La météo et des troupeaux à séparer.',terrain:'Lande humide'},
+  {name:'La forêt',summary:'Des clairières étroites sous de grands sapins.',terrain:'Forêt de conifères'},
+  {name:'Les salines',summary:'Des dunes, des canards et un pont au-dessus du chenal.',terrain:'Littoral atlantique'},
+  {name:'Le col',summary:'Des pâturages d’altitude, de la neige et des plaques de glace.',terrain:'Alpage enneigé'}
+];
+const regionNames=worldNames.map(world=>world.name);
+function outing(base,id,title,label,description,note,animals,changes={}){
+  return {...base,id,title,label,description,note,animals,seconds:260,challenge:'Aucun aboiement',bonus:'quiet',
+    victory:'Tout le troupeau est rentré.',...changes};
+}
+levels.push(
+  outing(woodland,'lisiere','Les brebis de la lisière','Regrouper',
+    'Rassemble quatre moutons qui broutent dans deux clairières.',
+    'Remonte le sentier pour te placer derrière chaque groupe.',
+    [['sheep',-5,7],['sheep',-2,7.8],['sheep',-25,-6],['sheep',-22,-4.8]],
+    {pens:{sheep:woodland.pens.sheep},seconds:210}),
+  outing(woodland,'sous-bois','Des traces sous les sapins','Pister',
+    'Examine deux empreintes et ramène les brebis cachées auprès du troupeau.',
+    'Les empreintes sont marquées en ambre sur la carte.',
+    [['sheep',-28,-12,'bush'],['sheep',-38,14,'hay'],['sheep',-10,9],['sheep',-8,10]],
+    {pens:{sheep:woodland.pens.sheep},track:true,clues:[[-15,-3,0],[-27,18,1]],hideouts:[[-29,-14,'bush'],[-39,16,'hay']],
+     challenge:'Sans indice de la boussole',bonus:'noHelp',seconds:300}),
+  outing(woodland,'clairiere','La chèvre de la clairière','Séparer',
+    'Conduis trois chèvres et trois moutons dans leurs enclos respectifs.',
+    'Les chèvres se dispersent vite. Traite un enclos à la fois.',
+    [['sheep',1,2],['sheep',-1.8,3.5],['sheep',2.5,5],['goat',1.3,8],['goat',-3,11],['goat',-8,13]],
+    {locks:['goat'],challenge:'Aucune erreur d’enclos',bonus:'correct',seconds:330}),
+  outing(coast,'maree','Le pont du chenal','Traverser',
+    'Fais traverser le chenal à cinq canards et ramène-les au canardier.',
+    'Le pont est le seul passage. Aligne le groupe avec son entrée.',
+    [['duck',-26,-2],['duck',-30,1],['duck',-22,2],['duck',-36,11],['duck',-32,8]],
+    {pens:{duck:coast.pens.duck},stream:{x:-10,width:8,z:0,gap:6.4},seconds:310,challenge:'Sans affoler le troupeau',bonus:'calm'}),
+  outing(coast,'roseaux','La cache des roseaux','Explorer',
+    'Retrouve deux canards à couvert et rentre le reste de la bande.',
+    'Aboie doucement près des roseaux ou approche-toi pour débusquer un canard.',
+    [['duck',-6,9],['duck',-2,9.5],['duck',2,11],['duck',-46,-4,'bush'],['duck',9,20,'bush']],
+    {pens:{duck:coast.pens.duck},hideouts:[[-47,-6,'bush'],[10,21,'bush']],challenge:'Deux aboiements maximum',bonus:'twoBarks',seconds:310}),
+  outing(coast,'dunes','Marais et dunes','Éviter les flaques',
+    'Conduis quatre cochons hors des vasières et trois canards au canardier.',
+    'Dans la vase, ton chien et les cochons ralentissent. Prends la rive.',
+    [['pig',3,-8],['pig',6,-10],['pig',-11,-17],['pig',-8,-17],['duck',2,17],['duck',5,16],['duck',6,19]],
+    {pens:{duck:coast.pens.duck,pig:coast.pens.pig},mud:[[4,-10,6,4],[-9,-17,5,3.7]],challenge:'Moins de 12 secondes dans la vase',bonus:'dry',seconds:330}),
+  outing(alpine,'gel','Les plaques de gel','Garder son appui',
+    'Rentre quatre moutons près du lac gelé.',
+    'Sur la glace, anticipe tes virages et relâche le sprint.',
+    [['sheep',-13,-6],['sheep',-15,-7],['sheep',-12,-3],['sheep',-19,6]],
+    {pens:{sheep:alpine.pens.sheep},ice:[[-12,0,8.5,5.4],[6,-2,5.5,3.8]],seconds:260,challenge:'Moins de 10 secondes sur la glace',bonus:'ice'}),
+  outing(alpine,'refuge','Le refuge des cabris','Ouvrir le refuge',
+    'Ouvre le refuge et ramène cinq chèvres des hauts pâturages.',
+    'Suis les murets et échappe aux pentes les plus raides.',
+    [['goat',-24,-24],['goat',-21,-20],['goat',10,-9],['goat',12,-11],['goat',-8,17]],
+    {pens:{goat:alpine.pens.goat},locks:['goat'],seconds:325,challenge:'Deux aboiements maximum',bonus:'twoBarks'}),
+  outing(alpine,'col','Le dernier passage','Protéger deux troupeaux',
+    'Rentre cinq moutons et quatre chèvres avant de quitter le col.',
+    'Reste près de la bergerie. Une rafale pourrait faire ressortir une brebis.',
+    [['sheep',1,-14],['sheep',4,-12],['sheep',4,-16],['sheep',-15,9],['sheep',-12,8],['goat',-10,-3],['goat',-8,-3],['goat',5,16],['goat',7,16]],
+    {gust:true,ice:[[9,7,6.4,3.4],[-19,2,5.9,4]],bonus:'correct',challenge:'Aucune erreur d’enclos',seconds:415})
+);
+const lesson={
+  ...regions[0],id:'lecon',region:0,title:'Premier pas',start:[-3,13,Math.PI],house:[25,-12],half:[27,25],seed:716,
+  pens:{sheep:[4,14,-6,5,-.4,5.9]},description:'Accompagne un mouton jusqu’à la bergerie.',
+  note:'Déplace ton chien avec le joystick ou les flèches.',seconds:Infinity,
+  hills:[[-20,-20,3,14,16]],ponds:[],trails:[[[-4,23],[-4,13],[-4,4],[-3,-1],[4,-.4],[12,0]]],
+  groves:[[-17,-9,5,7,4],[17,14,5,4,3]],walls:[],landmarks:[],animals:[['sheep',-2,-.7]]
+};
+
 
 const keyVectors = {
   ArrowUp:[0,-1],KeyW:[0,-1],KeyZ:[0,-1],ArrowDown:[0,1],KeyS:[0,1],
@@ -193,7 +295,24 @@ function paintIcon(canvas, name){
   function line(coords){ctx.beginPath();ctx.moveTo(...coords[0]);for(const xy of coords.slice(1))ctx.lineTo(...xy);ctx.stroke();}
   function oval(x,y,w,h,angle=0,color){if(color)ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,w,h,angle,0,TAU);ctx.fill();}
   function arc(x,y,r,a,b){ctx.beginPath();ctx.arc(x,y,r,a,b);ctx.stroke();}
-  if(name==='paw'){
+  if(name==='farm'){
+    line([[5,23],[24,7],[43,23]]);line([[10,21],[10,41],[38,41],[38,21]]);line([[20,40],[20,28],[28,28],[28,40]]);
+  }else if(name==='shop'){
+    line([[11,16],[37,16],[41,41],[7,41],[11,16]]);arc(24,17,8,Math.PI,TAU);line([[18,29],[30,29]]);
+  }else if(name==='settings'){
+    arc(24,24,14,0,TAU);arc(24,24,5,0,TAU);
+    for(let j=0;j<8;j++){
+      const a=j*TAU/8;line([[24+14*Math.cos(a),24+14*Math.sin(a)],[24+19*Math.cos(a),24+19*Math.sin(a)]]);
+    }
+  }else if(name==='rotate'){
+    arc(24,25,15,-.92,TAU-.13);line([[35,12],[41,12],[41,4]]);
+  }else if(name==='star'){
+    const path=[];
+    for(let i=0;i<=10;i++){
+      const a=i*TAU/10-Math.PI/2,r=i%2?8.5:18;path.push([24+Math.cos(a)*r,24+Math.sin(a)*r]);
+    }
+    line(path);
+  }else if(name==='paw'){
     for(const [x,y,angle] of [[10,20,-.55],[19,12,-.2],[29,12,.2],[38,20,.55]])oval(x,y,4.2,6.1,angle);
     ctx.beginPath();ctx.moveTo(12,35);ctx.bezierCurveTo(13,30,17,23,24,23);ctx.bezierCurveTo(31,23,36,31,36,35);ctx.bezierCurveTo(37,43,29,39,24,39);ctx.bezierCurveTo(19,39,11,43,12,35);ctx.fill();
   }else if(name==='book'){
@@ -293,12 +412,12 @@ function buildLandData(config){
   for(const [x,z] of [config.house,config.mill].filter(Boolean))flattening.push({x,z,rx:6.5,rz:5.6,y:rawHeight(x,z),inner:.83,outer:1.74});
 }
 function rawHeight(x,z){
-  const config=levels[chapter];
+  const config=activeMission();
   let altitude=.45*Math.sin(x*.052+z*.064)+.72*Math.cos(z*.075-.4)*Math.sin(x*.068-.7)+.24*Math.sin(x*.17+z*.18);
   for(const [hx,hz,h,rx,rz] of config.hills)altitude+=h*Math.exp(-(((x-hx)/rx)**2+((z-hz)/rz)**2));
   const rim=Math.max(Math.abs(x)/config.half[0],Math.abs(z)/config.half[1]);
   altitude+=smooth(.79,1.55,rim)*(3.2+3*Math.sin(x*.029-z*.041)+2.1*Math.cos(z*.058+x*.044));
-  return altitude;
+  return config.biome==='coast'?altitude-8.6*smooth(-62,-82,x):altitude;
 }
 function groundY(x,z){
   let y=rawHeight(x,z);
@@ -806,7 +925,10 @@ function paintSetDressing(config){
 }
 
 function grass(x,z,size){
-  const colors=['#789154','#8c9f67','#b2b977','#6c865d','#9fac75','#8ba972'];
+  const biome=activeMission().biome;
+  const colors=biome==='snow'?['#89968e','#c1c7ad','#a5b7ae']:
+    biome==='coast'?['#7e9274','#b6a975','#57927b','#c9b88a']:
+    ['#789154','#8c9f67','#b2b977','#6c865d','#9fac75','#8ba972'];
   for(let i=0;i<5;i++){
     const xx=x+(random()-.5)*.65,zz=z+(random()-.5)*.56,h=(.29+random()*.42)*size;
     const blade=mesh(decor,'blade',choose(colors),xx,groundY(xx,zz)+.015,zz,(.19+random()*.10)*size,h*.79,.54*size);
@@ -837,7 +959,7 @@ function pond(x,z,rx,rz,base){
   const geometry=new THREE.ShapeGeometry(shape);
   const uv=geometry.attributes.uv;
   for(let i=0;i<uv.count;i++)uv.setXY(i,(uv.getX(i)+rx)/(rx*2),(uv.getY(i)+rz)/(rz*2));
-  const water=new THREE.MeshLambertMaterial({color:levels[chapter].region===2?'#75a7aa':'#86b0ae',map:washTexture||null});
+  const water=new THREE.MeshLambertMaterial({color:activeMission().region===2?'#75a7aa':'#86b0ae',map:washTexture||null});
   const clock={value:0};
   water.onBeforeCompile=s=>{
     s.uniforms.waterTime=clock;
@@ -904,8 +1026,97 @@ function strawShelter(x,z){
   hay(x-1.06,z,.98);hay(x+.72,z+.62,.93);
   shade(x,z,6.5,5.2,.6);
 }
+function fir(x,z,size,snow){
+  if(aroundEntrance(x,z))return;
+  const tree=group(decor,x,groundY(x,z),z),h=(4.7+random()*2.5)*size;
+  rod(tree,'taper',snow?'#7c7462':'#57493b',[0,0,0],[.076*size,h,0],.19*size);
+  const greens=snow?['#416264','#5b7977','#809693']:['#285449','#386b54','#588363'];
+  for(let ring=0;ring<6;ring++){
+    const lift=.24+.12*ring,r=(1.3-.172*ring)*size;
+    for(let branch=0;branch<5;branch++){
+      const a=branch*TAU/5+ring*.73;
+      const branchMesh=mesh(tree,'lobe',greens[(ring+branch)%3],Math.cos(a)*r*.54,h*lift,Math.sin(a)*r*.54,r*.71,r*.46,r*.86);
+      branchMesh.rotation.y=-a;branchMesh.rotation.z=.25;branchMesh.userData.wind=2;
+      if(snow){
+        const cap=mesh(tree,'lobe','#e0e8e0',branchMesh.position.x,h*lift+r*.28,branchMesh.position.z,r*.63,r*.20,r*.76);
+        cap.rotation.y=-a;cap.rotation.z=.25;cap.userData.wind=2;
+      }
+    }
+  }
+  mesh(tree,'lobe',snow?'#c9d9d7':greens[1],0,h*.91,0,.32*size,.67*size,.32*size);
+  obstacle(x,z,.36*size,h);shade(x+.4*size,z+.25*size,3.9*size,4*size,.52);
+}
+function lighthouse(){
+  const [x,z]=[-57,-34];
+  const g=group(decor,x,groundY(x,z),z);
+  mesh(g,'cyl','#b5ad90',0,.39,0,2.14,.75,2.14);
+  mesh(g,'taper','#f4e5ca',0,3.4,0,1.29,6.6,1.29);
+  mesh(g,'cyl','#954c43',0,4.6,0,1.14,.85,1.14);
+  mesh(g,'cyl','#e1d3b4',0,6.42,0,1.56,.24,1.56);
+  mesh(g,'cyl','#769c99',0,6.96,0,.88,.92,.88);
+  mesh(g,'taper','#91493b',0,7.78,0,1.45,.82,1.45);
+  for(let n=0;n<10;n++){
+    const a=TAU*n/10;
+    mesh(g,'cyl','#74554b',Math.sin(a)*1.23,6.68,Math.cos(a)*1.23,.048,.48,.048);
+  }
+  obstacle(x,z,1.35,8);
+  const sea=mesh(props,'plane',new THREE.MeshLambertMaterial({color:'#80b6bc'}),-160,-2.9,0,189,252,1);
+  sea.rotation.x=-Math.PI/2;
+}
+function iceAt(x,z){
+  return activeMission().ice?.some(([cx,cz,rx,rz])=>((x-cx)/rx)**2+((z-cz)/rz)**2<1);
+}
+function paintIce(config){
+  for(const [x,z,rx,rz] of config.ice||[]){
+    const n=32,coords=[x,groundY(x,z)+.052,z],idx=[];
+    for(let i=0;i<n;i++){
+      const a=TAU*i/n,r=1+.075*Math.sin(a*7);
+      const px=x+Math.cos(a)*rx*r,pz=z+Math.sin(a)*rz*r;
+      coords.push(px,groundY(px,pz)+.052,pz);idx.push(0,(i+1)%n+1,i+1);
+    }
+    const geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.Float32BufferAttribute(coords,3));geometry.setIndex(idx);geometry.computeVertexNormals();
+    props.add(new THREE.Mesh(geometry,new THREE.MeshLambertMaterial({color:'#91bcc9',transparent:true,opacity:.81,side:THREE.DoubleSide,depthWrite:false})));
+  }
+}
+function snowPeaks(config){
+  const weathered=['#9aaebd','#c9d7df','#dfe8e6','#7f97a8'];
+  const rng=seeded(config.seed+3281);
+  for(let k=0;k<10;k++){
+    const x=-140+30*k,z=-96-rng()*55,height=24+rng()*31,radius=18+rng()*16;
+    const points=[],pigment=[];
+    const centerTop=[x-radius*.20,height,z+radius*.06];
+    const rim=Array.from({length:9},(_,i)=>{
+      const a=i*TAU/9,jagged=.71+rng()*.46;
+      return [x+radius*jagged*Math.cos(a),2+rng()*6,z+radius*jagged*Math.sin(a)];
+    });
+    const stripe=rim.map((edge,i)=>edge.map((v,axis)=>mix(v,centerTop[axis],.54+(i%3)*.07)));
+    function face(a,b,c,col){
+      const ink=new THREE.Color(col);
+      points.push(...a,...b,...c);for(let i=0;i<3;i++)pigment.push(ink.r,ink.g,ink.b);
+    }
+    for(let i=0;i<rim.length;i++){
+      const j=(i+1)%rim.length;
+      face(rim[i],rim[j],stripe[i],weathered[(i+k)%4]);
+      face(rim[j],stripe[j],stripe[i],weathered[(i+k+1)%4]);
+      face(stripe[i],stripe[j],centerTop,i%3?'#e9eeeb':'#becdd6');
+    }
+    const geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
+    geometry.setAttribute('color',new THREE.Float32BufferAttribute(pigment,3));geometry.computeVertexNormals();
+    props.add(new THREE.Mesh(geometry,new THREE.MeshLambertMaterial({vertexColors:true,side:THREE.DoubleSide})));
+  }
+}
+function regionalTree(config,x,z,size,rim){
+  if(config.biome==='wood'||config.biome==='snow'){fir(x,z,size,config.biome==='snow');return;}
+  tree(x,z,config.biome==='coast'?size*.68:size,config.region===1,
+    rim?config.seed%6===0?'birch':'oak':'oak');
+}
+
 function decorate(config){
   farmhouse(...config.house);
+  if(config.biome==='coast')lighthouse();
+  paintIce(config);
   if(config.mill)mill(...config.mill);
   for(const p of config.ponds)pond(...p);
   for(const wall of config.walls)stoneWall(wall);
@@ -917,23 +1128,27 @@ function decorate(config){
     for(let i=0;i<n;i++){
       const angle=random()*TAU,r=Math.sqrt(random()),xx=x+Math.cos(angle)*rx*r,zz=z+Math.sin(angle)*rz*r;
       if(!nearTrail(xx,zz,1.82)&&!blocked(xx,zz,1.50)&&!Object.values(pens).some(p=>p.inside({x:xx,z:zz}))&&!config.animals.some(([,ax,az])=>Math.hypot(xx-ax,zz-az)<2.3))
-        tree(xx,zz,1.02+random()*.92,levels[chapter].region===1,i%6===0?'birch':i%3===0?'apple':'oak');
+        (config.biome?regionalTree(config,xx,zz,1.02+random()*.92,false):
+          tree(xx,zz,1.02+random()*.92,config.region===1,i%6===0?'birch':i%3===0?'apple':'oak'));
     }
   }
   const [hx,hz]=config.half;
   for(let i=0;i<63;i++){
     const a=random()*TAU, r=.84+random()*.15;
     const xx=Math.cos(a)*hx*r,zz=Math.sin(a)*hz*r;
-    if(!blocked(xx,zz,1.6)&&!nearTrail(xx,zz,4))tree(xx,zz,1.1+random()*.89,levels[chapter].region===1,i%5===0?'birch':'oak');
+    if(!blocked(xx,zz,1.6)&&!nearTrail(xx,zz,4)){
+      if(config.biome)regionalTree(config,xx,zz,1.1+random()*.89,true);
+      else tree(xx,zz,1.1+random()*.89,config.region===1,i%5===0?'birch':'oak');
+    }
   }
   for(let i=0;i<240;i++){
     const x=(random()*2-1)*hx*.96,z=(random()*2-1)*hz*.96;
     if(blocked(x,z,1.15)||nearTrail(x,z,1.67)||Object.values(pens).some(p=>p.inside({x,z}))||config.animals.some(([,xx,zz])=>Math.hypot(x-xx,z-zz)<2.4))continue;
     if(i%7===0)bush(x,z,.58+random()*.60);
     else if(i%13===0)rocks(x,z,4,.85+random()*.55,true);
-    else flowers(x,z,3+Math.floor(random()*9),.67+random()*.38);
+    else if(config.biome!=='snow')flowers(x,z,3+Math.floor(random()*9),.67+random()*.38);
   }
-  for(let i=0;i<2320;i++){
+  for(let i=0;i<(config.biome==='snow'?530:config.biome==='wood'?1700:2320);i++){
     const x=(random()*2-1)*hx*.99,z=(random()*2-1)*hz*.99;
     if(!blocked(x,z,.18)&&!nearTrail(x,z,1.29)&&!Object.values(pens).some(p=>p.inside({x,z})))grass(x,z,.45+random()*.64);
   }
@@ -944,7 +1159,7 @@ function decorate(config){
     const x=sx+Math.cos(a)*r,z=sz+Math.sin(a)*r;
     if(!blocked(x,z,.22)&&!nearTrail(x,z,1.4))grass(x,z,.83);
   }
-  if(levels[chapter].region===0&&!levels[chapter].stream)signboard(6.8,7.9,'Bergerie ↗',null,.11);
+  if(activeMission().region===0&&!activeMission().stream)signboard(6.8,7.9,'Bergerie ↗',null,.11);
   const house=config.house;
   strawShelter(house[0]+7.7,house[1]+1.95);
   for(let i=0;i<8;i++){
@@ -957,7 +1172,7 @@ function decorate(config){
   paintSetDressing(config);
 }
 function nearTrail(x,z,threshold){
-  for(const trail of levels[chapter].trails){
+  for(const trail of activeMission().trails){
     for(let i=1;i<trail.length;i++){
       if(segmentDistance(x,z,{x1:trail[i-1][0],z1:trail[i-1][1],x2:trail[i][0],z2:trail[i][1]})<threshold)return true;
     }
@@ -1320,7 +1535,13 @@ async function prepareDogModel(){
             mask*=1.0-smoothstep(1.24,1.34,restCoat.z);
             vec3 cocoa=diffuseColor.rgb*vec3(1.25,.76,.54)+vec3(.057,.026,.011);
             vec3 slate=diffuseColor.rgb*vec3(.88,1.04,1.24)+vec3(.039,.050,.068);
-            diffuseColor.rgb=mix(diffuseColor.rgb,coatTint<1.5?cocoa:slate,mask);
+            vec3 sand=diffuseColor.rgb*vec3(1.35,1.13,.78)+vec3(.27,.138,.071);
+            vec3 copper=diffuseColor.rgb*vec3(1.29,.85,.68)+vec3(.18,.055,.030);
+            vec3 p=floor(restCoat*6.7+vec3(sin(restCoat.z*19.0),cos(restCoat.y*22.0),0.0)*.46);
+            float flecks=smoothstep(.19,.69,fract(sin(dot(p,vec3(62.4,33.2,19.5)))*3721.81));
+            vec3 merle=mix(diffuseColor.rgb,vec3(.22,.29,.36),flecks*.84);
+            vec3 palette=coatTint<1.5?cocoa:coatTint<2.5?slate:coatTint<3.5?sand:coatTint<4.5?merle:copper;
+            diffuseColor.rgb=mix(diffuseColor.rgb,palette,mask);
           `);
       };
     }
@@ -1328,14 +1549,14 @@ async function prepareDogModel(){
   });
 }
 function makeDogModel(actor){
-  const rig=sculptedDog.rig;
+  const {parts,rig,feet,scale}=dogVariant();
   const bones=rig.map(([name])=>{
     const bone=new THREE.Bone();bone.name=name;return bone;
   });
-  const meshes=dogParts.map(({kind,geometry,material})=>{
+  const meshes=parts.map(({kind,geometry,material})=>{
     const mesh=new THREE.SkinnedMesh(geometry,material);
     mesh.name=kind==='body'?'Nuage':kind==='fur'?'Pelage de Nuage':'Yeux et bouche de Nuage';
-    mesh.frustumCulled=false;
+    mesh.frustumCulled=false;mesh.castShadow=kind==='body';mesh.receiveShadow=true;
     actor.add(mesh);
     return mesh;
   });
@@ -1352,12 +1573,15 @@ function makeDogModel(actor){
   actor.updateWorldMatrix(true,true);
   const skeleton=new THREE.Skeleton(bones);
   meshes.forEach(mesh=>mesh.bind(skeleton,mesh.matrixWorld.clone()));
-  const legs=sculptedDog.feet.map((foot,i)=>
+  const legs=feet.map((foot,i)=>
     gaitLeg(bones[6+2*i],bones[7+2*i],bones[15+i],i%2===0,i<2?-1:1,rig[7+2*i],foot));
   const sockets={neck:group(bones[1],0,.01,-.026),back:group(bones[0],0,.29,-.29)};
   const scarf=bandanaForNeck(sockets.neck);
   const collar=collarForNeck(sockets.neck);
-  const appearance={skin,meshes,bones,legs,sockets,scarf,collar};
+  const satchel=backpack(sockets.back);
+  scarf.scale.set(scale[0],scale[1],scale[2]);collar.scale.copy(scarf.scale);
+  satchel.scale.set(scale[0],scale[1],scale[2]);
+  const appearance={skin,meshes,bones,legs,sockets,scarf,collar,satchel,breed:profile.breed};
   dressDog(appearance);
   return appearance;
 }
@@ -1571,7 +1795,8 @@ function animateMover(m,time,dt=0){
 let collisionCells = null, gridShape = null;
 const CELL=8;
 function insideField(x,z,radius=0){
-  const [hx,hz]=levels[chapter].half;
+  const config=activeMission(),[hx,hz]=config.half;
+  if(config.biome==='coast'&&x< -66+radius)return false;
   const xx=Math.abs(x)/(hx-radius),zz=Math.abs(z)/(hz-radius);
   return xx**7+zz**7<1;
 }
@@ -1995,7 +2220,10 @@ function steer(dt){
   }
   const wantsMovement=Math.hypot(targetX,targetZ)>.01;
   const triesToReverse=targetX*moveX+targetZ*moveZ<0;
-  const response=!wantsMovement||triesToReverse?17.5:sprint?8.4:12.5;
+  const sliding=iceAt(dog.x,dog.z);
+  if(sliding&&dog.speed>.4)runStats.ice+=dt;
+  const traction=sliding?.22:1;
+  const response=(!wantsMovement||triesToReverse?17.5:sprint?8.4:12.5)*traction;
   const blend=1-Math.exp(-dt*response);
   moveX=mix(moveX,targetX,blend);
   moveZ=mix(moveZ,targetZ,blend);
@@ -2021,17 +2249,17 @@ function steer(dt){
 let clues=[],runStats;
 let interactionTarget=null, lastInteractionUpdate=-1;
 function emptyRun(){
-  return {time:0,barks:0,help:0,wrong:0,panic:0,mud:0,clues:0,crossed:0};
+  return {time:0,barks:0,help:0,wrong:0,panic:0,mud:0,clues:0,crossed:0,ice:0};
 }
 function mudAt(x,z){
-  for(const item of levels[chapter].mud||[]){
+  for(const item of activeMission().mud||[]){
     const [mx,mz,rx,rz]=item;
     if(((x-mx)/rx)**2+((z-mz)/rz)**2<1)return item;
   }
   return null;
 }
 function creekHeight(x,z,y){
-  const s=levels[chapter].stream;
+  const s=activeMission().stream;
   if(!s)return y;
   const b=1-smooth(s.width*.5,s.width*.5+2.2,Math.abs(x-s.x));
   if(b<=0)return y;
@@ -2128,7 +2356,7 @@ function interact(){
   const item=target.item;
   if(target.kind==='gate'){
     item.block.enabled=false;
-    grid=createGrid(levels[chapter]);
+    grid=createGrid(activeMission());
     tap=null;
     showMessage(item.label+' ouverte.');
     setNote('Le portillon est ouvert. Garde le groupe entre Nuage et la porte.');
@@ -2467,7 +2695,7 @@ function renderCounts(){
 
 function drawMiniMap(){
   const c=$('mini-map'),ctx=c.getContext('2d');
-  const config=levels[chapter],[hx,hz]=config.half;
+  const config=activeMission(),[hx,hz]=config.half;
   const scale=Math.min(185/(hx*2),115/(hz*2));
   const x=n=>110+n*scale,z=n=>76+n*scale;
   ctx.clearRect(0,0,c.width,c.height);
@@ -2515,7 +2743,7 @@ function drawMiniMap(){
 function showMessage(message,duration=2500){
   const node=$('toast');
   clearTimeout(toastId);
-  node.textContent=message;node.hidden=false;
+  node.textContent=dogText(message);node.hidden=false;
   toastId=setTimeout(()=>{node.hidden=true;},duration);
 }
 function soundEffect(name){
@@ -2546,11 +2774,189 @@ function openModal(dialog,trigger){
   stopInput();openDialogTrigger=trigger;
   if(!dialog.open)dialog.showModal();
 }
+const breeds={
+  collie:{name:'Border collie',line:'Grand et élancé',shape:[1,1,1,1],mask:0},
+  aussie:{name:'Berger australien',line:'Compact et robuste',shape:[1.18,.91,.92,.57],mask:1},
+  sheltie:{name:'Berger des Shetland',line:'Petit et léger',shape:[.84,.78,.92,.95],mask:2}
+};
+const coats={
+  ink:{name:'Noir et blanc',colors:['#272a2c','#ede5d1']},
+  cocoa:{name:'Chocolat',colors:['#673d29','#f1e7cb']},
+  slate:{name:'Bleu ardoise',colors:['#596b7b','#e9e5db']},
+  sand:{name:'Sable doré',colors:['#b77442','#f6e5bb']},
+  merle:{name:'Bleu merle',colors:['#445466','#b6bdc3']},
+  copper:{name:'Rouge cuivré',colors:['#994a32','#f3dabc']}
+};
+const coatNumber=Object.keys(coats);
+const gearItems={bare:'Nu',rust:'Foulard terracotta',sage:'Foulard sauge',navy:'Foulard indigo',berry:'Foulard mûre',
+  collar:'Collier en cuir',moss:'Collier mousse',satchel:'Sacoche du berger'};
+const wardrobeModes=['identite','robe','equipement'];
+const modelVariants=new Map();
+let wardrobeMode='identite';
+function cleanDogName(value){
+  return Array.from(String(value??'').replace(/[\x00-\x1F\x7F]/g,' ').replace(/\s+/g,' ').trim()).slice(0,18).join('')||'Nuage';
+}
+function dogText(copy){return copy?.replace(/Nuage/g,profile.dogName)??'';}
+function shapeForBreed([x,y,z],breed){
+  const [wide,short,length,tail]=breed.shape;
+  const tip=smooth(-.83,-1.7,z);
+  const head=smooth(.74,1.31,z);
+  const crown=smooth(1.19,1.52,y)*smooth(.65,1.09,z);
+  const swing=breed.mask===1?.042*crown:breed.mask===2?-.036*crown:0;
+  const headLength=breed.mask===1?-.039*head:breed.mask===2?.022*head:0;
+  return [x*wide+(Math.sign(x)*swing),y*short-(breed.mask===1?.089*crown:0),z*length+(tail-1)*(z+.83)*tip+headLength];
+}
+function modelForBreed(id){
+  if(modelVariants.has(id))return modelVariants.get(id);
+  const breed=breeds[id];
+  const transform=v=>shapeForBreed(v,breed);
+  const parts=dogParts.map(part=>{
+    const positions=part.geometry.getAttribute('position');
+    const points=new Float32Array(positions.count*3);
+    const normals=new Float32Array(positions.count*3);
+    const inputNormals=part.geometry.getAttribute('normal');
+    for(let i=0;i<positions.count;i++){
+      const x=positions.getX(i),y=positions.getY(i),z=positions.getZ(i);
+      points.set(transform([x,y,z]),i*3);
+      const dz=Math.max(.15,(transform([x,y,z+.003])[2]-transform([x,y,z-.003])[2])/.006);
+      const nx=inputNormals.getX(i)/breed.shape[0],ny=inputNormals.getY(i)/breed.shape[1],nz=inputNormals.getZ(i)/dz;
+      const length=Math.hypot(nx,ny,nz)||1;
+      normals.set([nx/length,ny/length,nz/length],i*3);
+    }
+    const geometry=new THREE.BufferGeometry();
+    for(const [name,attr] of Object.entries(part.geometry.attributes))geometry.setAttribute(name,attr);
+    geometry.setAttribute('position',new THREE.BufferAttribute(points,3));
+    geometry.setAttribute('normal',new THREE.BufferAttribute(normals,3));
+    geometry.setIndex(part.geometry.index);geometry.computeBoundingSphere();
+    return {...part,geometry};
+  });
+  const rig=sculptedDog.rig.map(([name,parent,...p])=>[name,parent,...transform(p)]);
+  const feet=sculptedDog.feet.map(({rest,stance})=>({rest:transform(rest),stance:transform(stance)}));
+  const value={parts,rig,feet,scale:breed.shape};
+  modelVariants.set(id,value);
+  return value;
+}
+function dogVariant(){
+  if(!modelVariants.has('collie'))modelVariants.set('collie',{parts:dogParts,rig:sculptedDog.rig,feet:sculptedDog.feet,scale:[1,1,1,1]});
+  return modelForBreed(profile.breed);
+}
+function refreshDogMesh(model){
+  if(!model||model.breed===profile.breed)return;
+  model.skin.skeleton.dispose();
+  model.meshes.forEach(mesh=>model.actor.remove(mesh));
+  Object.assign(model,makeDogModel(model.actor));
+  if(model===companion){
+    model.standingFeet=model.legs.map(leg=>leg.toe);
+    model.standingFeet.forEach((toe,i)=>model.contactPads[i].position.set(toe.x,.008,toe.z));
+  }
+}
+function syncName(){
+  const name=profile.dogName,breed=breeds[profile.breed].name;
+  $('dog-name-display').textContent=name;
+  $('dog-breed-display').textContent=breed;
+  $('farm-hero').setAttribute('aria-label','Aperçu 3D de '+name);
+  $('rotate-dog').setAttribute('aria-label','Tourner '+name);
+  $('start-mission').textContent='Partir avec '+name;
+}
+function chooseBreed(id){
+  if(!Object.hasOwn(breeds,id)||profile.breed===id)return false;
+  profile.breed=id;saveProfile();refreshDogMesh(companion);refreshDogMesh(dog);syncName();
+  return true;
+}
+function wardrobeButton(name,value,selected){
+  const button=document.createElement('button');
+  button.type='button';button.className='wardrobe-option';
+  button.dataset.variant=value;button.setAttribute('aria-pressed',String(selected));
+  button.textContent=name;
+  return button;
+}
+function selectWardrobe(mode){
+  wardrobeMode=mode;
+  for(const panel of document.querySelectorAll('[data-wardrobe-panel]'))panel.hidden=panel.dataset.wardrobePanel!==mode;
+  for(const button of document.querySelectorAll('[data-wardrobe-tab]'))button.setAttribute('aria-pressed',String(button.dataset.wardrobeTab===mode));
+}
+function renderWardrobe(){
+  const breedHost=$('breed-options'),colorHost=$('robe-options'),gearHost=$('gear-options');
+  $('dog-name').value=profile.dogName;
+  breedHost.innerHTML=colorHost.innerHTML=gearHost.innerHTML='';
+  for(const [id,breed] of Object.entries(breeds)){
+    const button=wardrobeButton(breed.name,id,profile.breed===id);
+    const detail=document.createElement('small');detail.textContent=breed.line;button.append(detail);
+    button.onclick=()=>{if(chooseBreed(id)){
+      [...breedHost.querySelectorAll('button')].forEach(element=>element.setAttribute('aria-pressed',String(element===button)));
+    }};
+    breedHost.append(button);
+  }
+  for(const [id,coat] of Object.entries(coats)){
+    const button=wardrobeButton(coat.name,id,profile.coat===id);
+    const chip=document.createElement('span');chip.className='coat-swatch';chip.style.background='linear-gradient(135deg,'+coat.colors[0]+' 50%,'+coat.colors[1]+' 50%)';
+    chip.setAttribute('aria-hidden','true');button.prepend(chip);
+    button.onclick=()=>{
+      profile.coat=id;saveProfile();dressDog(companion);if(dog)dressDog(dog);
+      [...colorHost.querySelectorAll('button')].forEach(element=>element.setAttribute('aria-pressed',String(element===button)));
+    };
+    colorHost.append(button);
+  }
+  for(const [id,label] of Object.entries(gearItems)){
+    if(!profile.owned.includes(id))continue;
+    const button=wardrobeButton(id==='bare'?'Sans accessoire':label,id,profile.gear===id);
+    button.onclick=()=>{
+      equipItem(id);
+      [...gearHost.querySelectorAll('button')].forEach(element=>element.setAttribute('aria-pressed',String(element===button)));
+    };
+    gearHost.append(button);
+  }
+  const count=profile.owned.filter(id=>id!=='bare'&&Object.hasOwn(gearItems,id)).length;
+  $('wardrobe-stock').textContent=count+' accessoire'+(count>1?'s':'');
+  selectWardrobe(wardrobeMode);
+}
+function equipItem(id){
+  if(!Object.hasOwn(gearItems,id)||!profile.owned.includes(id))return false;
+  profile.gear=id;saveProfile();
+  if(companion)dressDog(companion);
+  if(dog)dressDog(dog);
+  return true;
+}
+let fabricPalette=new Map();
+function scarfShade(gear){
+  if(!['sage','navy','berry'].includes(gear))return wovenMaterial;
+  if(fabricPalette.has(gear))return fabricPalette.get(gear);
+  const color={sage:[.25,.49,.36],navy:[.13,.30,.53],berry:[.44,.19,.29]}[gear];
+  const material=wovenMaterial.clone();material.customProgramCacheKey=()=>gear+'-lin';
+  material.onBeforeCompile=shader=>{
+    shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',
+      '#include <color_fragment>\nfloat thread=dot(diffuseColor.rgb,vec3(.51,.32,.17)); diffuseColor.rgb=vec3('+color.join(',')+')*(thread+.37);');
+  };
+  fabricPalette.set(gear,material);return material;
+}
+let mossLeather,satchelPaint;
+function backpack(socket){
+  satchelPaint??=new THREE.MeshLambertMaterial({color:'#776445',map:washTexture||null});
+  const pouch=group(socket,0,.13,.04);
+  mesh(pouch,'lobe',satchelPaint,0,0,0,.24,.18,.24);
+  mesh(pouch,'lobe','#b29963',0,.10,-.032,.24,.105,.22);
+  mesh(pouch,'box','#5f4e36',0,.085,-.19,.044,.12,.051);
+  mesh(pouch,'box','#bf9462',0,.072,-.213,.071,.050,.026);
+  return pouch;
+}
+function dressDog(model){
+  if(!model)return;
+  const gear=profile.gear;
+  coatTint.value=coatNumber.indexOf(profile.coat);
+  model.scarf.visible=['rust','sage','navy','berry'].includes(gear);
+  model.scarf.material=scarfShade(gear);
+  model.collar.visible=gear==='collar'||gear==='moss';
+  if(gear==='moss')mossLeather??=new THREE.MeshLambertMaterial({color:'#535c37',side:THREE.DoubleSide});
+  model.collar.children[0].material=gear==='moss'?mossLeather:collarMaterial;
+  model.satchel.visible=gear==='satchel';
+}
+
 const storeKey='petit-berger-mobile-v1';
 let profile=readProfile();
 let pendingMission=0,gameReady=false, missionEntered=false,noteUntil=0,lastTimer=-1;
 function readProfile(){
-  const value={last:null,records:{},coins:18,biscuits:1,whistle:false,owned:['ink','bare'],coat:'ink',gear:'bare',sound:false,volume:.65,quality:'auto'};
+  const value={last:null,records:{},coins:18,biscuits:1,whistle:false,owned:['ink','bare'],coat:'ink',gear:'bare',sound:false,volume:.65,quality:'auto',
+    dogName:'Nuage',breed:'collie',tutorial:null};
   try{
     const stored=JSON.parse(localStorage.getItem(storeKey)||'null');
     if(!stored||typeof stored!=='object')return value;
@@ -2565,9 +2971,12 @@ function readProfile(){
     value.coins=integer(stored.coins,value.coins+Object.keys(value.records).length*8,999999);
     value.biscuits=integer(stored.biscuits,value.biscuits,99);
     value.whistle=stored.whistle===true;
-    value.owned.push(...(Array.isArray(stored.owned)?['rust','sage','collar','cocoa','slate'].filter(item=>stored.owned.includes(item)):[]));
-    if(['ink','cocoa','slate'].includes(stored.coat)&&value.owned.includes(stored.coat))value.coat=stored.coat;
-    if(['bare','rust','sage','collar'].includes(stored.gear)&&value.owned.includes(stored.gear))value.gear=stored.gear;
+    value.owned.push(...(Array.isArray(stored.owned)?Object.keys(gearItems).filter(item=>item!=='bare'&&stored.owned.includes(item)):[]));
+    value.dogName=cleanDogName(stored.dogName);
+    if(Object.hasOwn(breeds,stored.breed))value.breed=stored.breed;
+    if(['done','skipped'].includes(stored.tutorial))value.tutorial=stored.tutorial;
+    if(Object.hasOwn(coats,stored.coat))value.coat=stored.coat;
+    if(Object.hasOwn(gearItems,stored.gear)&&value.owned.includes(stored.gear))value.gear=stored.gear;
     value.sound=stored.sound===true;
     value.volume=typeof stored.volume==='number'?clamp(stored.volume,0,1):value.volume;
     value.quality=['auto','smooth','detail'].includes(stored.quality)?stored.quality:value.quality;
@@ -2582,7 +2991,7 @@ function timeLabel(n){
   return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
 }
 function activeMission(){
-  return levels[chapter];
+  return chapter<0?lesson:levels[chapter];
 }
 function recommendedMission(){
   const last=levels.findIndex(level=>level.id===profile.last);
@@ -2594,7 +3003,7 @@ function playPaused(){
   return won||phonePortrait||!$('home').hidden||document.hidden||Boolean(document.querySelector('dialog[open]'));
 }
 function setNote(message,duration=8){
-  $('mission-note').textContent=message;
+  $('mission-note').textContent=dogText(message);
   $('notes-wrap').hidden=false;
   noteUntil=gameTime+duration;
 }
@@ -2606,30 +3015,18 @@ function refreshTimer(){
   $('mission-timer').dataset.exceeded=String(runStats.time>activeMission().seconds);
 }
 const shopItems=[
-  {id:'biscuits',name:'Croquette tonique',label:'Accélère Nuage de 22 % pendant 12 secondes.',price:8,mark:'biscuit'},
-  {id:'whistle',name:'Sifflet de berger',label:'Resserre un troupeau proche. Réutilisable après 18 secondes.',price:36,mark:'whistle'},
-  {id:'rust',name:'Foulard terracotta',label:'Un foulard de lin noué sur la nuque.',price:12,mark:'scarf'},
-  {id:'sage',name:'Foulard sauge',label:'Une teinte douce pour les sorties au pré.',price:12,mark:'scarf'},
-  {id:'collar',name:'Collier de cuir',label:'Une boucle de laiton et un médaillon gravé.',price:17,mark:'collar'},
-  {id:'cocoa',name:'Robe chocolat',label:'Un pelage brun profond et blanc.',price:24,mark:'coat'},
-  {id:'slate',name:'Robe ardoise',label:'Un pelage gris bleuté et blanc.',price:24,mark:'coat'}
+  {id:'biscuits',name:'Croquette tonique',label:'22 % de vitesse en plus pendant 12 secondes.',price:8,mark:'biscuit',group:'terrain'},
+  {id:'whistle',name:'Sifflet de berger',label:'Resserre un troupeau à portée. Recharge en 18 secondes.',price:36,mark:'whistle',group:'terrain'},
+  {id:'rust',name:'Foulard terracotta',label:'Lin chaud, couleur de terre cuite.',price:12,mark:'scarf',group:'accessoires'},
+  {id:'sage',name:'Foulard sauge',label:'Lin vert doux.',price:12,mark:'scarf',group:'accessoires'},
+  {id:'navy',name:'Foulard indigo',label:'Lin bleu profond.',price:16,mark:'scarf',group:'accessoires'},
+  {id:'berry',name:'Foulard mûre',label:'Lin couleur baie.',price:16,mark:'scarf',group:'accessoires'},
+  {id:'collar',name:'Collier en cuir',label:'Cuir brun et médaillon en laiton.',price:17,mark:'collar',group:'accessoires'},
+  {id:'moss',name:'Collier mousse',label:'Cuir vert et boucle en laiton.',price:21,mark:'collar',group:'accessoires'},
+  {id:'satchel',name:'Sacoche du berger',label:'Une petite sacoche de toile portée sur le dos.',price:31,mark:'pack',group:'accessoires'},
 ];
-let pendingMode='story',runMode='story',companionScene,companionCamera,companion,portraitRect,companionAngle=.48;
-let sampleMs=0,sampleFrames=0,qualityLimit=1.85,autoQuality=1.85;
-let biscuitUntil=-1,whistleReady=-1,whistleGroup=null,gearState='';
-const summaries=['La première tournée commence dans les prés. Nuage apprend à guider les troupeaux et à franchir le ruisseau.',
-  'Au vieux moulin, il faut suivre les traces des brebis et garder les cabris à l’œil.',
-  'Le vent monte sur les landes. La bergerie et les canards comptent sur Nuage.'];
-const itemSymbols={biscuit:'✦',whistle:'♫',scarf:'◇',collar:'♧',coat:'◒'};
-function recenterCamera(){
-  if(playPaused())return;
-  cameraInput.yaw=dog.heading;
-  cameraInput.elevation=.30;
-}
-function storyMission(){
-  const first=levels.findIndex(level=>!profile.records[level.id]);
-  return first<0?levels.length-1:first;
-}
+let selectedWorld=null,missionView='story',shopFilter='all';
+function starsFor(records){return records.reduce((total,record)=>total+(record?.stars||0),0);}
 function enterStory(trigger){
   wakeAudio();
   if(missionEntered&&!won){showField();return;}
@@ -2637,54 +3034,79 @@ function enterStory(trigger){
 }
 function farmSummary(){
   const records=Object.values(profile.records);
-  const stars=records.reduce((all,r)=>all+r.stars,0);
   $('farm-seeds').textContent=profile.coins;
-  $('farm-stars').textContent=stars;
-  $('home-progress').textContent=records.length+' / '+levels.length+' missions terminées';
+  $('farm-stars').textContent=starsFor(records);
+  $('home-progress').textContent=records.length+' sur '+levels.length+' sorties terminées';
+  $('farm-progress').max=levels.length;
   $('farm-progress').value=records.length;
-  $('play').textContent=missionEntered&&!won?'Reprendre la mission':records.length?'Continuer l’histoire':'Commencer l’histoire';
-  $('chapters').textContent='Toutes les missions';
+  const mission=missionEntered&&!won?activeMission():levels[storyMission()];
+  $('farm-next').textContent=mission.title;
+  $('farm-region').textContent=worldNames[mission.region].name;
+  $('farm-next-picture').dataset.biome=String(mission.region);
+  $('farm-description').textContent=dogText(mission.description);
+  $('farm-continue').textContent=missionEntered&&!won?'Reprendre la sortie':'Partir avec '+profile.dogName;
+  syncName();
 }
 function updateHome(){
-  farmSummary();
-  refreshSettings();
-  if(companion)dressDog(companion);
+  farmSummary();refreshSettings();if(companion)dressDog(companion);
 }
-function showFarmPanel(id){
-  for(const section of document.querySelectorAll('[data-farm-panel]'))section.hidden=section.dataset.farmPanel!==id;
+function showFarmPanel(id,focus=false){
+  $('home').dataset.screen=id;
+  for(const panel of document.querySelectorAll('[data-farm-panel]'))panel.hidden=panel.dataset.farmPanel!==id;
   for(const nav of document.querySelectorAll('[data-farm-nav]')){
     if(nav.dataset.farmNav===id)nav.setAttribute('aria-current','page');
     else nav.removeAttribute('aria-current');
   }
-  const index=storyMission();
-  const next=levels[index];
-  $('story-region').textContent=regionNames[next.region];
-  $('story-summary').textContent=summaries[next.region];
-  $('story-next').textContent=next.title;
-  $('farm-next').textContent=missionEntered&&!won?activeMission().title:next.title;
   if(id==='shop')renderShop();
   if(id==='dog')renderWardrobe();
-  if(id==='story')renderStory();
-  const scroll=$('farm-scroll');
-  if(scroll)scroll.scrollTop=0;
+  if(id==='missions')renderMissionMap();
+  $('farm-scroll').scrollTop=0;
+  if(id==='farm'||id==='dog')resizeCompanion();
+  else portraitRect=null;
   updateHome();
+  if(focus)$({farm:'farm-title',missions:'missions-title',dog:'dog-title',shop:'shop-title',settings:'settings-title'}[id]).focus({preventScroll:true});
 }
-function renderStory(){
-  const host=$('story-list');
-  host.innerHTML='';
-  levels.forEach((level,index)=>{
+function renderMissionMap(){
+  const menu=$('biome-list'),rows=$('map-missions');
+  menu.innerHTML=rows.innerHTML='';
+  const open=storyMission();
+  selectedWorld??=levels[open].region;
+  for(const [index,world] of worldNames.entries()){
+    const total=levels.filter(l=>l.region===index);
+    const n=total.filter(l=>profile.records[l.id]).length;
+    const button=document.createElement('button');
+    button.type='button';button.className='biome-button';button.setAttribute('aria-pressed',String(index===selectedWorld));
+    const tile=document.createElement('span');tile.className='biome-art';tile.dataset.biome=index;tile.setAttribute('aria-hidden','true');
+    const title=document.createElement('strong');title.textContent=world.name;
+    const count=document.createElement('small');count.textContent=n+'/'+total.length;
+    button.append(tile,title,count);
+    button.onclick=()=>{selectedWorld=index;renderMissionMap();menu.children[index]?.focus();};
+    menu.append(button);
+  }
+  const world=worldNames[selectedWorld];
+  $('atlas-picture').dataset.biome=selectedWorld;
+  $('atlas-region').textContent=world.name;
+  $('atlas-bio').textContent=world.terrain;
+  $('atlas-context').textContent=world.summary;
+  $('mission-mode-story').setAttribute('aria-pressed',String(missionView==='story'));
+  $('mission-mode-free').setAttribute('aria-pressed',String(missionView==='mission'));
+  levels.forEach((level,i)=>{
+    if(level.region!==selectedWorld)return;
     const record=profile.records[level.id];
+    const locked=missionView==='story'&&i>open&&!record;
     const row=document.createElement('li'),button=document.createElement('button');
-    button.type='button';
-    button.className='list-button';
-    button.disabled=index>storyMission()&&!record;
-    button.textContent=level.title;
-    const state=document.createElement('small');
-    state.textContent=record?'★'.repeat(record.stars):button.disabled?'À débloquer':'À jouer';
-    button.append(state);
-    button.onclick=()=>{pendingMode='story';wakeAudio();openBrief(index,button);};
-    row.append(button);host.append(row);
+    button.type='button';button.className='outing-row';button.disabled=locked;
+    const title=document.createElement('strong'),info=document.createElement('small'),stack=document.createElement('span'),result=document.createElement('span');
+    title.textContent=level.title;
+    info.textContent=level.label+' · '+level.animals.length+' bêtes';
+    stack.append(title,info);
+    result.className='outing-status';
+    result.textContent=record?record.stars+' / 3 ★':locked?'À débloquer':'Jouer';
+    button.append(stack,result);
+    button.onclick=()=>{pendingMode=missionView;openBrief(i,button);};
+    row.append(button);rows.append(row);
   });
+  $('atlas-stars').textContent=starsFor(levels.filter(l=>l.region===selectedWorld).map(l=>profile.records[l.id]))+' étoiles';
 }
 function canBuy(item){
   if(item.id==='biscuits')return profile.biscuits<99;
@@ -2698,69 +3120,72 @@ function buyItem(id){
   if(id==='biscuits')profile.biscuits++;
   else if(id==='whistle')profile.whistle=true;
   else profile.owned.push(id);
-  saveProfile();
-  return true;
+  saveProfile();return true;
 }
 function renderShop(){
   const host=$('shop-list');
   host.innerHTML='';
-  $('shop-stock').textContent=profile.biscuits+' croquette'+(profile.biscuits===1?'':'s')+' en réserve'+(profile.whistle?' · Sifflet équipé':'');
+  $('shop-stock').textContent=profile.biscuits+' croquette'+(profile.biscuits===1?'':'s')+' en réserve'+(profile.whistle?' · Sifflet dans le sac':'');
+  for(const filter of document.querySelectorAll('[data-shop-filter]'))filter.setAttribute('aria-pressed',String(filter.dataset.shopFilter===shopFilter));
   for(const item of shopItems){
+    if(shopFilter!=='all'&&item.group!==shopFilter)continue;
     const row=document.createElement('li'),mark=document.createElement('span'),body=document.createElement('div');
-    mark.className='item-mark';mark.dataset.kind=item.mark;mark.textContent=itemSymbols[item.mark];mark.setAttribute('aria-hidden','true');
+    mark.className='item-mark';mark.dataset.kind=item.mark;mark.dataset.detail=item.id;mark.setAttribute('aria-hidden','true');
     const title=document.createElement('strong'),copy=document.createElement('small');
     title.textContent=item.name;copy.textContent=item.label;body.append(title,copy);
     const button=document.createElement('button');
-    button.type='button';button.className='item-buy';
-    const available=canBuy(item);
-    button.disabled=!available||profile.coins<item.price;
-    button.textContent=available?item.price+' graines':item.id==='biscuits'?'Sac plein':'Acheté';
-    button.setAttribute('aria-label',(available?'Acheter '+item.name+' pour '+item.price+' graines':item.name+' · '+button.textContent));
+    button.type='button';button.className='item-buy';button.dataset.item=item.id;
+    const available=canBuy(item),equippable=item.group==='accessoires'&&!available;
+    const equipped=equippable&&profile.gear===item.id;
+    button.disabled=equipped||(!available&&!equippable)||(available&&profile.coins<item.price);
+    button.textContent=available?item.price+' graines':equipped?'Équipé':equippable?'Équiper':item.id==='biscuits'?'Sac plein':'Dans le sac';
+    if(available)button.setAttribute('aria-label','Acheter '+item.name+' pour '+item.price+' graines');
+    else if(equippable)button.setAttribute('aria-label',button.textContent+' · '+item.name);
     button.onclick=()=>{
-      if(buyItem(item.id)){
-        wakeAudio();soundEffect('found');
-        renderShop();farmSummary();
-        $('shop-feedback').textContent=item.name+' rejoint ton sac.';
-        const replacement=host.querySelector('[data-item="'+item.id+'"]');
-        if(replacement&&!replacement.disabled)replacement.focus();
-        else $('shop-feedback').focus();
+      if(equippable){
+        if(!equipItem(item.id))return;
+        renderShop();$('shop-feedback').textContent=item.name+' équipé.';$('shop-feedback').focus();
+        return;
       }
+      if(!buyItem(item.id))return;
+      wakeAudio();soundEffect('found');renderShop();farmSummary();
+      $('shop-feedback').textContent=item.name+' ajouté à ton inventaire.';
+      const next=host.querySelector('[data-item="'+item.id+'"]');
+      if(next&&!next.disabled)next.focus();
+      else $('shop-feedback').focus();
     };
-    button.dataset.item=item.id;
     row.append(mark,body,button);host.append(row);
   }
 }
-function renderWardrobe(){
-  const categories=[
-    ['coat','robe-options',[['ink','Noir et blanc'],['cocoa','Chocolat'],['slate','Ardoise']]],
-    ['gear','gear-options',[['bare','Sans accessoire'],['rust','Terracotta'],['sage','Sauge'],['collar','Collier']]]
-  ];
-  for(const [kind,id,options] of categories){
-    const host=$(id);
-    host.innerHTML='';
-    for(const [value,caption] of options){
-      const button=document.createElement('button');
-      button.type='button';
-      button.className='wardrobe-option';
-      button.dataset.variant=value;
-      button.setAttribute('aria-pressed',String(profile[kind]===value));
-      button.textContent=caption;
-      if(!profile.owned.includes(value)){
-        const tag=document.createElement('small');
-        tag.textContent='Boutique';button.append(tag);
-      }
-      button.onclick=()=>{
-        if(!profile.owned.includes(value)){showFarmPanel('shop');$('shop-title').focus();return;}
-        profile[kind]=value;saveProfile();
-        if(dog)dressDog(dog);
-        dressDog(companion);
-        for(const sibling of host.querySelectorAll('button'))sibling.setAttribute('aria-pressed',String(sibling===button));
-      };
-      host.append(button);
-    }
-  }
+function bindJournal(){
+  $('open-missions').onclick=()=>{selectedWorld=levels[storyMission()].region;showFarmPanel('missions',true);};
+  $('mission-mode-story').onclick=()=>{missionView='story';renderMissionMap();};
+  $('mission-mode-free').onclick=()=>{missionView='mission';renderMissionMap();};
+  $('to-shop').onclick=()=>{shopFilter='accessoires';showFarmPanel('shop',true);};
+  $('dog-name-form').onsubmit=event=>{
+    event.preventDefault();
+    profile.dogName=cleanDogName($('dog-name').value);$('dog-name').value=profile.dogName;
+    saveProfile();syncName();farmSummary();$('name-feedback').textContent='Nom enregistré.';
+  };
+  document.querySelectorAll('[data-wardrobe-tab]').forEach(button=>button.onclick=()=>selectWardrobe(button.dataset.wardrobeTab));
+  document.querySelectorAll('[data-shop-filter]').forEach(button=>button.onclick=()=>{shopFilter=button.dataset.shopFilter;renderShop();});
 }
-let collarGeometry,collarMaterial,collarTag,collarMetal,sageScarf;
+
+let pendingMode='story',runMode='story',companionScene,companionCamera,companion,portraitRect,companionAngle=.48;
+let sampleMs=0,sampleFrames=0,qualityLimit=1.85,autoQuality=1.85;
+let biscuitUntil=-1,whistleReady=-1,whistleGroup=null,gearState='';
+
+function recenterCamera(){
+  if(playPaused())return;
+  cameraInput.yaw=dog.heading;
+  cameraInput.elevation=.30;
+}
+function storyMission(){
+  const first=levels.findIndex(level=>!profile.records[level.id]);
+  return first<0?levels.length-1:first;
+}
+
+let collarGeometry,collarMaterial,collarTag,collarMetal;
 function collarForNeck(neck){
   if(!collarGeometry){
     const positions=[],faces=[],steps=42;
@@ -2784,20 +3209,6 @@ function collarForNeck(neck){
   id.position.set(.006,y-.093,z+.018);id.rotation.x=Math.PI/2;
   collar.add(strap,ring,id);
   return collar;
-}
-function dressDog(model){
-  if(!model)return;
-  coatTint.value=profile.coat==='cocoa'?1:profile.coat==='slate'?2:0;
-  model.scarf.visible=profile.gear==='rust'||profile.gear==='sage';
-  model.collar.visible=profile.gear==='collar';
-  if(profile.gear==='sage'&&!sageScarf){
-    sageScarf=wovenMaterial.clone();sageScarf.customProgramCacheKey=()=> 'sage-linen';
-    sageScarf.onBeforeCompile=shader=>{
-      shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',
-        '#include <color_fragment>\nfloat thread=dot(diffuseColor.rgb,vec3(.51,.32,.17)); diffuseColor.rgb=vec3(.26,.53,.32)*(thread+.39);');
-    };
-  }
-  model.scarf.material=profile.gear==='sage'?sageScarf:wovenMaterial;
 }
 function refreshSettings(){
   soundEnabled=profile.sound;
@@ -2880,7 +3291,8 @@ function useWhistle(){
   whistleReady=gameTime+18;updateGear(true);soundEffect('whistle');showMessage('Le troupeau se resserre.');
 }
 function bindFarm(){
-  document.querySelectorAll('[data-farm-nav]').forEach(el=>el.onclick=()=>showFarmPanel(el.dataset.farmNav));
+  document.querySelectorAll('[data-farm-nav]').forEach(el=>el.onclick=()=>showFarmPanel(el.dataset.farmNav,true));
+  bindJournal();bindTutorial();
   $('farm-continue').onclick=()=>{enterStory($('farm-continue'));};
   $('farm-sound').onclick=toggleSound;
   $('farm-volume').oninput=event=>{
@@ -2931,9 +3343,10 @@ function buildCompanion(){
   companion.bones[5].rotation.x=-.22;
   companion.standingFeet=companion.legs.map(leg=>leg.toe);
   const pads=new THREE.MeshBasicMaterial({map:shadeTexture,transparent:true,opacity:.70,depthWrite:false});
+  companion.contactPads=[];
   for(const toe of companion.standingFeet){
     const foot=mesh(base,'plane',pads,toe.x,.008,toe.z,.265,.37,1);
-    foot.rotation.x=-Math.PI/2;
+    foot.rotation.x=-Math.PI/2;companion.contactPads.push(foot);
   }
 }
 function renderCompanion(now){
@@ -2994,7 +3407,7 @@ function meadowAmbience(){
 }
 
 function showHome(){
-  stopInput();
+  stopInput();setGuide(-1);
   $('home').hidden=false;
   stage.dataset.farm='true';
   showFarmPanel('farm');resizeCompanion();if(dog) dressDog(dog);
@@ -3017,7 +3430,7 @@ function openBrief(index,trigger){
   const config=levels[index];
   $('brief-title').textContent=config.title;
   $('brief-text').textContent=config.description;
-  $('brief-note').textContent=config.note;
+  $('brief-note').textContent=dogText(config.note);
   $('brief-challenge').textContent='Étoiles bonus · '+timeLabel(config.seconds)+' ou moins · '+config.challenge;
   openModal($('brief-dialog'),trigger);
 }
@@ -3032,8 +3445,10 @@ function startMission(index,mode=pendingMode){
 function openPause(){
   if(playPaused())return;
   const config=activeMission();
-  $('pause-goal').textContent=config.description+' '+config.note;
-  $('pause-challenge').textContent='Étoiles bonus · '+timeLabel(config.seconds)+' ou moins · '+config.challenge;
+  $('pause-goal').textContent=dogText(config.description+' '+config.note);
+  $('pause-challenge').hidden=chapter<0;
+  $('pause-challenge').textContent=chapter<0?'':'Étoiles bonus · '+timeLabel(config.seconds)+' ou moins · '+config.challenge;
+  $('pause-book').hidden=chapter<0;
   openModal($('pause-dialog'),$('pause'));
 }
 function extraStar(config,stats){
@@ -3044,11 +3459,13 @@ function extraStar(config,stats){
     case 'calm':return stats.panic===0;
     case 'noHelp':return stats.help===0;
     case 'dry':return stats.mud<12;
+    case 'ice':return stats.ice<10;
     default:return false;
   }
 }
 function finish(){
   if(won)return;
+  if(chapter<0){finishGuide();return;}
   won=true;stopInput();
   const config=activeMission();
   const record=profile.records[config.id];
@@ -3061,7 +3478,7 @@ function finish(){
   profile.last=config.id;saveProfile();
   $('win-reward').textContent='+'+reward+' graines · '+profile.coins+' en réserve';
   $('win-title').textContent='Mission réussie';
-  $('win-text').textContent=config.victory+' · '+timeLabel(elapsed);
+  $('win-text').textContent=dogText(config.victory)+' · '+timeLabel(elapsed);
   $('win-awards').innerHTML='';
   for(const [label,earned] of [['Tous les animaux à l’abri',true],['Terminer en '+timeLabel(config.seconds)+' ou moins',timeStar],[config.challenge,bonusStar]]){
     const row=document.createElement('li'),star=document.createElement('b'),text=document.createElement('span');
@@ -3098,7 +3515,6 @@ function populateChapters(){
 }
 function bindMenu(){
   bindFarm();
-  $('play').onclick=()=>enterStory($('play'));
   $('chapters').onclick=()=>{pendingMode='mission';openBook($('chapters'));};
   $('pause').onclick=openPause;
   $('hint').onclick=showHint;
@@ -3117,12 +3533,12 @@ function bindMenu(){
   $('start-mission').onclick=()=>{$('brief-dialog').close();startMission(pendingMission);};
   $('resume').onclick=()=>$('pause-dialog').close();
   $('pause-book').onclick=()=>{$('pause-dialog').close();pendingMode='mission';openBook($('pause'));};
-  $('restart').onclick=()=>{$('pause-dialog').close();startMission(chapter,runMode);};
+  $('restart').onclick=()=>{$('pause-dialog').close();if(chapter<0)startLesson();else startMission(chapter,runMode);};
   $('replay').onclick=()=>{$('win-dialog').close();startMission(chapter,runMode);};
   $('home-button').onclick=()=>{$('pause-dialog').close();showHome();};
   $('next').onclick=()=>{
     $('win-dialog').close();
-    if(runMode==='story'&&chapter<levels.length-1){pendingMode='story';showHome();openBrief(chapter+1,$('play'));}
+    if(runMode==='story'&&chapter<levels.length-1){pendingMode='story';showHome();openBrief(chapter+1,$('farm-continue'));}
     else showHome();
   };
   $('win-dialog').addEventListener('close',()=>{
@@ -3139,8 +3555,9 @@ function bindMenu(){
 function disposeMap(){
   if(!map)return;
   const geometries=new Set([...Object.values(geo),...dogParts.map(part=>part.geometry),wovenGeometry,collarGeometry,collarTag]);
+  for(const variant of modelVariants.values())for(const part of variant.parts)geometries.add(part.geometry);
   const materials=new Set([...paintMaterials.values(),...dogParts.map(part=>part.material),
-    eyeMaterial,eyeLight,markerMat,shadowPaint,animalPaint,wovenMaterial,sageScarf,collarMaterial,collarMetal]);
+    eyeMaterial,eyeLight,markerMat,shadowPaint,animalPaint,wovenMaterial,...fabricPalette.values(),mossLeather,satchelPaint,collarMaterial,collarMetal]);
   const textures=new Set([washTexture,shadeTexture]);
   const skeletons=new Set();
   map.traverse(object=>{
@@ -3161,12 +3578,12 @@ function disposeMap(){
   scene.remove(map);
 }
 function loadLevel(i){
-  chapter=i;won=storm=false;gameTime=returnCount=0;barkTime=-10;stormAt=-1;hintUntil=-1;hintObject=null;nextCoach=0;
+  chapter=i;guideMarker=null;setGuide(-1);weatherMode=0;won=storm=false;gameTime=returnCount=0;barkTime=-10;stormAt=-1;hintUntil=-1;hintObject=null;nextCoach=0;
   stopInput();clearTimeout(toastId);
   resetGear();runStats=emptyRun();lastTimer=-1;lastInteractionUpdate=-1;
   $('toast').hidden=$('map-label').hidden=$('hint-compass').hidden=true;
-  const config=levels[i];
-  $('chapter-kicker').textContent='Mission '+String(i+1).padStart(2,'0')+' / '+levels.length;
+  const config=activeMission();
+  $('chapter-kicker').textContent=i<0?'Tutoriel':worldNames[config.region].name+' · '+(i+1)+' / '+levels.length;
   $('mission-title').textContent=config.title;
   setNote(config.note,10);
   $('weather').textContent=config.weather;$('weather-icon').textContent=config.icon;
@@ -3213,6 +3630,9 @@ function bindInputs(){
   document.addEventListener('keydown',event=>{
     if(playPaused()||event.metaKey||event.ctrlKey||event.altKey)return;
     if(event.code==='KeyE'&&!event.repeat){if(interact())event.preventDefault();return;}
+    if(event.code==='KeyJ'||event.code==='KeyL'){
+      cameraInput.yaw=wrapAngle(cameraInput.yaw+(event.code==='KeyJ'?.27:-.27));event.preventDefault();return;
+    }
     if(event.code==='KeyR'&&!event.repeat){recenterCamera();event.preventDefault();return;}
     if(event.code==='KeyP'&&!event.repeat){openPause();event.preventDefault();return;}
     if(event.code==='Space'&&!(event.target instanceof HTMLButtonElement)){
@@ -3267,7 +3687,7 @@ function frame(now){
     }
   }
   frameCamera(dt);
-  updateHint();
+  advanceGuide();updateHint();
   if(gameTime-lastMapTime>.12){
     drawMiniMap();lastMapTime=gameTime;
     for(const b of grassBatches){
@@ -3283,6 +3703,9 @@ const climates=[
   {name:'Temps clair',icon:'☀',high:'#6d9fbb',low:'#ecdfa9',cloud:'#fff0d2',shade:'#a6b8bf',fog:'#e7dfba',sun:'#fff1d2',ambient:'#cededb',earth:'#ab996b',direction:[-.48,.55,-.67],power:3.35,tint:1.68,rain:0,wind:.53},
   {name:'Heure dorée',icon:'☀',high:'#6497b6',low:'#ffba7b',cloud:'#ffdec4',shade:'#9a86ad',fog:'#e4b997',sun:'#ffd3a3',ambient:'#d3dde1',earth:'#a79c78',direction:[-.36,.183,-.90],power:3.39,tint:2.03,rain:0,wind:.70},
   {name:'Pluie de prairie',icon:'≋',high:'#687f99',low:'#b4c0bd',cloud:'#b2bebf',shade:'#6e8495',fog:'#b2bfb7',sun:'#e0e2d4',ambient:'#b6cadd',earth:'#809884',direction:[-.43,.39,-.79],power:.86,tint:2.35,rain:1,wind:1.68}
+  ,{name:'Brume de forêt',icon:'≋',high:'#88a9ad',low:'#c7dcc9',cloud:'#f0e8d1',shade:'#89a6a1',fog:'#b8cdbf',sun:'#f6e5b8',ambient:'#c1dad0',earth:'#7f8761',direction:[-.61,.33,-.70],power:2.15,tint:1.75,rain:0,wind:.36,mist:.0031}
+  ,{name:'Brise marine',icon:'☀',high:'#609bb9',low:'#dfead0',cloud:'#f9eacc',shade:'#a3b9bf',fog:'#d9ddbe',sun:'#fff1c4',ambient:'#c7dfde',earth:'#bbac76',direction:[-.49,.59,-.69],power:3.72,tint:1.65,rain:0,wind:1.13}
+  ,{name:'Neige légère',icon:'❄',high:'#799cb9',low:'#dbe6ec',cloud:'#f9efe2',shade:'#a8b9cf',fog:'#d4e4eb',sun:'#eef3ff',ambient:'#c1d5ed',earth:'#a7bcc6',direction:[-.39,.36,-.84],power:2.75,tint:1.64,rain:0,wind:.58,mist:.0019}
 ].map(c=>{
   const spec={...c,sunVector:new THREE.Vector3(...c.direction).normalize()};
   for(const key of ['high','low','cloud','shade','fog','sun','ambient','earth'])spec[key]=new THREE.Color(c[key]);
@@ -3361,7 +3784,7 @@ function initializeLights(){
   scene.add(skyLight,sunLight,sunLight.target);
 }
 function weatherTarget(){
-  return storm&&gameTime-stormAt<26?2:weatherMode?weatherMode-1:levels[chapter].region===2?0:1;
+  return weatherMode?weatherMode-1:storm&&gameTime-stormAt<26?activeMission().biome==='snow'?5:2:activeMission().climate??(activeMission().region===2?0:1);
 }
 function animateWeather(dt,cut=false){
   const preset=climates[weatherTarget()];
@@ -3375,7 +3798,7 @@ function animateWeather(dt,cut=false){
   skyUniforms.cloudBase.value.lerp(preset.shade,amount);
   skyUniforms.sunDir.value.lerp(preset.sunVector,amount).normalize();
   scene.fog.color.lerp(preset.fog,amount);
-  scene.fog.density=mix(scene.fog.density,.00466+rainAmount.value*.0039,amount);
+  scene.fog.density=mix(scene.fog.density,.00466+rainAmount.value*.0039+(preset.mist||0),amount);
   sunLight.color.lerp(preset.sun,amount);sunLight.intensity=mix(sunLight.intensity,preset.power,amount);
   skyLight.color.lerp(preset.ambient,amount);skyLight.groundColor.lerp(preset.earth,amount);
   skyLight.intensity=mix(skyLight.intensity,preset.tint,amount);
@@ -3400,7 +3823,8 @@ function animateWeather(dt,cut=false){
   }
 }
 function makeAirSeeds(){
-  const size=94,points=new Float32Array(size*3),extras=new Float32Array(size);
+  const snow=activeMission().biome==='snow';
+  const size=snow?320:94,points=new Float32Array(size*3),extras=new Float32Array(size);
   for(let i=0;i<size;i++){
     points[i*3]=(random()-.5)*48;points[i*3+1]=random()*8;points[i*3+2]=(random()-.5)*43;
     extras[i]=random();
@@ -3416,7 +3840,7 @@ function makeAirSeeds(){
       void main(){
         vec3 p=position;
         p.x=mod(p.x+24.0+windClock*1.1*breezeStrength,48.0)-24.0;
-        p.y+=sin(windClock*(.67+seed)+seed*62.0)*.57;
+        p.y=${snow?'mod(p.y-windClock*(.28+seed*.37),8.0)':'p.y+sin(windClock*(.67+seed)+seed*62.0)*.57'};
         p.z+=cos(windClock*.61+seed*29.0)*.7;
         vec4 eye=modelViewMatrix*vec4(p,1.0);
         gl_Position=projectionMatrix*eye;
@@ -3427,15 +3851,76 @@ function makeAirSeeds(){
       void main(){
         vec2 p=gl_PointCoord-.5;
         float seed=1.0-smoothstep(.18,.50,length(p*vec2(1.1,.86)));
-        gl_FragColor=vec4(1.0,.854,.55,seed*flicker*.73*(1.0-rainAmount));
+        gl_FragColor=vec4(${snow?'0.96,0.98,1.0':'1.0,.854,.55'},seed*flicker*${snow?'.96':'.73'}*(1.0-rainAmount));
       }`
   });
   const seeds=new THREE.Points(g,m);seeds.frustumCulled=false;map.add(seeds);
   return seeds;
 }
 function changeWeather(){
-  weatherMode=(weatherMode+1)%4;
+  weatherMode=(weatherMode+1)%(climates.length+1);
   $('sky-mode').textContent=weatherMode?climates[weatherMode-1].name:'Météo automatique';
+}
+
+let guideStep=-1,guideOrigin,guideYaw,guidePitch,guideMarker;
+const instructions=[
+  ['Avance de quelques pas','Sur téléphone, pousse le joystick. Au clavier, utilise les flèches.'],
+  ['Regarde autour de toi','Glisse sur la moitié droite de l’écran, ou utilise J et L au clavier.'],
+  ['Ramène le mouton','Contourne-le. Place-toi derrière lui et avance au pas vers la bergerie.']
+];
+function showLessonIntro(){
+  if(!profile.tutorial)openModal($('lesson-intro'),$('farm-continue'));
+}
+function setGuide(step){
+  guideStep=step;
+  $('tutorial-coach').hidden=step<0;
+  stage.dataset.tutorial=step<0?'':String(step);
+  if(guideMarker)guideMarker.visible=step===2;
+  if(step<0)return;
+  $('tutorial-step').textContent=(step+1)+' / '+instructions.length;
+  $('tutorial-title').textContent=instructions[step][0];
+  $('tutorial-help').textContent=instructions[step][1];
+  if(step===1){guideYaw=cameraYaw;guidePitch=cameraElevation;}
+}
+function startLesson(){
+  if(!gameReady)return;
+  $('lesson-intro').close();
+  missionEntered=false;runMode='tutorial';
+  loadLevel(-1);
+  guideOrigin=point(dog.x,dog.z);
+  const pen=pens.sheep;
+  guideMarker=mesh(props,'ring',new THREE.MeshBasicMaterial({color:'#faedbd',transparent:true,opacity:.85,side:THREE.DoubleSide,depthWrite:false}),
+    pen.left-.14,groundY(pen.left,pen.z)+.046,pen.z,.94,.94,1);
+  guideMarker.rotation.x=-Math.PI/2;
+  setGuide(0);showField();
+}
+function advanceGuide(){
+  if(chapter!==-1)return;
+  if(guideMarker&&guideMarker.visible)guideMarker.material.opacity=.58+Math.sin(gameTime*3.1)*.21;
+  if(guideStep===0&&distance(dog,guideOrigin)>2.2)setGuide(1);
+  else if(guideStep===1&&(Math.abs(wrapAngle(cameraYaw-guideYaw))>.24||Math.abs(cameraElevation-guidePitch)>.13))setGuide(2);
+}
+function finishGuide(){
+  won=true;setGuide(-1);
+  if(profile.tutorial!=='done'){
+    profile.coins=Math.min(999999,profile.coins+8);
+    profile.tutorial='done';saveProfile();
+    $('lesson-bonus').textContent='+8 graines';
+  }else $('lesson-bonus').textContent='';
+  soundEffect('win');openModal($('lesson-done'),canvas);
+}
+function skipLesson(){
+  if(!profile.tutorial){profile.tutorial='skipped';saveProfile();}
+  $('lesson-intro').close();
+}
+function bindTutorial(){
+  $('lesson-start').onclick=startLesson;
+  $('lesson-skip').onclick=skipLesson;
+  $('repeat-lesson').onclick=startLesson;
+  $('lesson-home').onclick=()=>$('lesson-done').close();
+  $('lesson-done').addEventListener('close',()=>{showHome();showFarmPanel('missions',true);});
+  $('lesson-intro').addEventListener('cancel',event=>{event.preventDefault();skipLesson();});
+  $('lesson-intro').querySelector('[data-close]').addEventListener('click',skipLesson);
 }
 
 async function start(){
@@ -3454,9 +3939,9 @@ async function start(){
     loadingState('Ouverture de la ferme',.72);
     bindInputs();resize();
     stage.setAttribute('aria-busy','false');
-    gameReady=true;$('play').disabled=$('chapters').disabled=false;
+    gameReady=true;$('farm-continue').disabled=false;
     showHome();loadingState('La ferme est prête',1);
-    const revealFarm=()=>{$('boot').hidden=true;$('home').inert=false;$('home-title').focus({preventScroll:true});};
+    const revealFarm=()=>{$('boot').hidden=true;$('home').inert=false;$('home-title').focus({preventScroll:true});showLessonIntro();};
     setTimeout(revealFarm,prefersStill?0:Math.max(0,630-performance.now()));
     canvas.addEventListener('webglcontextlost',event=>{
       event.preventDefault();
@@ -3470,11 +3955,13 @@ async function start(){
     stage.setAttribute('aria-busy','false');
     $('error').textContent='La ferme 3D ne peut pas s’afficher sur cet appareil. Ouvre le jeu dans un navigateur avec WebGL activé.';
     $('error').hidden=false;
-    $('play').textContent='Affichage 3D indisponible';
+    $('farm-continue').textContent='Affichage 3D indisponible';
     $('home-progress').textContent='Ouvre le jeu dans un navigateur compatible WebGL.';
     loadingState('Affichage 3D indisponible sur cet appareil',0);
   }
 }
+$('lesson-intro').style.setProperty('--atlas','url("'+WORLDS_URL+'")');
+$('home').style.setProperty('--atlas','url("'+WORLDS_URL+'")');
 $('home').style.setProperty('--cover','url("'+COVER_URL+'")');
 $('boot').style.setProperty('--cover','url("'+COVER_URL+'")');
 $('home').style.setProperty('--items','url("'+ITEMS_URL+'")');
