@@ -1,6 +1,6 @@
 const scope=new URL(self.registration.scope);
 const prefix='le-petit-berger:'+scope.pathname+':';
-const cacheName=prefix+'1b1326b2f7ef2';
+const cacheName=prefix+'5f2a8d143b7bb';
 const entries=["index.html", "manifest.webmanifest", "three.min.js", "assets.js", "game.js", "launch.js", "icon-180.png", "icon-192.png", "icon-512.png"].map(path=>new URL(path,scope).href);
 const home=new URL('index.html',scope).href;
 self.addEventListener('install',event=>{
@@ -30,7 +30,7 @@ self.addEventListener('fetch',event=>{
     try{
       const response=await fetch(request,{cache:'no-cache'});
       if(response.ok){
-        await cache.put(navigation?home:request,response.clone());
+        await cache.put(navigation?home:request,response.clone()).catch(()=>{});
         return response;
       }
       return await cache.match(navigation?home:request)||response;

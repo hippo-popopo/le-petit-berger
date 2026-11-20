@@ -4,7 +4,7 @@ Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté
 
 ## Jouer
 
-Si GitHub Pages est activé pour ce dépôt, l’adresse de jeu apparaît dans **Settings → Pages**. Ouvre-la dans Safari ou Chrome, puis ajoute le jeu à l’écran d’accueil. Au prochain lancement en ligne, le jeu récupère la version publiée. La progression est conservée dans le navigateur et le dernier chargement complet permet de rejouer hors connexion.
+Ouvre [le jeu publié](https://hippo-popopo.github.io/le-petit-berger/) dans Safari ou Chrome, puis ajoute-le à l’écran d’accueil. Au prochain lancement en ligne, le jeu récupère la version publiée. La progression est conservée dans le navigateur et le dernier chargement complet permet de rejouer hors connexion.
 
 - **Pouce gauche** · joystick pour avancer, reculer et tourner
 - **Pouce droit** · glisse sur le terrain pour regarder

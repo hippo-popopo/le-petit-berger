@@ -689,8 +689,10 @@ function meadowMaterial(config,hx,hz){
         vec3 smallPaint=texture2D(meadowPigment,detailUV*.3179).rgb;
         vec3 largePaint=texture2D(meadowPigment,vec2(detailUV.x*.107+detailUV.y*.033,detailUV.y*.107-detailUV.x*.033)).rgb;
         float grain=texture2D(paper,detailUV*.71).r;
+        float edgeWisp=dot(smallPaint,vec3(.42,.51,.07));
+        float trackGrain=dot(largePaint,vec3(.35,.51,.14));
         float grass=1.0-smoothstep(.012,.075,diffuseColor.r-diffuseColor.g);
-        vec3 earthy=mix(vec3(.84+grain*.19),vec3(.75)+smallPaint*.45+largePaint*.35,grass*.83);
+        vec3 earthy=mix(vec3(.78+grain*.17+edgeWisp*.22+trackGrain*.16),vec3(.70)+smallPaint*.58+largePaint*.41,grass*.83);
         diffuseColor.rgb*=earthy*(1.0-.22*rainAmount);
         diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.78,1.11,1.06),grass*rainAmount*.33);`);
     };
@@ -724,7 +726,7 @@ function tree(x,z,size,autumn,kind='oak'){
   const birch=kind==='birch',apple=kind==='apple';
   const bark=birch?'#b9ae98':'#735c42';
   const tones=autumn?['#98854c','#a98b48','#bc9652','#cd9d58','#d7ac69','#a99e59']:
-    ['#426b49','#567e4e','#689357','#81a65b','#9cb475','#537b4d'];
+    ['#50744a','#648c56','#789d5b','#91af69','#abbb7a','#668955'];
   const height=(apple?2.72:birch?4.05:3.56)*s;
   const core=[[0,-.13,0],[.07*s,height*.25,-.09*s],[.21*s,height*.55,-.17*s],[.13*s,height*.82,-.10*s],[.29*s,height,0]];
   for(let j=1;j<core.length;j++){
@@ -1267,8 +1269,8 @@ function buildDogSkin(){
       ${washTexture?`vec2 washUV=vec2(paintedRest.z+paintedRest.x*.35,paintedRest.y+paintedRest.x*.76);
       float granulation=texture2D(coatPaper,washUV*2.5).r;
       diffuseColor.rgb*=.954+granulation*.074;`:''}
-      float front=(paintedRest.z-.878+(paintedRest.y-1.318)*.11)/.085;
-      float height=(paintedRest.y-1.317-(paintedRest.z-.878)*.12)/(.068*lidOpening);
+      float front=(paintedRest.z-.885+(paintedRest.y-1.298)*.14)/.082;
+      float height=(paintedRest.y-1.298-(paintedRest.z-.885)*.12)/(.079*lidOpening);
       vec4 pigment=texture2D(irisPaint,vec2(front,height)*.5+.5);
       float eyeSide=smoothstep(.135,.181,abs(paintedRest.x));
       diffuseColor.rgb=mix(diffuseColor.rgb,pigment.rgb,pigment.a*eyeSide);`);
@@ -1843,7 +1845,7 @@ function frameCamera(dt){
   cameraCenter.z=mix(cameraCenter.z,dog.z,follow);
   cameraCenter.y=mix(cameraCenter.y,ground+1.32,1-Math.exp(-dt*6));
   runCamera=mix(runCamera,clamp((dog.speed-5)/8,0,1),1-Math.exp(-dt*3.5));
-  const boom=(aspect<.90?4.92:5.8)+runCamera*.56;
+  const boom=(aspect<.90?4.92:5.40)+runCamera*.56;
   desiredCamera.copy(cameraCenter).addScaledVector(camForward,-boom);
   desiredCamera.y+=1.89+runCamera*.17+(cameraElevation-.20)*4.55;
   cameraBoom.copy(desiredCamera).sub(cameraCenter);
@@ -2736,7 +2738,7 @@ function loadLevel(i){
     m.found=!hidden&&distance(dog,m)<17;
     return m;
   });
-  rain=makeRain();airborne=makeAirSeeds();shadowStamp=-1;animateWeather(0,true);
+  rain=makeRain();airborne=makeAirSeeds();shadowStamp=-1;weatherName='';animateWeather(0,true);
   tapMarker=mesh(props,'ring',markerMat,0,0,0,.45,.45,1);
   tapMarker.rotation.x=-Math.PI/2;tapMarker.visible=false;
   const pulseMaterial=new THREE.MeshBasicMaterial({color:'#fff0b1',transparent:true,opacity:.66,side:THREE.DoubleSide,depthWrite:false});
@@ -2811,7 +2813,7 @@ function frame(now){
 
 const climates=[
   {name:'Temps clair',icon:'☀',high:'#6d9fbb',low:'#ecdfa9',cloud:'#fff0d2',shade:'#a6b8bf',fog:'#e7dfba',sun:'#fff1d2',ambient:'#cededb',earth:'#ab996b',direction:[-.48,.55,-.67],power:3.35,tint:1.68,rain:0,wind:.53},
-  {name:'Heure dorée',icon:'☀',high:'#799bb7',low:'#f7bf89',cloud:'#f8d1ad',shade:'#a197ba',fog:'#e3bc99',sun:'#ffd496',ambient:'#c2c7dd',earth:'#a59167',direction:[-.36,.183,-.90],power:3.05,tint:1.80,rain:0,wind:.70},
+  {name:'Heure dorée',icon:'☀',high:'#6497b6',low:'#ffba7b',cloud:'#ffdec4',shade:'#9a86ad',fog:'#e4b997',sun:'#ffd3a3',ambient:'#d3dde1',earth:'#a79c78',direction:[-.36,.183,-.90],power:3.39,tint:2.03,rain:0,wind:.70},
   {name:'Pluie de prairie',icon:'≋',high:'#687f99',low:'#b4c0bd',cloud:'#b2bebf',shade:'#6e8495',fog:'#b2bfb7',sun:'#e0e2d4',ambient:'#b6cadd',earth:'#809884',direction:[-.43,.39,-.79],power:.86,tint:2.35,rain:1,wind:1.68}
 ].map(c=>{
   const spec={...c,sunVector:new THREE.Vector3(...c.direction).normalize()};
@@ -2829,7 +2831,7 @@ function buildSky(config){
     sunDir:{value:new THREE.Vector3(-.36,.183,-.90).normalize()},windClock,breezeStrength,rainAmount
   };
   const material=new THREE.ShaderMaterial({
-    uniforms:skyUniforms,side:THREE.BackSide,fog:false,depthWrite:false,
+    uniforms:skyUniforms,side:THREE.BackSide,fog:false,depthWrite:false,toneMapped:false,
     vertexShader:`varying vec3 ray;
       void main(){
         ray=position;
@@ -2855,7 +2857,7 @@ function buildSky(config){
       }
       void main(){
         vec3 n=normalize(ray);
-        float rise=smoothstep(-.065,.61,n.y);
+        float rise=smoothstep(-.055,.43,n.y);
         vec3 sky=mix(horizon,zenith,rise);
         float lightAngle=max(dot(n,sunDir),0.0);
         sky+=vec3(.31,.155,.057)*pow(lightAngle,11.0)*(1.0-rainAmount);
@@ -2863,10 +2865,10 @@ function buildSky(config){
         vec2 q=n.xz/(max(n.y,.02)+.22)*3.23+drift;
         q+=vec2(.52*pigment(q*1.1),.37*pigment(q*.82+8.2));
         float cloud=washCloud(q);
-        float contour=smoothstep(.40-.102*rainAmount,.64-.084*rainAmount,cloud);
+        float contour=smoothstep(.422-.090*rainAmount,.597-.078*rainAmount,cloud);
         contour*=smoothstep(-.037,.126,n.y);
         vec3 wash=mix(cloudLight,cloudBase,smoothstep(.47,.72,cloud)*.67);
-        wash+=vec3(.23,.105,.04)*pow(lightAngle,7.0)*(1.0-rainAmount);
+        wash+=vec3(.23,.105,.04)*pow(lightAngle,8.0)*(1.0-rainAmount);
         sky=mix(sky,wash,contour*(.82+.15*rainAmount));
         float sunDisk=smoothstep(.99927,.99962,lightAngle)*(1.0-rainAmount)*(.96-contour*.73);
         sky+=sunDisk*vec3(1.1,.72,.42);
