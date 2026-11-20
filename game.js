@@ -1233,10 +1233,8 @@ function bandanaForNeck(neck){
       const n=data.length/3;data.push(x,y,z);uv.push(u,v);pigment.push(color.r,color.g,color.b);return n;
     }
     for(let row=0;row<3;row++)for(let i=0;i<=size;i++){
-      const a=i*TAU/size,s=Math.sin(a),c=Math.cos(a);
       const u=i/size,t=row*.5;
-      const x=.343*s*(1-.04*t),y=-.041+c*(c>0?.385:.405);
-      const z=.061-c*.097+(t-.5)*.106+.014*Math.sin(a*4);
+      const [x,y,z]=sculptedDog.neck.band[row*(size+1)+i];
       const color=row===0||row===2?edge:scarlet;
       put(x,y,z,u,t,color);
       if(i&&row){
@@ -1247,11 +1245,10 @@ function bandanaForNeck(neck){
     const f=8;
     const dirs=new THREE.Color();
     for(let j=0;j<=f;j++){
-      const t=j/f,width=.236*(1-t)+.010;
+      const t=j/f;
       for(let i=0;i<=f;i++){
-        const u=i/f,x=(u*2-1)*width;
-        const y=-.155-.311*t+.65*x*x+.013*Math.cos(u*TAU*2+t*3)*Math.sin(t*Math.PI);
-        const z=.288-.139*t-1.7*x*x+.012*Math.sin(t*Math.PI);
+        const u=i/f;
+        const [x,y,z]=sculptedDog.neck.bib[j*(f+1)+i];
         const rim=i===0||i===f||j===f;
         dirs.copy(rim?edge:scarlet).lerp(alpha,.12+.27*Math.sin(u*6+t*.5)**2);
         const id=put(x,y,z,u,t,dirs);
@@ -1273,8 +1270,8 @@ function bandanaForNeck(neck){
 }
 
 
-let dogSkinGeometry,dogSkinMaterial;
-const dogEyeOpening={value:1}, coatTint={value:0};
+let dogSkinGeometry,dogSkinMaterial,dogEyeGeometry,dogEyeMaterial;
+const coatTint={value:0};
 function dogBytes(encoded){
   const decoded=atob(encoded),bytes=new Uint8Array(decoded.length);
   for(let i=0;i<decoded.length;i++)bytes[i]=decoded.charCodeAt(i);
@@ -1305,36 +1302,78 @@ function buildDogSkin(){
   dogSkinGeometry.addGroup(body.length,groom.length,1);
   dogSkinGeometry.computeBoundingSphere();
   dogSkinMaterial=[
-    new THREE.MeshLambertMaterial({vertexColors:true,color:0xffffff}),
-    new THREE.MeshLambertMaterial({vertexColors:true,color:0xffffff,side:THREE.DoubleSide})
+    new THREE.MeshStandardMaterial({vertexColors:true,roughness:.90}),
+    new THREE.MeshStandardMaterial({vertexColors:true,roughness:.94,side:THREE.DoubleSide,alphaToCoverage:true,alphaTest:.025})
   ];
-  const eyePaint=new THREE.DataTexture(new Uint8Array(dogBytes(data.eyes)),data.eyeSize,data.eyeSize,THREE.RGBAFormat);
-  eyePaint.colorSpace=THREE.SRGBColorSpace;
-  eyePaint.magFilter=THREE.LinearFilter;eyePaint.minFilter=THREE.LinearFilter;
-  eyePaint.needsUpdate=true;
-  dogSkinMaterial.forEach((material,index)=>{
-  material.customProgramCacheKey=()=>String(index);
-  material.onBeforeCompile=shader=>{
-    shader.uniforms.coatPaper={value:washTexture};
-    shader.uniforms.irisPaint={value:eyePaint};
-    shader.uniforms.lidOpening=dogEyeOpening;
-    shader.uniforms.dogCoatTint=coatTint;
-    shader.vertexShader='varying vec3 paintedRest;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\npaintedRest=position;');
-    shader.fragmentShader='varying vec3 paintedRest; uniform sampler2D coatPaper; uniform sampler2D irisPaint; uniform float lidOpening; uniform float dogCoatTint;\n'+shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
-      ${washTexture?`vec2 washUV=vec2(paintedRest.z+paintedRest.x*.35,paintedRest.y+paintedRest.x*.76);
-      float granulation=texture2D(coatPaper,washUV*2.5).r;
-      diffuseColor.rgb*=.954+granulation*.074;`:''}
-      float ink=1.0-smoothstep(.11,.37,dot(diffuseColor.rgb,vec3(.2126,.7152,.0722)));
-      vec3 chocolate=diffuseColor.rgb*vec3(1.18,.63,.44)+vec3(.060,.025,.011);
-      vec3 slate=diffuseColor.rgb*vec3(.77,1.07,1.28)+vec3(.041,.056,.073);
-      diffuseColor.rgb=mix(diffuseColor.rgb,dogCoatTint<1.5?chocolate:slate,ink*min(1.0,dogCoatTint));
-      ${index===0?`float front=(paintedRest.z-.873+(paintedRest.y-1.299)*.17)/.071;
-      float height=(paintedRest.y-1.299-(paintedRest.z-.873)*.125)/(.064*lidOpening);
-      vec4 pigment=texture2D(irisPaint,vec2(front,height)*.5+.5);
-      float eyeSide=smoothstep(.126,.160,abs(paintedRest.x));
-      diffuseColor.rgb=mix(diffuseColor.rgb,pigment.rgb,pigment.a*eyeSide);`:""}`);
-  };
-  });
+  const furCoordinates=new Float32Array(pos.length/3*2);
+  const hairUV=[[0,0],[1,0],[1,.51],[0,.51],[.5,1]];
+  for(let i=data.bodyVertices;i<pos.length/3;i++)furCoordinates.set(hairUV[(i-data.bodyVertices)%5],i*2);
+  dogSkinGeometry.setAttribute('furCoordinates',new THREE.BufferAttribute(furCoordinates,2));
+  for(const [index,material] of dogSkinMaterial.entries()){
+    material.customProgramCacheKey=()=>'nuage-portrait-'+index;
+    material.onBeforeCompile=shader=>{
+      shader.uniforms.dogCoatTint=coatTint;
+      shader.vertexShader='varying vec3 paintedRest;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\npaintedRest=position;');
+      shader.fragmentShader=`varying vec3 paintedRest;
+      uniform float dogCoatTint;
+      float fiberHash(vec2 p){
+        vec3 q=fract(vec3(p.xyx)*.1031);
+        q+=dot(q,q.yzx+33.33);
+        return fract((q.x+q.y)*q.z);
+      }
+      float brushedPaint(vec2 p){
+        vec2 cell=floor(p),uv=fract(p);
+        uv=uv*uv*(3.0-2.0*uv);
+        return mix(mix(fiberHash(cell),fiberHash(cell+vec2(1,0)),uv.x),
+                   mix(fiberHash(cell+vec2(0,1)),fiberHash(cell+1.0),uv.x),uv.y);
+      }
+      `+shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+        vec3 hair=paintedRest;
+        float noseStart=1.114-.15*(hair.y-1.132)-.21*abs(hair.x);
+        float nose=smoothstep(noseStart-.012,noseStart+.015,hair.z)*(1.0-smoothstep(1.21,1.23,hair.y));
+        float ink=1.0-smoothstep(.10,.35,dot(diffuseColor.rgb,vec3(.2126,.7152,.0722)));
+        vec3 chocolate=diffuseColor.rgb*vec3(1.18,.67,.47)+vec3(.064,.031,.014);
+        vec3 slate=diffuseColor.rgb*vec3(.78,1.04,1.25)+vec3(.042,.060,.082);
+        diffuseColor.rgb=mix(diffuseColor.rgb,dogCoatTint<1.5?chocolate:slate,ink*min(1.0,dogCoatTint)*(1.0-nose));
+        float face=smoothstep(.63,.92,hair.z)*smoothstep(.91,1.22,hair.y);
+        float chest=exp(-pow((hair.z-.38)*5.7,2.0));
+        vec2 direction=vec2(hair.y*.79+hair.z*.37+hair.x*.66,hair.z*.83-hair.y*.34);
+        direction.y+=chest*hair.y*.83+face*hair.y*.29;
+        float curvature=brushedPaint(direction*14.0);
+        vec2 strands=(direction+vec2(.017*curvature,.021*curvature))*vec2(154,33);
+        float wetPigment=brushedPaint(strands)*.56+brushedPaint(strands*1.93)*.29;
+        float brush=(wetPigment-.42)*(1.0-smoothstep(.56,1.47,length(fwidth(strands))));
+        float fauxPores=brushedPaint(vec2(hair.x,hair.y+hair.z*.23)*411.0);
+        diffuseColor.rgb*=1.0+mix(brush*(.28+ink*.29),.20*(fauxPores-.53),nose);
+        diffuseColor.rgb+=vec3(.010,.008,.006)*ink*max(0.0,wetPigment-.56)*(1.0-nose);
+      `);
+      if(index!==0){
+        shader.vertexShader='attribute vec2 furCoordinates; varying vec2 hairRibbon;\n'+shader.vertexShader
+          .replace('#include <begin_vertex>','#include <begin_vertex>\nhairRibbon=furCoordinates;');
+        shader.fragmentShader='varying vec2 hairRibbon;\n'+shader.fragmentShader.replace('#include <alphatest_fragment>',`
+          float fringe=smoothstep(.0,.25,1.0-abs(hairRibbon.x*2.0-1.0));
+          float ends=smoothstep(.0,.27,hairRibbon.y)*(1.0-smoothstep(.62,1.02,hairRibbon.y));
+          diffuseColor.a*=fringe*ends*.9;
+          #include <alphatest_fragment>
+        `);
+        const groomNormal=THREE.ShaderChunk.normal_fragment_begin.replace('normal *= faceDirection;', '');
+        shader.fragmentShader=shader.fragmentShader.replace('#include <normal_fragment_begin>',groomNormal);
+      }
+      if(index===0)shader.fragmentShader=shader.fragmentShader.replace('#include <roughnessmap_fragment>',
+        '#include <roughnessmap_fragment>\nroughnessFactor=mix(.94,.51,nose);');
+    };
+  }
+  const lens=data.eyes;
+  const offset=data.rig[1].slice(2);
+  const relative=encoded=>Float32Array.from(new Int16Array(dogBytes(encoded)),(n,i)=>n/8192-offset[i%3]);
+  dogEyeGeometry=new THREE.BufferGeometry();
+  dogEyeGeometry.setAttribute('position',new THREE.BufferAttribute(relative(lens.p),3));
+  const pigment=new Uint8Array(dogBytes(lens.c));
+  dogEyeGeometry.setAttribute('color',new THREE.BufferAttribute(Float32Array.from(pigment,(n,i)=>i%4===3?n/255:linear[n]),4));
+  dogEyeGeometry.setIndex(new THREE.BufferAttribute(new Uint16Array(dogBytes(lens.i)),1));
+  dogEyeGeometry.morphAttributes.position=[new THREE.BufferAttribute(relative(lens.closed),3)];
+  dogEyeGeometry.computeBoundingSphere();
+  dogEyeMaterial=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,toneMapped:false,transparent:true,depthWrite:false});
 }
 function makeDogModel(actor){
   buildDogSkin();
@@ -1364,7 +1403,10 @@ function makeDogModel(actor){
   const scarf=bandanaForNeck(sockets.neck);
   const collar=collarForNeck(sockets.neck);
   const muzzle=buildMouth(bones[14]);
-  const appearance={skin,bones,legs,sockets,scarf,collar,muzzle};
+  const eyes=new THREE.Mesh(dogEyeGeometry,dogEyeMaterial);
+  eyes.name='Regard de Nuage';
+  bones[1].add(eyes);
+  const appearance={skin,bones,legs,sockets,scarf,collar,muzzle,eyes};
   dressDog(appearance);
   return appearance;
 }
@@ -1498,11 +1540,12 @@ function animateDog(dog,time,dt){
   tail.rotation.x=-.049-.11*gallop+.041*Math.sin(rhythm)*pace;
   tailTip.rotation.y=.17*Math.sin(wag-.48)*energy;
   tailTip.rotation.x=.083*Math.cos(wag-.33)*energy;
-  dog.bones[14].rotation.x=.13+.15*bark+.064*gallop;
-  dog.muzzle.rotation.x=.04*Math.sin(time*6)*gallop;
+  dog.bones[14].rotation.x=.012+.30*bark+.12*gallop;
+  dog.muzzle.visible=bark>.22||gallop>.47;
+  dog.muzzle.rotation.x=.045*Math.sin(time*6)*gallop;
   dog.scarf.rotation.z=energy*.052*Math.sin(time*3.9+dog.phase)*(1+gallop*.5);
   const blink=(time+.84+dog.phase*.17)%5.35;
-  dogEyeOpening.value=blink<.145?1-.91*Math.sin(blink/.145*Math.PI)**2:1;
+  dog.eyes.morphTargetInfluences[0]=blink<.158?Math.sin(blink/.158*Math.PI)**2:0;
   if(Math.hypot(dog.x-(dog.poseX??dog.x),dog.z-(dog.poseZ??dog.z))>1.75){
     for(const leg of dog.legs)leg.initialized=false;
   }
@@ -2623,7 +2666,7 @@ const shopItems=[
   {id:'cocoa',name:'Robe chocolat',label:'Un pelage brun profond et blanc.',price:24,mark:'coat'},
   {id:'slate',name:'Robe ardoise',label:'Un pelage gris bleuté et blanc.',price:24,mark:'coat'}
 ];
-let pendingMode='story',runMode='story',companionScene,companionCamera,companion,portraitRect,companionAngle=.68;
+let pendingMode='story',runMode='story',companionScene,companionCamera,companion,portraitRect,companionAngle=.48;
 let sampleMs=0,sampleFrames=0,qualityLimit=1.85,autoQuality=1.85;
 let biscuitUntil=-1,whistleReady=-1,whistleGroup=null,gearState='';
 const summaries=['La première tournée commence dans les prés. Nuage apprend à guider les troupeaux et à franchir le ruisseau.',
@@ -2781,8 +2824,8 @@ function buildMouth(jaw){
   dark.scale.set(.078,.024,.071);
   dark.position.set(0,.014,-.035);
   const tongue=new THREE.Mesh(tongueGeometry,tongueMaterial);
-  tongue.position.set(.005,-.002,.005);
-  tongue.scale.set(.047,.012,.064);
+  tongue.position.set(.005,-.004,-.012);
+  tongue.scale.set(.042,.011,.053);
   tongue.rotation.x=.20;
   muzzle.add(dark,tongue);
   return muzzle;
@@ -2790,10 +2833,10 @@ function buildMouth(jaw){
 let collarGeometry,collarMaterial,collarTag,collarMetal,sageScarf;
 function collarForNeck(neck){
   if(!collarGeometry){
-    const positions=[],faces=[],steps=44;
+    const positions=[],faces=[],steps=42;
+    const band=sculptedDog.neck.band;
     for(let i=0;i<steps;i++){
-      const a=i*TAU/steps,s=Math.sin(a),c=Math.cos(a);
-      for(const edge of [-1,1])positions.push(s*.287,c*.348-.034,.062+c*.061+edge*.032);
+      positions.push(...band[i],...band[43+i]);
       const j=i*2,k=((i+1)%steps)*2;
       faces.push(j,k,j+1,j+1,k,k+1);
     }
@@ -2806,7 +2849,9 @@ function collarForNeck(neck){
   const collar=group(neck),strap=new THREE.Mesh(collarGeometry,collarMaterial);
   const ring=new THREE.Mesh(new THREE.TorusGeometry(.048,.009,6,16),collarMetal);
   const id=new THREE.Mesh(collarTag,collarMetal);
-  ring.position.set(.006,-.362,.035);id.position.set(.006,-.430,.036);id.rotation.x=Math.PI/2;
+  const [,y,z]=sculptedDog.neck.band[64];
+  ring.position.set(.006,y-.027,z+.009);
+  id.position.set(.006,y-.093,z+.018);id.rotation.x=Math.PI/2;
   collar.add(strap,ring,id);
   return collar;
 }
@@ -2950,7 +2995,19 @@ function buildCompanion(){
   const contact=mesh(companionScene,'plane',shadeMat,.02,.01,-.21,1.82,2.8,1);
   contact.rotation.x=-Math.PI/2;
   companion={root:base,actor,...makeDogModel(actor)};
-  base.rotation.y=companionAngle;companion.bones[14].rotation.x=.145;
+  base.rotation.y=companionAngle;
+  companion.eyes.morphTargetInfluences[0]=0;
+  companion.muzzle.visible=false;
+  companion.standingFeet=companion.legs.map(leg=>{
+    const toe=leg.toe.clone();
+    toe.z+=leg.fore?(leg.side<0?.077:-.029):leg.side<0?-.039:.027;
+    return toe;
+  });
+  const pads=new THREE.MeshBasicMaterial({map:shadeTexture,transparent:true,opacity:.70,depthWrite:false});
+  for(const toe of companion.standingFeet){
+    const foot=mesh(base,'plane',pads,toe.x,.008,toe.z,.265,.37,1);
+    foot.rotation.x=-Math.PI/2;
+  }
 }
 function renderCompanion(now){
   if(!companion||!portraitRect)return;
@@ -2959,13 +3016,26 @@ function renderCompanion(now){
   if(!prefersStill){
     companion.root.rotation.y+=wrapAngle(companionAngle-companion.root.rotation.y)*.12;
     spine.rotation.z=Math.sin(t*2.2)*.006;
-    head.rotation.y=Math.sin(t*1.31)*.033;
-    head.rotation.z=Math.cos(t*1.08)*.024;
+    const attention=smooth(.29,.84,Math.sin(t*.72));
+    head.rotation.x=-.027+Math.sin(t*1.87)*.016;
+    head.rotation.y=-attention*.09+Math.sin(t*1.31)*.022;
+    head.rotation.z=.039+attention*.112;
+    companion.actor.position.y=.003*Math.sin(t*2.2);
     left.rotation.z=Math.sin(t*3.3)*.022;right.rotation.z=Math.cos(t*2.9)*.025;
     tail.rotation.y=Math.sin(t*3.4)*.17;tip.rotation.y=Math.sin(t*3.4-.6)*.11;
-    const blink=(t+2)%5.6;
-    dogEyeOpening.value=blink<.13?1-.90*Math.sin(blink/.13*Math.PI)**2:1;
+    const blink=(t+1.4)%5.9;
+    const sleepy=blink<.17?Math.sin(blink/.17*Math.PI)**2:0;
+    const second=blink>.36&&blink<.48?Math.sin((blink-.36)/.12*Math.PI)**2:0;
+    companion.eyes.morphTargetInfluences[0]=Math.max(sleepy,second*.84);
+    companion.bones[14].rotation.x=.019+.049*attention;
+    companion.muzzle.visible=attention>.67;
   }else companion.root.rotation.y=companionAngle;
+  companion.skin.updateWorldMatrix(true,true);
+  inverseHips.copy(companion.bones[0].matrixWorld).invert();
+  companion.legs.forEach((leg,i)=>{
+    leg.foot.copy(companion.standingFeet[i]).applyMatrix4(companion.root.matrixWorld);
+    putPawOnTarget(leg);
+  });
   const d=portraitRect;
   renderer.setScissorTest(false);renderer.setViewport(0,0,stageWidth,stageHeight);renderer.clear();
   renderer.setViewport(d.x,d.y,d.w,d.h);
