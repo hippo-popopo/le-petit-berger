@@ -14,9 +14,14 @@
   window.addEventListener('appinstalled',()=>{installRequest=null;install.hidden=true;});
   update.addEventListener('click',()=>location.reload());
   if('serviceWorker' in navigator&&window.isSecureContext&&location.protocol!=='file:'){
-    const controlled=Boolean(navigator.serviceWorker.controller);
+    const version=document.querySelector('meta[name="berger-version"]')?.content;
+    navigator.serviceWorker.addEventListener('message',event=>{
+      if(event.source===navigator.serviceWorker.controller&&event.data?.type==='berger-version'){
+        update.hidden=event.data.version===version;
+      }
+    });
     navigator.serviceWorker.addEventListener('controllerchange',()=>{
-      if(controlled)update.hidden=false;
+      navigator.serviceWorker.controller?.postMessage('berger-version');
     });
     navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{});
   }

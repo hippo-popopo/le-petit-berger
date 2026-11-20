@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
+<meta name="berger-version" content="fd7316348f371">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -40,12 +41,134 @@ dialog{width:min(440px,100% - 22px);max-height:calc(100dvh - var(--haut) - var(-
 .joystick{display:grid}.controls-label,.play-actions kbd{display:none}.play-actions .sprint,.play-actions .bark{min-width:62px;min-height:54px}.play-actions .interact{min-height:44px}
 .home{grid-template-columns:49% 1fr;grid-template-rows:1fr}.home-content{padding-block:10px}.home-content::before{display:none}.home h1{font-size:46px}.home p{font-size:12px}.home .primary,.home .secondary{min-height:42px}.joystick{width:74px;height:74px}.joystick-thumb{width:35px;height:35px}.toast{bottom:calc(var(--bas) + 82px)}.notes{font-size:10px}.bark{min-height:46px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+.home{
+  --cream:#f4edda;--rail:#253d33;--herb:#566949;
+  display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto;
+  padding:var(--haut) var(--droite) var(--bas) var(--gauche);gap:0;
+  height:100%;overflow:hidden;background:transparent;color:var(--encre);isolation:isolate;
+}
+.stage[data-farm="true"]{background:#a7ad83 var(--cover) 30% 53% / cover no-repeat}
+.stage[data-farm="true"] .move-zone,.stage[data-farm="true"] .overlay,.stage[data-farm="true"] .paper-texture,.stage[data-farm="true"] .toast{display:none}
+.farm-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 9px}
+.farm-brand{background:#f4eddadd;border:1px solid #fff7e7bf;border-radius:100px;padding:3px 12px 3px 3px;display:flex;gap:9px;align-items:center;min-width:0}
+.farm-brand canvas{width:31px;height:31px;padding:4px;border-radius:50%;background:#f6edd8d9}
+.home h1{font:500 clamp(24px,4vw,47px)/1 var(--livre);letter-spacing:-.063em;color:#20382e;margin:0;text-shadow:0 1px 7px #fcf1d7b0}
+.home h1 em{color:inherit}
+.farm-totals{display:flex;gap:5px;justify-content:flex-end}
+.farm-totals>span{display:flex;align-items:center;gap:5px;min-height:33px;padding:3px 8px;border:1px solid #fff8e8aa;border-radius:100px;background:#f3ebd9ee;color:#2f4537;font-size:13px;white-space:nowrap}
+.farm-totals i{font-size:15px;color:#925926;font-style:normal}
+.farm-totals small{color:#4b5b44;font-size:10px}
+.seed-icon{display:inline-block;width:8px;height:12px;background:#a76b34;border-radius:70% 45% 55% 45%;transform:rotate(32deg);margin-right:2px;box-shadow:inset 1px 0 #e5bd7a}
+.farm-body{display:grid;min-height:0;grid-template-columns:minmax(0,1fr) minmax(265px,39%);gap:11px}
+.farm-hero{min-height:0;position:relative;touch-action:pan-y;cursor:grab;isolation:isolate}
+.farm-hero:active{cursor:grabbing}
+.hero-caption{position:absolute;z-index:1;left:0;bottom:11px;padding:8px 16px 9px;border-radius:13px;background:#243c32e8;color:#fff7de;display:grid;gap:4px;pointer-events:none}
+.hero-caption strong{font:500 clamp(22px,4.4vw,42px)/.91 var(--livre);letter-spacing:-.034em}
+.hero-caption span{font-size:10px;font-weight:680;color:#efe0bb}
+.hero-orbit{position:absolute;bottom:10px;right:9px;width:44px;height:44px;border:1px solid #fdf1d5b3;border-radius:50%;background:#f8ecdadd;color:#284436;font-size:24px;line-height:1;box-shadow:0 3px 10px #263e2c39}
+.farm-scroll{overflow:auto;overscroll-behavior:contain;background:#f8f0dcf7;border:1px solid #fff7e4;border-radius:14px 14px 7px 7px;box-shadow:0 4px 26px #223b3452;scrollbar-width:thin;scrollbar-color:#a4ac7b #f2ead3}
+.farm-scroll>section{padding:clamp(13px,2.8vw,34px)}
+.farm-heading h2{font:500 clamp(29px,4.7vw,62px)/.93 var(--livre);letter-spacing:-.062em;margin:0 0 8px}
+.farm-heading p,.home .farm-feedback{font-size:clamp(12px,1.45vw,15px);margin:0 0 14px;line-height:1.4;color:#485a44}
+.farm-heading p:empty,.farm-feedback:empty{display:none}
+.next-outing{display:flex;gap:9px;align-items:center;border-top:1px solid #dfd1b3;border-bottom:1px solid #dfd1b3;padding:8px 0;margin-bottom:13px}
+.trail-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:50%;background:#e7e8cf;color:#4a664d;font:25px/1 var(--livre);flex:none}
+.next-outing div{display:grid;gap:3px}
+.next-outing small,.region-list small,.shop-list small{font-size:11px;color:#526148}
+.next-outing strong{font-size:clamp(13px,1.6vw,18px);line-height:1.25}
+.home .primary.farm-cta{width:100%;min-height:46px;text-align:left;display:flex;justify-content:space-between;align-items:center;padding-inline:12px;gap:9px}
+.farm-progress{display:grid;gap:6px;margin-top:13px;font-size:10px;font-weight:750;color:#556348}
+progress{width:100%;height:6px;appearance:none;background:#e4ddc1;border:none;border-radius:100px;overflow:hidden;accent-color:#608062}
+progress::-webkit-progress-bar{background:#e4ddc1;border-radius:100px}
+progress::-webkit-progress-value{background:#577c61;border-radius:100px}
+progress::-moz-progress-bar{background:#577c61;border-radius:100px}
+.farm-nav{display:grid;grid-template-columns:repeat(6,1fr);margin-top:8px;border-radius:14px;background:#263d33f5;color:#f6ecd2;box-shadow:0 5px 22px #1d322c62;overflow:hidden;border:1px solid #f8eac36b}
+.farm-nav button{display:grid;justify-items:center;align-content:center;gap:2px;background:none;color:inherit;border:none;min-width:0;min-height:53px;padding:3px 1px;font-weight:730;font-size:clamp(9px,1.25vw,13px);position:relative;white-space:nowrap}
+.farm-nav button[aria-current="page"]{background:#435c43;color:#fff6dd}
+.farm-nav button[aria-current="page"]::before{content:"";height:2px;position:absolute;top:0;left:27%;right:27%;background:#e6bc76;border-radius:3px}
+.farm-nav button:focus-visible{outline-offset:-4px}
+.farm-nav span{display:block;font-size:23px;line-height:22px;font-family:Georgia,serif;color:#f2d492}
+.farm-nav canvas{width:22px;height:22px;filter:brightness(0) saturate(100%) invert(89%) sepia(39%) saturate(663%) hue-rotate(323deg)}
+.farm-list{list-style:none;padding:0;margin:8px 0 10px;display:grid;gap:0}
+.farm-list li{border-bottom:1px solid #e4d9bc;min-width:0}
+.farm-list li:last-child{border-bottom:0}
+.farm-list strong,.farm-list small{display:block}
+.farm-list p{margin:0}
+.region-list li,.shop-list li{display:grid;grid-template-columns:37px minmax(0,1fr);gap:8px;align-items:center;padding:7px 0;font-size:12px;line-height:1.28;min-height:49px}
+.region-list li>span,.item-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#e9e8cf;color:#52694c;font:20px/1 var(--livre)}
+.shop-list li{grid-template-columns:29px minmax(0,1fr) auto;gap:7px}
+.shop-list .item-mark{width:27px;height:27px;font-size:17px}
+.item-mark[data-kind="biscuit"]{background:#eedab7;color:#855333}
+.item-mark[data-kind="coat"]{background:#dee6dd;color:#476763}
+.shop-list small{margin-top:2px;line-height:1.3}
+.item-buy,.wardrobe-option,.list-button{min-height:44px;border:1px solid #d5ccb2;background:#fff8e9;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:730}
+.item-buy:disabled{opacity:1;background:#ede7d4;color:#5a5a4a}
+.list-button{display:flex;justify-content:space-between;align-items:center;text-align:left;width:100%;background:transparent;border:0;gap:4px;padding-inline:0;font-size:12px}
+.list-button small{color:#855629;white-space:nowrap;font-size:10px}
+.wardrobe{border:0;border-top:1px solid #e0d2b5;padding:8px 0 12px;margin:0;min-width:0}
+.wardrobe legend{font-weight:760;font-size:12px;padding-right:7px}
+.wardrobe>div{display:flex;gap:5px;flex-wrap:wrap}
+.wardrobe-option[aria-pressed="true"]{background:#385644;color:#fff4d8;border-color:#486850}
+.wardrobe-option small{display:block;color:#725d3e;font-size:9px}
+.settings-list{display:grid;gap:8px;font-size:13px}
+.settings-list label{display:flex;justify-content:space-between;gap:6px;font-weight:700}
+.settings-list input,.settings-list select{accent-color:#43664e}
+.settings-list select{width:100%;min-height:44px;background:#fff8e8;color:#283d32;border:1px solid #ded2b5;border-radius:8px;padding:6px}
+.update-banner{position:absolute;z-index:2;top:calc(var(--haut) + 38px);left:var(--gauche);min-height:44px;border-radius:8px;background:#253d33;color:#fff9e6;border:1px solid #f9eed0;padding:6px 11px;font-weight:740}
+.boot{position:absolute;inset:0;z-index:8;display:grid;place-items:center;background:linear-gradient(#263c3466,#253d3394),#8e9c7b var(--cover) center / cover no-repeat;color:#f9f1db;text-align:center;padding:15px}
+.boot-card{width:min(350px,95vw);display:grid;justify-items:center}
+.boot h2{font:500 clamp(42px,9vw,75px)/.9 var(--livre);letter-spacing:-.066em;margin:10px 0 20px;color:#fff6dd;text-shadow:0 2px 16px #20372f}
+.boot h2 em{font-weight:500}
+.boot progress{height:5px;width:min(170px,55vw);background:#faf0d29d}
+.boot progress::-webkit-progress-value{background:#e3b87a}
+.boot progress::-moz-progress-bar{background:#e3b87a}
+.boot p{font-size:12px;font-weight:670;margin:11px 0 0;min-height:1.4em;text-shadow:0 1px 6px #17372b}
+.boot-dog{width:min(205px,60vw);overflow:visible;fill:#263c37;filter:drop-shadow(0 0 13px #f9e6be65)}
+.dog-trot{transform-origin:50% 60%;animation:trot-body .54s ease-in-out infinite}
+.trot-ruff{fill:#f1e5ce}
+.trot-leg{animation:trot-leg .54s ease-in-out infinite alternate}
+.front-leg,.back-leg{transform-origin:83px 55px}
+.front-fore,.back-fore{transform-origin:145px 53px}
+.back-leg,.back-fore{fill:#6e7770;animation-delay:-.27s}
+.front-fore,.back-leg{animation-direction:alternate-reverse}
+.trot-tail{transform-origin:77px 49px;animation:trot-leg .27s ease-in-out infinite alternate}
+.run-line{stroke:#f9edce;stroke-width:1;opacity:.63;stroke-dasharray:3 8;animation:run-line .54s linear infinite}
+@keyframes trot-body{50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes trot-leg{0%{transform:rotate(-13deg)}100%{transform:rotate(12deg)}}
+@keyframes run-line{100%{stroke-dashoffset:22px}}
+.move-zone{width:min(41vw,300px);height:min(53dvh,276px);position:absolute;z-index:2;bottom:0;left:0;touch-action:none;display:none}
+.move-zone .joystick{position:absolute;left:var(--gauche);bottom:var(--bas);width:clamp(113px,33dvh,154px);height:clamp(113px,33dvh,154px);display:grid;pointer-events:none;background:#f1ebd5a5;border:2px solid #fff8dc}
+.joystick-thumb{width:44%;height:44%;background:#385d48}
+.map-wrap{position:relative}.recenter{position:absolute;right:0;top:calc(100% + 7px);font-size:22px;min-width:44px;min-height:44px;pointer-events:auto}
+.hud{pointer-events:none}
+.terrain-tools{display:flex;grid-column:1/-1;gap:5px;justify-content:flex-end}
+.terrain-tools button{min-width:54px;min-height:44px;border-radius:12px;padding:3px 7px;display:grid;grid-template-columns:auto auto;place-items:center;gap:3px;background:#f8eed4ee;border:1px solid #fef4db;color:#41573d;font-size:11px;font-weight:750;touch-action:none}
+.terrain-tools button span{font-size:17px;color:#885933}.terrain-tools small{font-size:9px}
+.play-actions .sprint,.play-actions .bark{min-width:73px;min-height:60px}
+.win-reward{padding:8px 10px;background:#e9e8ce;border-radius:8px;font-size:13px;font-weight:780;color:#3d5a43}
+@media (any-pointer:coarse),(max-height:520px){.move-zone{display:block}.stage-bottom{z-index:3}.stage-bottom .play-actions{margin-left:auto}.controls-label{display:none}}
+@media (min-height:580px) and (orientation:landscape){.farm-body{grid-template-columns:minmax(0,1fr) minmax(320px,37%)}.home{padding-inline:max(var(--gauche),5vw) max(var(--droite),5vw)}.farm-head{padding-bottom:15px}.farm-nav{margin-top:13px}.farm-nav button{min-height:66px}}
+@media (max-height:370px) and (orientation:landscape){.home{padding-top:max(6px,env(safe-area-inset-top));padding-bottom:max(6px,env(safe-area-inset-bottom))}.farm-head{padding-bottom:5px}.farm-nav{margin-top:5px}.farm-nav button{min-height:44px}.farm-scroll>section{padding:11px 13px}.farm-heading h2{font-size:28px}.farm-heading p{margin-bottom:8px}.next-outing{padding:5px 0;margin-bottom:7px}.farm-progress{margin-top:7px}.play-actions .sprint,.play-actions .bark{min-height:53px}}
+@media (orientation:portrait){.farm-body{grid-template-columns:1fr;grid-template-rows:minmax(135px,42%) minmax(0,1fr);gap:7px}.farm-hero{order:0}.farm-scroll{border-radius:13px}.farm-scroll>section{padding:14px 17px}.farm-nav button{min-height:49px}.hero-caption{bottom:3px}.hero-orbit{bottom:3px}.farm-totals small{display:none}.region-list li{min-height:43px}.home h1{font-size:clamp(24px,7vw,36px)}}
+@media(prefers-reduced-motion:reduce){.dog-trot,.trot-leg,.trot-tail,.run-line{animation:none}}
+
+@media (max-height:480px) and (orientation:landscape){.map-wrap{position:absolute}}
+.shop-list li{grid-template-columns:39px minmax(0,1fr) auto}
+.shop-list .item-mark{width:38px;height:38px}
+.item-mark[data-kind="scarf"],.item-mark[data-kind="collar"],.item-mark[data-kind="whistle"],.item-mark[data-kind="biscuit"]{
+  color:transparent;background-image:var(--items);background-repeat:no-repeat;background-size:173px 97px;border:1px solid #dfd3b7
+}
+.item-mark[data-kind="scarf"]{background-position:-19px -57px}
+.item-mark[data-kind="collar"]{background-position:-63px -58px}
+.item-mark[data-kind="whistle"]{background-position:-101px -58px}
+.item-mark[data-kind="biscuit"]{background-position:-122px -57px}
+@media(max-height:460px) and (orientation:landscape){[data-farm-panel="dog"] .farm-heading p{margin-bottom:7px}.wardrobe{padding-top:5px;padding-bottom:6px}}
 </style>
 </head>
 <body>
 <main class="app">
   <section class="stage" id="stage" aria-label="Terrain de la mission" aria-busy="true">
-    <canvas id="world" tabindex="0" aria-label="Terrain. Flèches haut et bas pour avancer et reculer, gauche et droite pour tourner. Maj pour sprinter, Espace pour aboyer, E pour interagir. Glisse à droite pour déplacer la caméra."></canvas>
+    <canvas id="world" tabindex="0" aria-label="Terrain. Les flèches déplacent Nuage par rapport à la caméra. R recentre la caméra. Maj pour sprinter, Espace pour aboyer, E pour interagir. Glisse à droite pour déplacer la caméra."></canvas>
     <div class="paper-texture" id="paper" aria-hidden="true"></div>
     <div class="hud overlay">
       <div class="hud-bar">
@@ -59,19 +182,25 @@ dialog{width:min(440px,100% - 22px);max-height:calc(100dvh - var(--haut) - var(-
       <div id="counts" class="progress" role="status" aria-live="polite" aria-atomic="true"></div>
       <div class="help-strip">
         <div class="note-wrap" id="notes-wrap"><p id="mission-note" class="notes"></p></div>
-        <div class="map-wrap" aria-hidden="true">
-          <canvas class="mini-map" id="mini-map" width="220" height="152"></canvas>
-          <span class="weather-chip"><span id="weather-icon">☀</span> <span id="weather"></span></span>
+        <div class="map-wrap">
+          <canvas class="mini-map" id="mini-map" width="220" height="152" aria-hidden="true"></canvas>
+          <button class="circle recenter" id="recenter" type="button" aria-label="Recentrer la caméra">↻</button>
+          <span class="weather-chip" aria-hidden="true"><span id="weather-icon">☀</span> <span id="weather"></span></span>
         </div>
         <div class="hint-compass" id="hint-compass" hidden aria-hidden="true"><b id="compass-arrow">↑</b><span id="compass-distance"></span></div>
       </div>
     </div>
     <div class="map-label overlay" id="map-label" hidden aria-hidden="true"></div>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <div class="move-zone" id="move-zone" aria-hidden="true"><div class="joystick" id="joystick"><span class="joystick-thumb" id="joystick-thumb"></span></div></div>
     <div class="stage-bottom overlay">
-      <div class="controls-label" aria-hidden="true"><kbd>↑ ↓</kbd> Avancer, reculer <kbd>← →</kbd> Tourner</div>
-      <button class="joystick" id="joystick" type="button" aria-label="Joystick de déplacement. Haut pour avancer, bas pour reculer et côtés pour tourner."><span class="joystick-thumb" id="joystick-thumb"></span></button>
+      <div class="controls-label" aria-hidden="true"><kbd>↑ ↓</kbd> <kbd>← →</kbd> Déplacer · <kbd>R</kbd> Recentrer</div>
+
       <div class="play-actions">
+        <div class="terrain-tools">
+          <button id="use-biscuit" type="button" aria-label="Utiliser une croquette tonique" hidden><span aria-hidden="true">✦</span><small id="biscuit-state"></small></button>
+          <button id="use-whistle" type="button" aria-label="Utiliser le sifflet de berger" hidden><span aria-hidden="true">♫</span><small id="whistle-state"></small></button>
+        </div>
         <button class="interact" id="interact" type="button" hidden>Interagir</button>
         <button class="sprint" id="sprint" type="button" aria-pressed="false">Sprint <kbd aria-hidden="true">Maj</kbd></button>
         <button class="bark" id="bark" type="button"><canvas data-icon="bark" width="48" height="48" aria-hidden="true"></canvas>Aboyer <kbd aria-hidden="true">Espace</kbd></button>
@@ -85,18 +214,96 @@ dialog{width:min(440px,100% - 22px);max-height:calc(100dvh - var(--haut) - var(-
     </div>
     <div class="error" id="error" role="alert" hidden></div>
   </section>
-  <section id="home" class="home" aria-labelledby="home-title">
-    <div class="cover" aria-hidden="true"><canvas class="cover-paw" data-icon="paw" width="48" height="48"></canvas></div>
-    <div class="home-content">
-      <h1 id="home-title" tabindex="-1">Le Petit <em>Berger</em></h1>
-      <p>Pars avec Nuage. Retrouve, rassemble et mène chaque troupeau à l’abri.</p>
-      <div class="home-actions">
-        <button class="primary" id="play" type="button" disabled>Préparation du jeu…</button>
-        <button class="secondary" id="chapters" type="button" aria-haspopup="dialog" disabled>Carnet des missions</button>
-        <button class="secondary" id="install" type="button" hidden>Installer sur cet appareil</button>
-        <button class="secondary" id="update-game" type="button" hidden>Actualiser le jeu</button>
+  <section id="home" class="home" inert aria-labelledby="home-title">
+    <header class="farm-head">
+      <div class="farm-brand"><canvas data-icon="paw" width="48" height="48" aria-hidden="true"></canvas><h1 id="home-title" tabindex="-1">Le Petit <em>Berger</em></h1></div>
+      <div class="farm-totals">
+        <span><i class="seed-icon" aria-hidden="true"></i><b id="farm-seeds">18</b><small>graines</small></span>
+        <span><i aria-hidden="true">★</i><b id="farm-stars">0</b><small>étoiles</small></span>
       </div>
-      <div id="home-progress" class="home-progress" aria-live="polite"></div>
+    </header>
+    <div class="farm-body">
+      <div class="farm-hero" id="farm-hero" aria-label="Aperçu 3D de Nuage">
+        <div class="hero-caption"><strong>Nuage</strong><span>Border Collie</span></div>
+        <button class="hero-orbit" id="rotate-dog" type="button" aria-label="Tourner Nuage"><span aria-hidden="true">↻</span></button>
+      </div>
+      <div class="farm-scroll" id="farm-scroll">
+        <section data-farm-panel="farm" aria-labelledby="farm-title">
+          <div class="farm-heading"><h2 id="farm-title">La ferme</h2><p>Prêt pour la prochaine sortie, Nuage ?</p></div>
+          <div class="next-outing">
+            <span class="trail-icon" aria-hidden="true">↝</span>
+            <div><small>Prochaine sortie</small><strong id="farm-next"></strong></div>
+          </div>
+          <button class="primary farm-cta" id="farm-continue" type="button">Partir avec Nuage <span aria-hidden="true">→</span></button>
+          <label class="farm-progress" for="farm-progress"><span id="home-progress">0 / 9 missions terminées</span><progress id="farm-progress" value="0" max="9"></progress></label>
+        </section>
+        <section data-farm-panel="story" aria-labelledby="story-title" hidden>
+          <div class="farm-heading"><h2 id="story-title">Histoire</h2><p id="story-summary"></p></div>
+          <div class="next-outing"><span class="trail-icon" aria-hidden="true">↝</span><div><small id="story-region"></small><strong id="story-next"></strong></div></div>
+          <button class="primary farm-cta" id="play" type="button" disabled>Commencer l’histoire</button>
+          <ol class="farm-list story-list" id="story-list"></ol>
+        </section>
+        <section data-farm-panel="missions" aria-labelledby="missions-title" hidden>
+          <div class="farm-heading"><h2 id="missions-title">Missions</h2><p>Choisis ta sortie, retrouve ton meilleur score ou essaie un autre troupeau.</p></div>
+          <ul class="farm-list region-list">
+            <li><span aria-hidden="true">☼</span><div><strong>Les prés</strong><small>Portillons, tri et pont du ruisseau</small></div></li>
+            <li><span aria-hidden="true">❧</span><div><strong>Le verger</strong><small>Cabris, traces et flaques</small></div></li>
+            <li><span aria-hidden="true">≋</span><div><strong>Les landes</strong><small>Rafales et trois troupeaux</small></div></li>
+          </ul>
+          <button class="primary farm-cta" id="chapters" type="button" aria-haspopup="dialog" disabled>Toutes les missions</button>
+        </section>
+        <section data-farm-panel="dog" aria-labelledby="dog-title" hidden>
+          <div class="farm-heading"><h2 id="dog-title">Mon chien</h2><p>Fais glisser Nuage pour le voir sous tous les angles.</p></div>
+          <fieldset class="wardrobe"><legend>Robe</legend><div id="robe-options"></div></fieldset>
+          <fieldset class="wardrobe"><legend>Accessoire</legend><div id="gear-options"></div></fieldset>
+        </section>
+        <section data-farm-panel="shop" aria-labelledby="shop-title" hidden>
+          <div class="farm-heading"><h2 id="shop-title" tabindex="-1">Boutique</h2><p id="shop-stock"></p></div>
+          <ul class="farm-list shop-list" id="shop-list"></ul>
+          <p class="farm-feedback" id="shop-feedback" role="status" tabindex="-1"></p>
+        </section>
+        <section data-farm-panel="settings" aria-labelledby="settings-title" hidden>
+          <div class="farm-heading"><h2 id="settings-title">Réglages</h2></div>
+          <div class="settings-list">
+            <button class="secondary" id="farm-sound" type="button" aria-pressed="false">Son désactivé</button>
+            <label for="farm-volume">Volume <output id="volume-value" for="farm-volume">65 %</output></label>
+            <input id="farm-volume" type="range" min="0" max="100" value="65">
+            <label for="quality-setting">Qualité 3D</label>
+            <select id="quality-setting"><option value="auto">Automatique</option><option value="smooth">Fluidité</option><option value="detail">Détails</option></select>
+            <button class="secondary" id="install" type="button" hidden>Installer sur cet appareil</button>
+            <p class="farm-feedback" id="sound-feedback" role="status"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+    <nav class="farm-nav" aria-label="Menu de la ferme">
+      <button type="button" data-farm-nav="farm" aria-current="page"><span aria-hidden="true">⌂</span>Ferme</button>
+      <button type="button" data-farm-nav="story"><span aria-hidden="true">▤</span>Histoire</button>
+      <button type="button" data-farm-nav="missions"><span aria-hidden="true">⚑</span>Missions</button>
+      <button type="button" data-farm-nav="dog"><canvas data-icon="paw" width="48" height="48" aria-hidden="true"></canvas>Mon chien</button>
+      <button type="button" data-farm-nav="shop"><span aria-hidden="true">◇</span>Boutique</button>
+      <button type="button" data-farm-nav="settings"><span aria-hidden="true">⚙</span>Réglages</button>
+    </nav>
+    <button class="update-banner" id="update-game" type="button" hidden>Actualiser le jeu</button>
+  </section>
+  <section class="boot" id="boot" aria-label="Chargement du jeu">
+    <div class="boot-card">
+      <svg class="boot-dog" viewBox="0 0 220 95" aria-hidden="true">
+        <g class="dog-trot">
+          <path class="trot-leg back-leg" d="M83 48q-3 21-21 26l-9 15h12l12-11 21-20z"/>
+          <path class="trot-leg back-fore" d="M143 49q2 19 17 35l2 6h-12l-12-11-12-22z"/>
+          <path class="trot-tail" d="M83 43Q57 43 42 52T10 62q16 11 38-1t40-9z"/>
+          <path d="M56 49q15-21 42-17l30 2q13-4 24-21l5-9 7 8 10 1 8 9 29 7q1 8-12 10l-18 1-12 12-12 7q-17 6-31 3l-14-3q-12 5-29 5L68 56z"/>
+          <path class="trot-ruff" d="M154 20l9-6 8 2-4 5-4 12 9 12-14 16-12 2-7-8 5-9 5-10z"/>
+          <path class="trot-leg front-leg" d="M87 53q-2 14 8 19l7 8 1 9H90l2-8-16-8-10-15z"/>
+          <path class="trot-leg front-fore" d="M152 49q-1 20-11 34l6 5h-15l-2-6 9-28z"/>
+          <circle cx="178" cy="25" r="2" fill="#d7a56b"/>
+        </g>
+        <path class="run-line" d="M23 92h176" fill="none"/>
+      </svg>
+      <h2>Le Petit <em>Berger</em></h2>
+      <progress id="boot-progress" value="0.06" max="1" aria-label="Progression du chargement"></progress>
+      <p id="boot-status" role="status">Réveil de Nuage…</p>
     </div>
   </section>
 </main>
@@ -132,15 +339,16 @@ dialog{width:min(440px,100% - 22px);max-height:calc(100dvh - var(--haut) - var(-
 <button type="button" class="circle dialog-close" aria-label="Fermer le bilan" data-close>×</button>
 <h2 id="win-title"></h2>
 <p id="win-text"></p>
+<p class="win-reward" id="win-reward"></p>
 <ul id="win-awards" class="award-list"></ul>
 <div class="dialog-buttons">
 <button id="next" class="primary" type="button"></button>
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three.min.js"></script>
-<script defer src="./assets.js"></script>
-<script defer src="./game.js"></script>
-<script defer src="./launch.js"></script>
+<script defer src="./three.min.js?v=fd7316348f371"></script>
+<script defer src="./assets.js?v=fd7316348f371"></script>
+<script defer src="./game.js?v=fd7316348f371"></script>
+<script defer src="./launch.js?v=fd7316348f371"></script>
 </body>
 </html>

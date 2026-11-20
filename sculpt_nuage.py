@@ -2,7 +2,7 @@
 import bpy
 import bmesh
 import base64
-import colorsys
+from random import Random
 import json
 from math import atan2, cos, exp, hypot, pi, sin, sqrt
 from pathlib import Path
@@ -11,6 +11,8 @@ from mathutils import Vector
 from mathutils.noise import noise
 
 ROOT = Path(__file__).resolve().parent
+for obj in list(bpy.data.objects):
+    bpy.data.objects.remove(obj,do_unlink=True)
 TAU = 2 * pi
 N = 36
 vertices = []
@@ -64,14 +66,14 @@ spine = [
     (-.855,.850,.099,.113,.112),(-.807,.835,.156,.158,.214),
     (-.754,.813,.207,.216,.264),(-.678,.807,.249,.265,.307),
     (-.564,.798,.281,.315,.305),(-.455,.788,.289,.331,.290),
-    (-.327,.805,.247,.312,.245),(-.187,.831,.229,.287,.211),
+    (-.327,.831,.244,.286,.198),(-.187,.856,.220,.268,.172),
     (-.039,.846,.234,.293,.232),(.097,.867,.251,.323,.272),
-    (.220,.889,.290,.359,.349),(.340,.905,.326,.381,.390),
-    (.463,.956,.313,.378,.402),(.548,1.054,.266,.349,.365),
-    (.615,1.169,.246,.302,.286),(.663,1.235,.287,.300,.269),
-    (.709,1.240,.299,.274,.242),(.755,1.238,.297,.258,.238),
-    (.808,1.223,.277,.234,.223),(.857,1.199,.248,.205,.201),
-    (.904,1.154,.210,.171,.161),(.945,1.133,.173,.124,.124),
+    (.220,.906,.267,.340,.363),(.340,.915,.295,.376,.396),
+    (.463,.971,.296,.388,.416),(.548,1.067,.260,.355,.399),
+    (.615,1.169,.246,.302,.286),(.663,1.230,.263,.267,.267),
+    (.709,1.233,.271,.258,.231),(.755,1.229,.269,.244,.225),
+    (.808,1.209,.248,.219,.209),(.857,1.189,.223,.192,.178),
+    (.904,1.152,.193,.162,.146),(.945,1.132,.161,.124,.119),
     (1.001,1.123,.143,.101,.100),(1.059,1.132,.129,.086,.092),
     (1.106,1.141,.107,.073,.079),(1.136,1.143,.089,.055,.061),
     (1.148,1.143,.054,.040,.045),(1.155,1.142,.019,.020,.021)
@@ -96,7 +98,7 @@ for j,(z,y,rx,up,down) in enumerate(spine):
         if .66<z<1.057:
             cheek=exp(-((yy-1.167)/.104)**2-((z-.865)/.095)**2)
             lid=exp(-((yy-1.337)/.067)**2-((z-.879)/.067)**2)
-            x*=1+.08*cheek+.040*lid
+            x*=1+.10*cheek-.037*lid
             zz+=.010*lid*max(.2,abs(sin(theta)))
         t=smooth(.434,.723,z)
         opening=smooth(.895,1.058,z)*(1-smooth(1.055,1.100,yy))*.92
@@ -141,12 +143,12 @@ for lo,hi,l,r,kind,side,fore,b1,b2 in sockets:
             merge_weights(v,b1,.20)
         profiles=[
             (side*.192,1.476,.746,.103,.078,.015,{head:.34,b1:.66}),
-            (side*.231,1.536,.751,.106,.068,.012,{b1:1}),
-            (side*.260,1.590,.764,.084,.052,.009,{b1:1}),
-            (side*.285,1.625 if side>0 else 1.590,.799 if side>0 else .819,.065,.040,.005,{b1:1}),
-            (side*.308,1.621 if side>0 else 1.555,.834 if side>0 else .859,.042,.028,.002,{b1:1}),
-            (side*.319,1.601 if side>0 else 1.532,.852 if side>0 else .876,.023,.017,0,{b1:1}),
-            (side*.327,1.592 if side>0 else 1.523,.857 if side>0 else .882,.009,.009,0,{b1:1}),
+            (side*.229,1.520,.766,.098,.074,.010,{b1:1}),
+            (side*.249,1.564,.784,.087,.060,.006,{b1:1}),
+            (side*.278,1.581 if side>0 else 1.561,.821,.076,.052,.002,{b1:1}),
+            (side*.319,1.557 if side>0 else 1.527,.856,.068,.036,0,{b1:1}),
+            (side*.357,1.517 if side>0 else 1.485,.873,.049,.024,0,{b1:1}),
+            (side*.376,1.489 if side>0 else 1.469,.876,.014,.009,0,{b1:1}),
         ]
     else:
         shapes=(
@@ -213,11 +215,12 @@ modifier=dog.modifiers.new('Peau','SUBSURF')
 modifier.levels=2
 modifier.render_levels=2
 retopo=dog.modifiers.new('Maillage mobile','DECIMATE')
-retopo.ratio=.40
+retopo.ratio=.34
 deps=bpy.context.evaluated_depsgraph_get()
 evaluated=dog.evaluated_get(deps)
 surface=evaluated.to_mesh(preserve_all_data_layers=True,depsgraph=deps)
 surface.calc_loop_triangles()
+body_triangles=len(surface.loop_triangles)
 from collections import defaultdict
 neighbors=defaultdict(set)
 for e in surface.edges:
@@ -236,9 +239,9 @@ def lerp_color(a,b,t):
     return tuple(mix(x,y,clamp(t)) for x,y in zip(a,b))
 def def_color(hex):
     return tuple(int(hex[i:i+2],16)/255 for i in (0,2,4))
-ink=def_color('2e373b')
-ink_hi=def_color('596873')
-ivory=def_color('f0e5d1')
+ink=def_color('20262d')
+ink_hi=def_color('4c555e')
+ivory=def_color('e8e1d5')
 white=def_color('fff4df')
 sand=def_color('a68a72')
 ear_russet=def_color('aa837d')
@@ -248,15 +251,16 @@ def pigment(x,y,z):
     ax=abs(x)
     fur=float(noise(Vector((x*26+y*3,y*28,z*7.7)),noise_basis='PERLIN_ORIGINAL'))
     broad=float(noise(Vector((x*7,y*9,z*3.4)),noise_basis='PERLIN_ORIGINAL'))
-    detail=.013*fur+.025*broad
+    strokes=float(noise(Vector((x*81+y*17,y*57+z*19,z*21)),noise_basis='PERLIN_ORIGINAL'))
+    detail=.019*fur+.019*broad+.021*strokes
     tint=smooth(-.56,.68,broad*.43+.42*(y-.66))
     color=lerp_color(ink,ink_hi,.16+.62*tint)
     fore=z>.11
     cuff=.29 if fore else .185
     socks=(1-smooth(cuff-.034,cuff+.044,y+detail))*(1-smooth(.29,.47,abs(z-(.39 if fore else -.50))))
     chest=exp(-((z-.484)/.215)**2)
-    bib=smooth(.34,.66,chest)*smooth(.48,.66,y)*(1-smooth(1.067,1.265,y+ax*.41))
-    forehead=(1-smooth(.029,.082,abs(x+.007*sin(z*5.0))))*smooth(.677,.862,z)*smooth(1.186,1.274,y)*(
+    bib=smooth(.30,.67,chest)*smooth(.45,.63,y)*(1-smooth(1.085,1.328,y+ax*.54+detail))
+    forehead=(1-smooth(.029,.082,abs(x+.012*sin(z*5.0)+.003*sin(y*76))))*smooth(.677,.862,z)*smooth(1.186,1.274,y)*(
         1-smooth(1.473,1.555,y))
     muzzle=(smooth(.906,.990,z-.12*ax)*(1-smooth(1.214,1.281,y)))+smooth(.955,1.057,z)
     mouth_white=clamp(muzzle)
@@ -267,22 +271,22 @@ def pigment(x,y,z):
     if .27<z<.87 and y>.64:
         tan_mask=exp(-((ax-.222)/.136)**2-((y-.884)/.126)**2-((z-.605)/.189)**2)
         color=lerp_color(color,sand,tan_mask*.24)
-    if y>1.49 and z<.93:
-        inner=smooth(.765,.852,z+.08*(y-1.49))*smooth(1.492,1.577,y)*(1-smooth(.046,.108,abs(ax-mix(.22,.325,smooth(1.47,1.63,y)))))
+    if y>1.463 and z<.93:
+        inner=smooth(.765,.852,z+.08*(y-1.49))*smooth(1.456,1.555,y)*(1-smooth(.046,.108,abs(ax-mix(.22,.325,smooth(1.47,1.63,y)))))
         color=lerp_color(color,ear_russet,.64*inner)
     if .955<z<1.146 and y<1.16 and ax>.071:
         zw=smooth(.955,1.025,z)
         smile=1.091+.035*((z-1.044)/.11)**2+ax*.07
-        slit=1-smooth(.004,.013,abs(y-smile))
-        color=lerp_color(color,def_color('68524a'),slit*zw*(1-smooth(1.088,1.139,z))*.75)
+        slit=1-smooth(.005,.017,abs(y-smile))
+        color=lerp_color(color,def_color('443938'),slit*(.45+.55*zw)*(1-smooth(1.101,1.162,z))*.68)
         blush=exp(-((y-1.150)/.023)**2-((z-.962)/.056)**2)
         color=lerp_color(color,def_color('dcb09a'),blush*.27)
     if z>1.060:
         nose=smooth(1.096,1.126,z+clamp((y-1.09)*.30,-.028,.029))*(.77+.23*smooth(1.081,1.112,y))
-        color=lerp_color(color,def_color('3d383a'),nose)
+        color=lerp_color(color,def_color('25242a'),nose)
         bridge=exp(-((x+.026)/.048)**2-((y-1.171)/.023)**2-((z-1.124)/.044)**2)
         nostril=exp(-((ax-.040)/.019)**2-((y-1.139)/.015)**2-((z-1.153)/.038)**2)
-        color=lerp_color(color,def_color('9f8791'),.65*bridge*nose)
+        color=lerp_color(color,def_color('796e73'),.65*bridge*nose)
         color=lerp_color(color,def_color('302c33'),nostril*nose*.68)
     return tuple(clamp(c+detail) for c in color)
 
@@ -312,11 +316,11 @@ assert len(surface.vertices)<65536
 def encoded(data,fmt):
     return base64.b64encode(pack('<'+str(len(data))+fmt,*data)).decode('ascii')
 def eye_texel(u,v):
-    r=hypot(u*.94,(v+.07)*1.03)
+    r=hypot(u*.94,(v+.07)*1.18)
     coverage=(1-smooth(.87,.99,r))*(1-smooth(.95,1,max(abs(u),abs(v))))
-    rim=def_color('332a2c')
-    iris=def_color('573b32')
-    copper=def_color('a7795a')
+    rim=def_color('231e20')
+    iris=def_color('513728')
+    copper=def_color('a7824f')
     dark=def_color('211f23')
     scale=hypot((u-.103)*1.02,(v+.025)*1.07)
     color=lerp_color(rim,iris,1-smooth(.66,.84,scale))
@@ -337,8 +341,153 @@ pixels=b''.join(bytes([0])+eyes[j*size*4:(j+1)*size*4] for j in reversed(range(s
 png=(bytes([137,80,78,71,13,10,26,10])+png_chunk(b'IHDR',pack('>IIBBBBB',size,size,8,6,0,0,0))
      +png_chunk(b'IDAT',compress(pixels,9))+png_chunk(b'IEND',b''))
 (ROOT/'eye-paint.png').write_bytes(png)
+# Grow tapered, skinned guard hairs in the direction of the coat.
+# The ribbons model the visible silhouette of the ruff and feathering.
+rng=Random(334117)
+fur_start=len(out_position)//3
+hair_faces=[]
+areas=[]
+total_area=0
+for tri in surface.loop_triangles:
+    v=[surface.vertices[i] for i in tri.vertices]
+    x,y,z=sum((p.co for p in v),Vector())/3
+    ruff=smooth(.57,.96,y)*(1-smooth(1.30,1.47,y))*smooth(.08,.36,z)*(1-smooth(.59,.72,z))
+    plume=smooth(.85,1.48,-z)
+    flank=smooth(.39,.67,y)*(1-smooth(.80,1.03,y))*smooth(.12,.23,abs(x))*(1-smooth(.25,.62,z))
+    fleece=max(ruff,plume,flank*.66)
+    if fleece<.11:
+        continue
+    total_area+=tri.area*fleece
+    areas.append((total_area,v,ruff,plume,flank))
+from bisect import bisect_left
+cumulative=[row[0] for row in areas]
+for _ in range(2850):
+    _,vs,ruff,plume,flank=areas[bisect_left(cumulative,rng.random()*total_area)]
+    a,b=rng.random(),rng.random()
+    if a+b>1:
+        a,b=1-a,1-b
+    bary=(1-a-b,a,b)
+    center=sum((v.co*w for v,w in zip(vs,bary)),Vector())
+    x,y,z=center
+    n=sum((v.normal*w for v,w in zip(vs,bary)),Vector()).normalized()
+    grow=Vector((x*.28,-.36-.45*ruff,-.59-.27*plume))
+    grow=(grow-n*grow.dot(n)*.77).normalized()
+    tip_dir=(grow+n*.24).normalized()
+    cross=tip_dir.cross(n).normalized()
+    length=rng.uniform(.032,.114)*(.58+max(ruff,plume,flank*.6)*.86)
+    width=rng.uniform(.003,.011)
+    bound=defaultdict(float)
+    for v,w in zip(vs,bary):
+        for g in v.groups: bound[g.group]+=w*g.weight
+    top=sorted(bound.items(),key=lambda pair:-pair[1])[:4]
+    total=sum(w for _,w in top)
+    weights4=[round(255*w/total) for _,w in top]+[0]*(4-len(top))
+    weights4[0]+=255-sum(weights4)
+    indices4=[j for j,_ in top]+[0]*(4-len(top))
+    shaded=(n+grow*.13).normalized()
+    tint=pigment(x,y,z)
+    variation=rng.uniform(.87,1.12)
+    index=len(out_position)//3
+    for t,offset,value in [(0,-1,.86),(0,1,.86),(.54,.58,1.0),(.54,-.58,1.0),(1,0,1.09)]:
+        point=center+grow*length*t+n*(.001+length*.33*sin(t*pi*.78))+cross*width*offset
+        out_position.extend(round(c*8192) for c in point)
+        out_normal.extend(round(c*127) for c in shaded)
+        out_color.extend(round(255*clamp(c*value*variation)) for c in tint)
+        out_bone.extend(indices4)
+        out_weight.extend(weights4)
+    hair_faces.extend((index,index+1,index+2,index,index+2,index+3,index+3,index+2,index+4))
+
+# Save the editable model with its live quad cage, rig and independent groom.
+arm=bpy.data.armatures.new('Squelette de Nuage')
+rig=bpy.data.objects.new('Squelette de Nuage',arm)
+bpy.context.collection.objects.link(rig)
+bpy.context.view_layer.objects.active=rig
+rig.select_set(True)
+rig.show_in_front=True
+bpy.ops.object.mode_set(mode='EDIT')
+for name,parent,x,y,z in bones:
+    edit=arm.edit_bones.new(name)
+    edit.head=(x,y,z)
+    edit.tail=(x,y+.11,z) if name not in ('queue','boutQueue') else (x,y-.04,z-.19)
+    if parent>=0: edit.parent=arm.edit_bones[bones[parent][0]]
+bpy.ops.object.mode_set(mode='OBJECT')
+groom_mesh=bpy.data.meshes.new('Mèches peintes')
+groom_mesh.from_pydata([tuple(n/8192 for n in out_position[i:i+3])
+                       for i in range(fur_start*3,len(out_position),3)],[],
+                      [tuple(j-fur_start for j in hair_faces[i:i+3]) for i in range(0,len(hair_faces),3)])
+groom=bpy.data.objects.new('Ruff, franges et queue',groom_mesh)
+bpy.context.collection.objects.link(groom)
+for name,*_ in bones:
+    groom.vertex_groups.new(name=name)
+for i in range(len(groom_mesh.vertices)):
+    for j,w in zip(out_bone[4*(fur_start+i):4*(fur_start+i+1)],out_weight[4*(fur_start+i):4*(fur_start+i+1)]):
+        if w: groom.vertex_groups[j].add([i],w/255,'REPLACE')
+coat=bpy.data.materials.new('Pelage peint')
+coat.use_nodes=True
+coat.diffuse_color=(.12,.13,.15,1)
+shader=coat.node_tree.nodes.get('Principled BSDF')
+shader.inputs['Roughness'].default_value=.82
+attribute=coat.node_tree.nodes.new('ShaderNodeVertexColor')
+attribute.layer_name='Pigment'
+coat.node_tree.links.new(attribute.outputs['Color'],shader.inputs['Base Color'])
+for obj,colors in [(dog,[pigment(*co) for co in (vertices[i] for i in used)]),
+                   (groom,[tuple(v/255 for v in out_color[i:i+3]) for i in range(fur_start*3,len(out_color),3)])]:
+    obj.data.materials.append(coat)
+    pigment_layer=obj.data.color_attributes.new(name='Pigment',type='BYTE_COLOR',domain='POINT')
+    for pixel,color in zip(pigment_layer.data,colors): pixel.color_srgb=(*color,1)
+    deform=obj.modifiers.new('Armature','ARMATURE')
+    deform.object=rig
+    obj.parent=rig
+skin_mat=coat.copy()
+skin_mat.name='Pelage et iris'
+dog.data.materials[0]=skin_mat
+nodes=skin_mat.node_tree.nodes
+links=skin_mat.node_tree.links
+surface_position=nodes.new('ShaderNodeTexCoord').outputs['Object']
+split=nodes.new('ShaderNodeSeparateXYZ')
+links.new(surface_position,split.inputs[0])
+def math_node(op,a,b):
+    math=nodes.new('ShaderNodeMath')
+    math.operation=op
+    for i,value in enumerate((a,b)):
+        if isinstance(value,(float,int)): math.inputs[i].default_value=value
+        else: links.new(value,math.inputs[i])
+    return math.outputs[0]
+z=math_node('SUBTRACT',split.outputs['Z'],.873)
+y=math_node('SUBTRACT',split.outputs['Y'],1.299)
+front=math_node('ADD',z,math_node('MULTIPLY',y,.17))
+height=math_node('SUBTRACT',y,math_node('MULTIPLY',z,.125))
+uv=nodes.new('ShaderNodeCombineXYZ')
+links.new(math_node('ADD',math_node('MULTIPLY',front,.5/.071),.5),uv.inputs[0])
+links.new(math_node('ADD',math_node('MULTIPLY',height,.5/.064),.5),uv.inputs[1])
+iris=nodes.new('ShaderNodeTexImage')
+iris.image=bpy.data.images.load(str(ROOT/'eye-paint.png'),check_existing=True)
+iris.image.pack()
+iris.extension='CLIP'
+links.new(uv.outputs[0],iris.inputs['Vector'])
+side=math_node('ABSOLUTE',split.outputs['X'],0)
+mask=nodes.new('ShaderNodeMapRange')
+mask.inputs['From Min'].default_value=.126
+mask.inputs['From Max'].default_value=.160
+mask.interpolation_type='SMOOTHSTEP'
+links.new(side,mask.inputs['Value'])
+eye_paint=nodes.new('ShaderNodeMixRGB')
+links.new(math_node('MULTIPLY',iris.outputs['Alpha'],mask.outputs[0]),eye_paint.inputs[0])
+links.new(nodes.get(attribute.name).outputs['Color'],eye_paint.inputs[1])
+links.new(iris.outputs['Color'],eye_paint.inputs[2])
+links.new(eye_paint.outputs['Color'],nodes.get('Principled BSDF').inputs['Base Color'])
+rig.rotation_euler.x=pi/2
+for area in bpy.context.screen.areas:
+    if area.type=='VIEW_3D':
+        area.spaces.active.region_3d.view_distance=4.7
+        area.spaces.active.region_3d.view_location=(0,0,.75)
+        area.spaces.active.shading.color_type='VERTEX'
+        area.spaces.active.region_3d.view_rotation=Vector((-.81,-.56,-.34)).to_track_quat('-Z','Y')
+bpy.context.preferences.filepaths.save_version=0
+bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'Nuage.blend'))
+
 result={'p':encoded(out_position,'h'),'n':encoded(out_normal,'b'),'c':encoded(out_color,'B'),
-        'i':encoded(out_indices,'H'),'b':encoded(out_bone,'B'),'w':encoded(out_weight,'B'),'rig':bones,
-        'count':len(surface.vertices),'faces':len(surface.loop_triangles),'eyeSize':size,'eyes':base64.b64encode(eyes).decode('ascii')}
+        'i':encoded(out_indices,'H'),'fur':encoded(hair_faces,'H'),'b':encoded(out_bone,'B'),'w':encoded(out_weight,'B'),'rig':bones,
+        'count':len(out_position)//3,'faces':body_triangles,'eyeSize':size,'eyes':base64.b64encode(eyes).decode('ascii')}
 (ROOT/'nuage.json').write_text(json.dumps(result,separators=(',',':')))
-print('Surface soudée',len(surface.vertices),'sommets',len(surface.loop_triangles),'triangles',len(bones),'os')
+print('Maillage soudé',body_triangles,'triangles · groom',len(hair_faces)//3,'triangles ·',len(bones),'os')
