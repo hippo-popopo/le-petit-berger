@@ -22,9 +22,11 @@ Depuis ce dossier, lance `python3 -m http.server 8000` et ouvre `http://localhos
 - `index.html` contient l’interface et les styles.
 - `game.js` contient le jeu, les missions, les commandes, l’éclairage et les modèles de la ferme.
 - `assets.js` contient les textures intégrées et les données du modèle de Nuage.
-- `sculpt_nuage.py` permet de régénérer le modèle et sa peinture dans Blender. La sortie `nuage.json` remplace l’objet `sculptedDog` dans `assets.js`. Le fichier source Blender possède quinze os, un maillage continu et des mèches séparées. Le jeu utilise des appuis de pattes sur le relief et des points d’attache au cou et sur le dos.
+- `Nuage.blend` contient le modèle adapté et son squelette éditable, avec les textures intégrées. `sculpt_nuage.py` génère les données pour le jeu depuis le GLB d’origine, avec Blender et `sips` sur macOS. La sortie `nuage.json` remplace l’objet `sculptedDog` dans `assets.js`.
 - `sw.js` et `manifest.webmanifest` gèrent le chargement hors connexion et l’installation.
 
 ## Crédits
 
-Les animaux et les décors sont des modèles originaux du projet. Nuage est un border collie sculpté d’un seul tenant. Le papier et le lavis de prairie ont été générés avec ImageGen. Voir [les matériaux](MATERIAUX.md). Three.js est distribué sous licence MIT, reproduite dans `three.min.js`.
+Nuage est adapté du modèle [border collie dog(mesh hair) d’imdjs](https://sketchfab.com/3d-models/border-collie-dogmesh-hair-516a1a06c6f248b6b8c28801eb1397ac), sous licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Le jeu ajoute le squelette, les animations, les attaches d’accessoires, les variantes de robe et la préparation des textures pour le Web. Voir [les matériaux](MATERIAUX.md).
+
+Le papier et le lavis de prairie ont été générés avec ImageGen. Three.js est distribué sous licence MIT, reproduite dans `three.min.js`.

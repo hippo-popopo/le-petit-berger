@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="db22fcc6d151c">
+<meta name="berger-version" content="133161bc9aa77">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -114,6 +114,8 @@ progress::-moz-progress-bar{background:#577c61;border-radius:100px}
 .settings-list label{display:flex;justify-content:space-between;gap:6px;font-weight:700}
 .settings-list input,.settings-list select{accent-color:#43664e}
 .settings-list select{width:100%;min-height:44px;background:#fff8e8;color:#283d32;border:1px solid #ded2b5;border-radius:8px;padding:6px}
+.settings-list .model-credit{margin:8px 0 0;font-size:11px;line-height:1.45}
+.model-credit a{color:#345b42;text-underline-offset:2px}
 .update-banner{position:absolute;z-index:2;top:calc(var(--haut) + 38px);left:var(--gauche);min-height:44px;border-radius:8px;background:#253d33;color:#fff9e6;border:1px solid #f9eed0;padding:6px 11px;font-weight:740}
 .boot{position:absolute;inset:0;z-index:8;display:grid;place-items:center;background:linear-gradient(#263c3466,#253d3394),#8e9c7b var(--cover) center / cover no-repeat;color:#f9f1db;text-align:center;padding:15px}
 .boot-card{width:min(350px,95vw);display:grid;justify-items:center}
@@ -272,6 +274,7 @@ progress::-moz-progress-bar{background:#577c61;border-radius:100px}
             <select id="quality-setting"><option value="auto">Automatique</option><option value="smooth">Fluidité</option><option value="detail">Détails</option></select>
             <button class="secondary" id="install" type="button" hidden>Installer sur cet appareil</button>
             <p class="farm-feedback" id="sound-feedback" role="status"></p>
+            <p class="model-credit">Nuage est adapté du <a href="https://sketchfab.com/3d-models/border-collie-dogmesh-hair-516a1a06c6f248b6b8c28801eb1397ac" target="_blank" rel="noopener noreferrer">border collie d’imdjs</a> sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. Squelette, animations et textures adaptés au jeu.</p>
           </div>
         </section>
       </div>
@@ -346,9 +349,9 @@ progress::-moz-progress-bar{background:#577c61;border-radius:100px}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three.min.js?v=db22fcc6d151c"></script>
-<script defer src="./assets.js?v=db22fcc6d151c"></script>
-<script defer src="./game.js?v=db22fcc6d151c"></script>
-<script defer src="./launch.js?v=db22fcc6d151c"></script>
+<script defer src="./three.min.js?v=133161bc9aa77"></script>
+<script defer src="./assets.js?v=133161bc9aa77"></script>
+<script defer src="./game.js?v=133161bc9aa77"></script>
+<script defer src="./launch.js?v=133161bc9aa77"></script>
 </body>
 </html>
