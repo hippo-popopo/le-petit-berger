@@ -3358,7 +3358,12 @@ function renderMissionMap(){
     const title=document.createElement('strong');title.textContent=world.name;
     const count=document.createElement('small');count.textContent=n+'/'+total.length;
     button.append(tile,title,count);
-    button.onclick=()=>{selectedWorld=index;renderMissionMap();menu.children[index]?.focus();};
+    button.onclick=()=>{
+      selectedWorld=index;
+      renderMissionMap();
+      menu.children[index]?.focus({preventScroll:true});
+      if(window.matchMedia('(max-height:445px) and (orientation:landscape)').matches)$('farm-scroll').scrollTop=0;
+    };
     menu.append(button);
   }
   const world=worldNames[selectedWorld];

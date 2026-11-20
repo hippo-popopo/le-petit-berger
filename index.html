@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="33e68c6c824e0">
+<meta name="berger-version" content="95a0ff22d34d1">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -283,6 +283,8 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
   .biome-button .biome-art{grid-column:1/-1;width:100%;height:27px}
   .biome-button strong{font-size:11px}.biome-button small{font-size:9px}
   .atlas{grid-template-columns:minmax(171px,29%) minmax(0,1fr);gap:10px}.panel-top{margin-bottom:7px}
+  [data-farm-panel="missions"] .panel-top{position:sticky;top:0;z-index:2;background:#f4eddf;padding:5px 0}
+  [data-farm-panel="missions"] .farm-heading h2{margin-bottom:0}
 }
 @media(orientation:portrait){
   .farm-body{grid-template-columns:1fr;grid-template-rows:minmax(140px,41%) minmax(0,1fr);gap:6px}
@@ -539,9 +541,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three.min.js?v=33e68c6c824e0"></script>
-<script defer src="./assets.js?v=33e68c6c824e0"></script>
-<script defer src="./game.js?v=33e68c6c824e0"></script>
-<script defer src="./launch.js?v=33e68c6c824e0"></script>
+<script defer src="./three.min.js?v=95a0ff22d34d1"></script>
+<script defer src="./assets.js?v=95a0ff22d34d1"></script>
+<script defer src="./game.js?v=95a0ff22d34d1"></script>
+<script defer src="./launch.js?v=95a0ff22d34d1"></script>
 </body>
 </html>
