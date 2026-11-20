@@ -1870,8 +1870,9 @@ function bindTouchControls(){
     const x=event.clientX,y=event.clientY;
     if(!cameraInput.dragged&&Math.hypot(x-cameraInput.startX,y-cameraInput.startY)<5)return;
     cameraInput.dragged=true;
-    const scale=event.pointerType==='touch'?.0081:.0052;
-    cameraInput.yaw=wrapAngle(cameraInput.yaw+(x-cameraInput.x)*scale);
+    const touch=event.pointerType==='touch';
+    const scale=touch?.0081:.0052;
+    cameraInput.yaw=wrapAngle(cameraInput.yaw+(x-cameraInput.x)*scale*(touch?-1:1));
     cameraInput.elevation=clamp(cameraInput.elevation+(y-cameraInput.y)*scale*.61,.052,.66);
     cameraInput.x=x;cameraInput.y=y;
     cameraInput.until=gameTime+1.34;
