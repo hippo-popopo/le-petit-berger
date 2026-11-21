@@ -110,12 +110,20 @@ def pose(tracks,time):
 _,rest=pose({},0)
 # The distal paw pivot lies above the sole. Keep a marker embedded in the
 # underside, slightly in front of the pivot, for ankle height and contacts.
-soles = {i:rest[i].inverted()@(rest[i].translation+Vector((0,-.021*scale*height_ratio,.017*scale*height_ratio))) for i in paws}
+skin_extras=gltf['skins'][0].get('extras',{})
+source_soles=skin_extras.get('pawSoles',{})
+supports=skin_extras.get('pawSupports',{})
+soles={}
+for i in paws:
+    tag=nodes[i]['name'][:2]
+    soles[i]=(Vector(source_soles[tag])*scale if tag in source_soles else
+              rest[i].inverted()@(rest[i].translation+Vector((0,-.021*scale*height_ratio,.017*scale*height_ratio))))
 
 stride = len(moving_joints)*3+len(joints)*4+len(paws)
 manifest = {
     'rig':[[nodes[i]['name'],indices.get(parents[i],-1),*rest_local[i][0],*rotation_data(rest_local[i][1])] for i in joints],
-    'paws':[{'bone':indices[i],'sole':list(soles[i])} for i in paws],
+    'paws':[{'bone':indices[i],'sole':list(soles[i]),
+             'supports':[list(Vector(point)*scale) for point in supports.get(nodes[i]['name'][:2],[])]} for i in paws],
     'translations':[indices[i] for i in moving_joints],
     'clips':{}, 'stride':stride
 }
@@ -151,10 +159,22 @@ def animation(clip_id,clip,loop):
         frames.append(row)
     threshold=min(min(cont) for cont in contacts)
     floor = min(.017, max(-.025,threshold))
-    for frame,heights in zip(frames,contacts):
-        frame.extend(1-min(1,max(0,(height-floor-.026)/.048)) for height in heights)
+    gait=clip.get('extras',{})
     entry=0
-    if clips[clip_id][2]:
+    if gait.get('locomotion'):
+        duty=gait['duty']
+        for index,frame in enumerate(frames):
+            cycle=index/(frame_count-1)
+            for strike in gait['strikes']:
+                phase=(cycle-strike)%1
+                fade=.083
+                value=min(1.,(duty-phase)/fade) if phase<duty else 0
+                value*=min(1.,phase/fade)
+                frame.append(value*value*(3-2*value))
+    else:
+        for frame,heights in zip(frames,contacts):
+            frame.extend(1-min(1,max(0,(height-floor-.026)/.048)) for height in heights)
+    if clips[clip_id][2] and not gait.get('locomotion'):
         strikes=[i for i in range(1,len(frames)-1) if frames[i-1][-4]<.5<=frames[i][-4]]
         if strikes:
             entry=strikes[0]/(len(frames)-1)
@@ -171,9 +191,11 @@ def engine_name(name):
 
 by_clip={clip['name']:clip for clip in gltf['animations']}
 for clip_id,(name,loop,step) in clips.items():
-    frames,duration,entry=animation(clip_id,by_clip.get(name) or by_clip[engine_name(name)],loop)
+    source_clip=by_clip.get(name) or by_clip[engine_name(name)]
+    frames,duration,entry=animation(clip_id,source_clip,loop)
+    stride_length=source_clip.get('extras',{}).get('stride',round(step*height_ratio,4))
     manifest['clips'][clip_id]=dict(name=name,start=len(packed),frames=len(frames),
-                                   duration=round(duration,6),phase=round(entry,6),loop=loop,step=round(step*height_ratio,4))
+                                   duration=round(duration,6),phase=round(entry,6),loop=loop,step=stride_length)
     for frame in frames:
         assert len(frame)==stride
         packed.extend(frame)

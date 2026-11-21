@@ -13,8 +13,6 @@ from mathutils import Matrix, Quaternion, Vector
 sys.path.insert(0,str(Path(__file__).parent))
 from prepare_pack import read_glb, write_glb
 
-source, output = map(Path,sys.argv[sys.argv.index('--')+1:])
-catalogue = json.loads((source/'import.json').read_text())
 components={5121:'u1',5123:'<u2',5125:'<u4',5126:'<f4'}
 width={'SCALAR':1,'VEC3':3,'VEC4':4,'MAT4':16}
 
@@ -118,27 +116,34 @@ def anchor_hips(data,binary):
     data['buffers'][0]['byteLength']=len(binary)
     return len(corrected)
 
-report={}
-for race in catalogue['breeds']:
-    label=race['id']
-    folder=output/label
-    folder.mkdir(parents=True,exist_ok=True)
-    file=race['file']
-    data,original=read_glb(source/label/file)
-    binary=bytearray(original)
-    names,rest=bind(data,binary)
-    weights=transfer_thighs(data,binary,names,rest)
-    tracks=anchor_hips(data,binary)
-    write_glb(folder/file,data,binary)
-    for coat in race['coats']:
-        file=coat['texture']
-        copyfile(source/label/file,folder/file)
-    report[label]={'weights':weights,'hip_translation_tracks':tracks}
-gear=output/'Accessoires'
-gear.mkdir(exist_ok=True)
-for item in catalogue['gear']:
-    name=item['file']
-    copyfile(source/'Accessoires'/name,gear/name)
-copyfile(source/'import.json',output/'import.json')
-(output/'bilan-articulations.json').write_text(json.dumps(report,indent=2))
-print(json.dumps(report,indent=2))
+def main():
+    source, output = map(Path,sys.argv[sys.argv.index('--')+1:])
+    catalogue = json.loads((source/'import.json').read_text())
+    report={}
+    for race in catalogue['breeds']:
+        label=race['id']
+        folder=output/label
+        folder.mkdir(parents=True,exist_ok=True)
+        file=race['file']
+        data,original=read_glb(source/label/file)
+        binary=bytearray(original)
+        names,rest=bind(data,binary)
+        weights=transfer_thighs(data,binary,names,rest)
+        tracks=anchor_hips(data,binary)
+        write_glb(folder/file,data,binary)
+        for coat in race['coats']:
+            file=coat['texture']
+            copyfile(source/label/file,folder/file)
+        report[label]={'weights':weights,'hip_translation_tracks':tracks}
+    gear=output/'Accessoires'
+    gear.mkdir(exist_ok=True)
+    for item in catalogue['gear']:
+        name=item['file']
+        copyfile(source/'Accessoires'/name,gear/name)
+    copyfile(source/'import.json',output/'import.json')
+    (output/'bilan-articulations.json').write_text(json.dumps(report,indent=2))
+    print(json.dumps(report,indent=2))
+
+
+if __name__=='__main__':
+    main()
