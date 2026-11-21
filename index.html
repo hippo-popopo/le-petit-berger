@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="ffebba83ab8e2">
+<meta name="berger-version" content="a755cc9e4fac5">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -254,6 +254,7 @@ progress::-moz-progress-bar{background:#577c61;border-radius:100px}
 .shop-list li{min-height:66px;grid-template-columns:45px minmax(0,1fr) auto;border-bottom:1px solid #dfd2b8;gap:9px}
 .shop-list li:last-child{border-bottom:1px solid #dfd2b8}
 .shop-list .item-mark{width:42px;height:42px}
+.item-mark canvas{width:100%;height:100%}
 .item-mark[data-detail="sage"],.item-mark[data-detail="moss"]{filter:hue-rotate(41deg) saturate(.68)}
 .item-mark[data-detail="navy"]{filter:hue-rotate(171deg) saturate(.72)}
 .item-mark[data-detail="berry"]{filter:hue-rotate(-42deg) saturate(.90)}
@@ -300,6 +301,7 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 .tutorial-coach{position:static}
 .stage[data-tutorial]:not([data-tutorial=""]) #mission-timer{display:none}
 .stage[data-flock="true"] #mission-timer{display:none}
+.gathering-step{background:#eee5ca;color:#364f42}
 .flock-map-button{position:relative;display:block;padding:0;border:0;border-radius:10px;background:transparent;touch-action:manipulation}
 .flock-map-button canvas{display:block}
 .flock-map-button span{position:absolute;inset:auto 4px 4px auto;padding:2px 5px;background:#f9f0d7;color:#314531;border-radius:5px;font-size:9px;font-weight:800}
@@ -563,9 +565,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three-9ecebf89689fb.min.js?v=ffebba83ab8e2"></script>
-<script defer src="./assets-2e7b3962e7699.js?v=ffebba83ab8e2"></script>
-<script defer src="./game-ffebba83ab8e2.js?v=ffebba83ab8e2"></script>
-<script defer src="./launch-ffebba83ab8e2.js?v=ffebba83ab8e2"></script>
+<script defer src="./three-9ecebf89689fb.min.js?v=a755cc9e4fac5"></script>
+<script defer src="./assets-2e7b3962e7699.js?v=a755cc9e4fac5"></script>
+<script defer src="./game-a755cc9e4fac5.js?v=a755cc9e4fac5"></script>
+<script defer src="./launch-a755cc9e4fac5.js?v=a755cc9e4fac5"></script>
 </body>
 </html>

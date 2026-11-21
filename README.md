@@ -1,6 +1,6 @@
 # Le Petit Berger
 
-Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte dix-huit missions sur des cartes distinctes et un bonus dans chacun des six biomes. Pour débloquer le bonus, termine les missions du biome. Les grands troupeaux comptent de 32 à 64 moutons et se jouent sans chrono imposé. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
+Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte dix-huit missions sur des cartes distinctes et un bonus dans chacun des six biomes. Dans chaque bonus, pars de l’enclos, repère trois à cinq groupes voisins, réunis les 32 à 64 moutons et ramène-les. Le portail s’ouvre quand le troupeau est réuni. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
 
 ## Jouer
 

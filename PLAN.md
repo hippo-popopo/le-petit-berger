@@ -16,7 +16,7 @@ La ferme garde des matières peintes et une lumière de plein air. Les quatre es
 | Modèle et contrôles | Chien articulé, marche et sprint, joystick généreux, caméra indépendante et horizon droit |
 | Parcours mobile | Chargement animé, tutoriel jouable au premier lancement, ferme, carte et réglages |
 | Campagne | Dix-huit missions sur des terrains distincts, six bonus de 32 à 64 moutons et une carte des troupeaux |
-| Chien | Nom enregistré, trois silhouettes de races adaptées du modèle de Nuage et six robes |
+| Chien | Nom enregistré, six silhouettes de races adaptées du modèle de Nuage et sept robes |
 | Boucle de progression | Graines gagnées en mission, accessoires à équiper, croquettes et sifflet utilisables en jeu |
 | Vérifications | Reprise des sauvegardes, achats idempotents, inventaire, quatre contacts simultanés, publication et réouverture du site |
 
