@@ -9,6 +9,8 @@ from pathlib import Path
 import array
 import gzip
 import json
+import re
+import unicodedata
 import struct
 import sys
 
@@ -35,6 +37,8 @@ paws = [joint_names[name] for name in ('FR_Patte', 'HR_Patte', 'FL_Patte', 'HL_P
 root = joint_names['Root']
 moving_joints = [root,*[joint_names[name] for name in ('Thorax','FR_Proximal','HR_Proximal','FL_Proximal','HL_Proximal')]]
 scale = 2.24
+height_ratio = nodes[root]['translation'][1]/.425
+
 
 clips = {
     # id: (source name, looping, nominal stride distance in game units)
@@ -106,7 +110,7 @@ def pose(tracks,time):
 _,rest=pose({},0)
 # The distal paw pivot lies above the sole. Keep a marker embedded in the
 # underside, slightly in front of the pivot, for ankle height and contacts.
-soles = {i:rest[i].inverted()@(rest[i].translation+Vector((0,-.021*scale,.017*scale))) for i in paws}
+soles = {i:rest[i].inverted()@(rest[i].translation+Vector((0,-.021*scale*height_ratio,.017*scale*height_ratio))) for i in paws}
 
 stride = len(moving_joints)*3+len(joints)*4+len(paws)
 manifest = {
@@ -160,16 +164,21 @@ def animation(clip_id,clip,loop):
         frames[-1][:]=frames[0]
     return frames,duration,entry
 
+def engine_name(name):
+    letters=unicodedata.normalize("NFKD",name).encode("ascii","ignore").decode("ascii")
+    # The long dash separates words in the naming convention of the import.
+    return re.sub(r"[^A-Za-z0-9]+","_",letters).strip("_")
+
 by_clip={clip['name']:clip for clip in gltf['animations']}
 for clip_id,(name,loop,step) in clips.items():
-    frames,duration,entry=animation(clip_id,by_clip[name],loop)
+    frames,duration,entry=animation(clip_id,by_clip.get(name) or by_clip[engine_name(name)],loop)
     manifest['clips'][clip_id]=dict(name=name,start=len(packed),frames=len(frames),
-                                   duration=round(duration,6),phase=round(entry,6),loop=loop,step=step)
+                                   duration=round(duration,6),phase=round(entry,6),loop=loop,step=round(step*height_ratio,4))
     for frame in frames:
         assert len(frame)==stride
         packed.extend(frame)
 manifest['bytes']=len(packed)*packed.itemsize
-manifest['file']='collie-mouvements.bin.gz'
+manifest['file']=f'{source.stem}-mouvements.bin.gz'
 if sys.byteorder!='little':
     packed.byteswap()
 output.mkdir(parents=True,exist_ok=True)

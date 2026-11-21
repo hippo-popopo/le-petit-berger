@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="afe4e33921ce6">
+<meta name="berger-version" content="459bb53eadfc9">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -317,6 +317,11 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
   .robe-options button{display:grid;justify-items:start;gap:2px;min-height:54px;font-size:11px}
   .coat-swatch{height:16px;width:16px}
 }
+
+.dog-model-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:7px 10px}
+.dog-model-fields label{min-width:0;display:grid;gap:4px;font-size:12px;font-weight:730}
+.dog-model-fields select{width:100%;min-width:0;min-height:44px;padding:7px 8px;border:1px solid #cbbca1;border-radius:8px;color:#22392d;background:#fef6e7;font:inherit;font-size:16px}
+#dog-model-feedback:empty{display:none}
 </style>
 </head>
 <body>
@@ -436,6 +441,11 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
               <button class="secondary" type="submit">Enregistrer</button></div>
               <p id="name-feedback" class="farm-feedback" role="status"></p>
             </form>
+            <div class="dog-model-fields">
+              <label>Race<select id="breed-choice"></select></label>
+              <label>Robe<select id="coat-choice"></select></label>
+            </div>
+            <p id="dog-model-feedback" class="farm-feedback" role="status"></p>
           </div>
           <div data-wardrobe-panel="equipement" hidden>
             <fieldset class="wardrobe"><legend id="wardrobe-stock">Accessoires</legend><div id="gear-options"></div></fieldset>
@@ -560,9 +570,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three-2d31b9c81aca6.min.js?v=afe4e33921ce6"></script>
-<script defer src="./assets-ebf93a19611bd.js?v=afe4e33921ce6"></script>
-<script defer src="./game-afe4e33921ce6.js?v=afe4e33921ce6"></script>
-<script defer src="./launch-afe4e33921ce6.js?v=afe4e33921ce6"></script>
+<script defer src="./three-2d31b9c81aca6.min.js?v=459bb53eadfc9"></script>
+<script defer src="./assets-cebfc8d9019bb.js?v=459bb53eadfc9"></script>
+<script defer src="./game-459bb53eadfc9.js?v=459bb53eadfc9"></script>
+<script defer src="./launch-459bb53eadfc9.js?v=459bb53eadfc9"></script>
 </body>
 </html>

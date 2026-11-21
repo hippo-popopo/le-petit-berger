@@ -22,12 +22,12 @@ Depuis ce dossier, lance `python3 -m http.server 8000` et ouvre `http://localhos
 
 - `index.html` contient l’interface et les styles.
 - `game-<version>.js` contient le jeu, les missions, les commandes, l’éclairage et les modèles de la ferme. Chaque version publiée garde son propre fichier pour que les anciennes installations chargent le bon moteur.
-- `assets-<version>.js` contient les illustrations du jeu et référence les fichiers du Border Collie.
-- `export_border_collie.py` exporte le modèle fourni dans `Border-Collie.blend`, ajoute le squelette pour les animations du jeu et prépare les points de fixation des accessoires.
+- `assets-<version>.js` contient les illustrations du jeu et référence les fichiers des trois chiens et de leurs équipements.
+- `export_pack_web.py` et `retarget_border_collie.py` exportent les modèles, matériaux et animations pour le navigateur à partir des ressources normalisées pour Unreal.
 - `sw.js` et `manifest.webmanifest` gèrent le chargement hors connexion et l’installation.
 
 ## Crédits
 
-Nuage utilise le modèle fourni dans `Border-Collie.blend`, avec sa robe d’origine. Les animations proviennent du GLB `Border-Collie-Jeu.glb` et pilotent le squelette du fichier animé. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
+Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les trois races sont disponibles dans Apparence. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
 
 Le papier et le lavis de prairie ont été générés avec ImageGen. Three.js est distribué sous licence MIT, reproduite dans le fichier de la bibliothèque.

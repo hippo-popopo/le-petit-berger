@@ -8,9 +8,9 @@ Le papier aquarelle, le paysage de la ferme, les illustrations de la carte et le
 
 ## Mouton, bergerie et col
 
-Le mouton est sculpté par sections dans le jeu. Son tronc et son visage ont chacun un maillage continu. La laine reçoit une carte de relief de 128 px et utilise un maillage allégé au loin. Les appuis, les oreilles et le museau gardent leurs pivots d’animation.
+La toison des moutons et les nouveaux volumes du canard, de la chèvre et du cochon sont modélisés dans Blender. Les modèles proches et distants des moutons partagent le même profil. La laine reçoit une carte de relief de 128 px et utilise un maillage allégé au loin. Les appuis, les oreilles et le museau gardent leurs pivots d’animation.
 
-Le kit de bergerie en châtaignier a été créé dans Blender. Les poteaux, traverses et chapeaux sont exportés en buffers indexés dans le fichier du moteur. Le battant garde sa charnière. Les sapins neigeux et les crêtes sont générés lors du chargement des scènes. Dans l’archive, le dossier `sources-3d` contient le modèle Blender et les scripts de ces ressources.
+Le kit de bergerie en châtaignier a été créé dans Blender. Les poteaux, traverses et chapeaux sont exportés en buffers indexés dans le fichier du moteur. Le battant garde sa charnière. Blender fournit le granite des murets et les nouvelles cimes à feuilles animées. Le jeu génère les sapins neigeux, les crêtes et les couches du ciel. Dans l’archive, le dossier `sources-3d` contient le modèle Blender et les scripts de ces ressources.
 
 Les grandes sorties dessinent les moutons dans sept groupes de maillages instanciés. Chaque mouton garde sa position et ses appuis animés. Les grottes utilisent une voûte ouverte aux deux extrémités, avec des collisions continues sur les flancs.
 
@@ -18,12 +18,12 @@ Les grandes sorties dessinent les moutons dans sept groupes de maillages instanc
 
 Le foulard à carreaux utilise les coordonnées de la toile existante. La clochette est creuse. Le harnais et l’imperméable sont des maillages courbes fixés au tronc. Le dossier `sources-3d` de l’archive contient leurs définitions.
 
-## Modèle jouable de Nuage
+## Chiens de berger
 
-Le fichier `Border-Collie.blend` a été conservé dans le projet. Le jeu charge ses 1 951 965 triangles, ses 133 356 brins et ses trois textures de 4 096 × 4 096 pixels. Les données géométriques utilisent une compression gzip sans perte. Dans le jeu, chaque brin utilise les points et les rayons du fichier Blender.
+Le Border Collie, le Berger Australien et le Berger des Shetland utilisent chacun leur propre maillage et leur propre squelette. Les seize robes chargent à la demande. Les cartes de normales et de rugosité sont importées des modèles fournis et les accessoires suivent les points d’attache du cou et du thorax.
 
 ## Animations
 
-Les douze clips actifs de `Border-Collie-Jeu.glb` utilisent les 32 os du squelette de référence. `retarget_border_collie.py` exporte les courbes et `export_collie_weights.py` reporte les poids de `Border-Collie-Animations.blend` sur la géométrie complète. Le rendu préserve le volume autour des articulations. Les corrections de contact sollicitent les articulations existantes et le pelage suit la peau.
+Blender échantillonne les clips pour chaque squelette, à 60 images par seconde. Unreal permet de contrôler les chaînes articulaires et leur longueur. La marche, le trot, les deux galops, les virages, l’approche du troupeau et les animations de repos utilisent les courbes des fichiers du pack. Le jeu interpole les poses et corrige légèrement les appuis sur le relief.
 
 Les variantes indiquées « capture » dérivent des mouvements d’un labrador recueillis par Lei Han, Qingxu Zhu, Jiapeng Sheng, Chong Zhang, Tingguang Li, Yizheng Zhang et leurs coauteurs, 2024. Les mouvements ont été adaptés au Border Collie dans le GLB, puis à son squelette dans le jeu. [Jeu de données original](https://springernature.figshare.com/articles/dataset/Lifelike_Agility_and_Play_in_Quadrupedal_Robots_using_Reinforcement_Learning_and_Generative_Pre-trained_Models/24968946), [licence CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
