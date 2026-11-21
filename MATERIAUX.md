@@ -14,12 +14,10 @@ Le kit de bergerie en châtaignier a été créé dans Blender. Les poteaux, tra
 
 Les grandes sorties dessinent les moutons dans sept groupes de maillages instanciés. Chaque mouton garde sa position et ses appuis animés. Les grottes utilisent une voûte ouverte aux deux extrémités, avec des collisions continues sur les flancs.
 
-## Races et accessoires
-
-Les silhouettes de chien partent du maillage de Nuage et adaptent les proportions, le squelette et les appuis. Références de morphologie de la Fédération Cynologique Internationale pour le [Welsh Corgi Cardigan](https://www.fci.be/fr/nomenclature/WELSH-CORGI-CARDIGAN-38.html), le [Berger blanc suisse](https://www.fci.be/fr/nomenclature/BERGER-BLANC-SUISSE-347.html) et le [Berger des Pyrénées à poil long](https://www.fci.be/fr/nomenclature/CHIEN-DE-BERGER-DES-PYRENEES-A-POIL-LONG-141.html).
+## Accessoires
 
 Le foulard à carreaux utilise les coordonnées de la toile existante. La clochette est creuse. Le harnais et l’imperméable sont des maillages courbes fixés au tronc. Le dossier `sources-3d` de l’archive contient leurs définitions.
 
 ## Modèle jouable de Nuage
 
-[border collie dog(mesh hair)](https://sketchfab.com/3d-models/border-collie-dogmesh-hair-516a1a06c6f248b6b8c28801eb1397ac) par [imdjs](https://sketchfab.com/imdjs), sous licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Adaptation pour Le Petit Berger avec ajout du squelette et des animations, ajustement des accessoires, variantes de couleur, textures réduites et matériaux adaptés au rendu Web.
+Le fichier `Border-Collie.blend` a été conservé dans le projet. Le jeu charge ses 1 951 965 triangles, ses 133 356 brins et ses trois textures de 4 096 × 4 096 pixels. Les données géométriques utilisent une compression gzip sans perte. Dans le jeu, chaque brin utilise les points et les rayons du fichier Blender.
