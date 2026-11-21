@@ -162,15 +162,13 @@ def animation(clip_id,clip,loop):
     gait=clip.get('extras',{})
     entry=0
     if gait.get('locomotion'):
-        duty=gait['duty']
+        captured=gait['contacts']
         for index,frame in enumerate(frames):
-            cycle=index/(frame_count-1)
-            for strike in gait['strikes']:
-                phase=(cycle-strike)%1
-                fade=.083
-                value=min(1.,(duty-phase)/fade) if phase<duty else 0
-                value*=min(1.,phase/fade)
-                frame.append(value*value*(3-2*value))
+            progress=index/(frame_count-1)*(len(captured)-1)
+            lower=int(progress)
+            high=min(len(captured)-1,lower+1)
+            part=progress-lower
+            frame.extend(a+(b-a)*part for a,b in zip(captured[lower],captured[high]))
     else:
         for frame,heights in zip(frames,contacts):
             frame.extend(1-min(1,max(0,(height-floor-.026)/.048)) for height in heights)

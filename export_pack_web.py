@@ -120,7 +120,9 @@ for race in catalogue['breeds']:
         coats.append(dict(id=coat['id'],label=coat['label'],asset={'file':file}))
     # The selectable base coat takes the place of the texture from the GLB.
     asset['materials'][0].pop('baseColorTexture',None)
-    asset.update(id=name,label=race['label'],height=race['height'],mounts=race['mounts'],motion=motion,coats=coats)
+    visual_scale=1.28 if name=='Berger_des_Shetland' else 1
+    asset.update(id=name,label=race['label'],height=race['height'],visualScale=visual_scale,
+                 mounts=race['mounts'],motion=motion,coats=coats)
     qualify(asset,name)
     breeds[name] = asset
 

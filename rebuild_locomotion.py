@@ -1,10 +1,10 @@
-"""Fit the four paw pivots, protect the paw meshes and bake new quadruped gaits.
+"""Fit the paw pivots, protect the paw meshes and retarget captured canine gaits.
 
-Run in Blender: blender -b --python rebuild_locomotion.py -- INPUT_STAGE OUTPUT_STAGE
+Run in Blender: blender -b --python rebuild_locomotion.py -- INPUT_STAGE OUTPUT_STAGE FIGSHARE_ZIP
 """
 from dataclasses import dataclass
 import json
-from math import acos, atan2, cos, pi, radians, sin, sqrt, tau
+from math import acos, atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from shutil import copyfile
 import sys
@@ -15,37 +15,33 @@ from mathutils import Matrix, Quaternion, Vector
 sys.path.insert(0,str(Path(__file__).parent))
 from prepare_pack import read_glb, write_glb
 from refine_hindquarters import values, smooth
+from canine_capture import LEGS, TAKES, read_stride
 
 X=Vector((1,0,0))
 Y=Vector((0,1,0))
 Z=Vector((0,0,1))
 ONE=Vector((1,1,1))
-LEGS=('FR','HR','FL','HL')
 JOINTS=('Proximal','Intermediaire','Distal','Patte')
 
 
 @dataclass(frozen=True)
 class Gait:
-    duration: float
-    duty: float
-    shifts: tuple
+    take: str
     reach: float
-    lift: float
     lower: float
-    bounce: float
-    pitch: float
+    lift: float
     bend: float = 0
+    pace: float = 1
 
 
-TROT=(0,.50,.50,0)
 GAITS={
-    'Marche_capture':Gait(.79,.65,(0,.73,.50,.23),.114,.042,.019,.009,1.3),
-    'Trot_capture':Gait(.53,.49,TROT,.154,.074,.032,.016,2.4),
-    'Galop_lent_trois_temps':Gait(.47,.37,(0,.52,.86,.37),.170,.105,.050,.021,4.0),
-    'Galop_capture':Gait(.40,.27,(0,.57,.89,.45),.184,.135,.067,.028,5.1),
-    'Approche_basse_conduite_du_troupeau':Gait(.92,.68,(0,.76,.50,.26),.113,.048,.045,.009,1.8),
-    'Trot_en_virage_a_gauche':Gait(.61,.53,TROT,.128,.071,.032,.016,2.7,1),
-    'Trot_en_virage_a_droite':Gait(.61,.53,TROT,.128,.071,.032,.016,2.7,-1),
+    'Marche_capture':Gait('walk',.128,.016,.063),
+    'Trot_capture':Gait('trot',.179,.029,.105),
+    'Galop_lent_trois_temps':Gait('canter',.200,.040,.140),
+    'Galop_capture':Gait('gallop',.223,.049,.183),
+    'Approche_basse_conduite_du_troupeau':Gait('walk',.117,.045,.054,pace=.82),
+    'Trot_en_virage_a_gauche':Gait('trot',.154,.035,.092,1,.92),
+    'Trot_en_virage_a_droite':Gait('trot',.154,.035,.092,-1,.92),
 }
 
 
@@ -74,14 +70,14 @@ def attribute(data,binary,rows,kind):
     return index
 
 
-def ease(t):
-    t=min(1.,max(0.,t))
-    return t*t*(3-2*t)
+def clamp(value,low,high):
+    return min(high,max(low,value))
 
 
 class CanineRig:
-    def __init__(self,data,binary):
+    def __init__(self,data,binary,captures):
         self.data,self.binary=data,binary
+        self.captures=captures
         self.nodes=data['nodes']
         self.ids=data['skins'][0]['joints']
         self.parents={child:i for i,node in enumerate(self.nodes) for child in node.get('children',[])}
@@ -171,79 +167,69 @@ class CanineRig:
         for index,i in enumerate(self.ids):
             inverse[index]=np.asarray(self.reference[i].inverted()).T.ravel()
 
-    def body(self,gait,t):
+    def body(self,gait,stride,t,drop):
+        height,pitch,roll,hips,lumbar,chest,neck,head,tail=stride.frame(stride.posture,t)
         local={i:transform.copy() for i,transform in self.local.items()}
         root=self.named['Root']
-        rhythm=cos(t*tau*2)
-        swing=sin(t*tau)
-        rotation=Quaternion(X,radians(gait.pitch)*sin((t+.07)*tau*2))
-        if gait.duty<.4:
-            rotation=Quaternion(X,radians(gait.pitch)*sin((t+.06)*tau))
-            rhythm=cos((t+.10)*tau*2)
-        local[root].translation+=Vector((.008*swing,(-gait.lower+gait.bounce*rhythm)*self.ratio,0))
-        local[root]=matrix(local[root].translation,rotation@self.local[root].to_quaternion())
+        sway=clamp(roll*.053,-.017,.017)
+        local[root].translation+=Vector((sway,(-gait.lower+height*.78-drop)*self.ratio,0))
+        roll=clamp(roll,-.15,.15)
+        orientation=Quaternion(Z,-roll*.56)@Quaternion(X,clamp(pitch*.86,-.18,.18))
+        local[root]=matrix(local[root].translation,orientation@self.local[root].to_quaternion())
+        tuck_gain=1.48 if gait.take=='gallop' else 1.15
+        lowered=-.15 if gait.take=='walk' and gait.lower>.040 else -.04
         oscillations={
-            'Bassin':((Y,2.8*swing+gait.bend*2.7),(X,.62*gait.pitch*cos(t*tau))),
-            'Dos':((Y,-1.7*swing+gait.bend*.9),),
-            'Thorax':((Y,-2.0*swing+gait.bend*2.2),(X,-.34*gait.pitch*cos(t*tau))),
-            'Encolure':((Y,-10),(X,(-7.3 if gait.duty>.6 and gait.lower>.040 else -1.7)-gait.pitch*.37*cos(t*tau))),
-            'Crane':((Y,-32),(X,gait.pitch*.27*cos(t*tau))),
-            'Queue_1':((Y,4.2*swing),(X,-gait.pitch*.5)),
-            'Queue_2':((Y,3.8*sin((t-.10)*tau)),),
+            'Bassin':((Z,-.60*(hips-roll)),(X,clamp(lumbar*tuck_gain,-.23,.23)),(Y,gait.bend*.065)),
+            'Dos':((X,clamp(lumbar*.65,-.13,.13)),(Y,gait.bend*.024)),
+            'Thorax':((X,clamp(chest*tuck_gain-lumbar*.32,-.21,.21)),(Y,gait.bend*.09)),
+            'Encolure':((Y,radians(-10)),(X,clamp(neck*.64+lowered,-.21,.18))),
+            'Crane':((Y,radians(-32)),(X,clamp(head*.60,-.12,.12))),
+            'Queue_1':((Y,clamp(tail*.21,-.19,.19)),(X,-lumbar*.54)),
+            'Queue_2':((Y,clamp(tail*.13,-.11,.11)),),
         }
         worlds={}
         for i in self.ids:
             parent=worlds.get(self.parents.get(i))
             transform=parent@local[i] if parent is not None else local[i]
             for axis,angle in oscillations.get(self.nodes[i]['name'],()):
-                transform=matrix(transform.translation,Quaternion(axis,radians(angle))@transform.to_quaternion())
+                transform=matrix(transform.translation,Quaternion(axis,angle)@transform.to_quaternion())
             worlds[i]=transform
         return worlds
 
-    def path(self,tag,gait,t):
-        index=LEGS.index(tag)
-        p=(t-gait.shifts[index]+1)%1
-        resting=p<gait.duty
-        front=tag.startswith('F')
-        same_side=tag.endswith('L')
-        magnitude=gait.reach*self.ratio*(1.0 if front else .94)
-        magnitude*=1+gait.bend*(-.18 if same_side else .18)
-        if resting:
-            u=p/gait.duty
-            z=1-2*u
-            lift=0
-            toe=-.056*(1-ease(u/.26))+.125*ease((u-.77)/.23)
-            ankle=.11*(1-u)-.15*u
-        else:
-            u=(p-gait.duty)/(1-gait.duty)
-            slope=-2*(1-gait.duty)/gait.duty
-            # Hermite preserves ground-relative velocity at lift-off and landing.
-            # The end slopes are capped in flight so the paw keeps its reach envelope.
-            z=-1+2*ease(u)+max(-1.6,slope)*(2*u**3-3*u*u+u)
-            lift=gait.lift*self.ratio*sin(pi*u)**1.65
-            toe=.125*(1-ease(u))+.30*sin(pi*u)**1.8-.056*ease(u)
-            ankle=-.15*(1-ease(u))+.11*ease(u)-(.34 if front else .21)*sin(pi*u)
+    def path(self,tag,gait,stride,gain,t):
+        x,lift,z=stride.frame(stride.feet[tag],t)
+        support=float(stride.frame(stride.contact[tag],t))
+        toe=float(stride.frame(stride.toes[tag],t))
+        ankle=float(stride.frame(stride.wrists[tag],t))
+        side_sign=1 if tag.endswith('L') else -1
+        toe=clamp(toe*.53,-.32,.42)
+        ankle=clamp(ankle*.64,-.51,.45)
         marker,toe_limit,heel_limit=self.foot_floor[tag]
         foot_rotation=Quaternion(X,toe)
         neutral=self.reference[self.chains[tag][-1]]
         contact=marker.copy()
         contact.z=toe_limit if toe>=0 else heel_limit
         neutral_offset=contact-neutral.translation
-        support=(foot_rotation@neutral_offset).y
+        lowest=(foot_rotation@neutral_offset).y
         target=neutral.translation.copy()
-        target.y=max(0,marker.y)+lift-support
-        target.z+=magnitude*z
-        side_sign=1 if same_side else -1
-        target.x+=side_sign*.011*self.ratio*(sin(pi*u) if not resting else 0)+gait.bend*.014*self.ratio
-        return target,foot_rotation,ankle,resting
+        target.y=max(0,marker.y)+clamp(lift*.81,0,gait.lift)*self.ratio-lowest
+        step_factor=gain*(1-gait.bend*side_sign*.18)
+        target.z+=z*step_factor*self.ratio
+        target.x+=clamp(x*.57,-.026,.026)*self.ratio+gait.bend*.013*self.ratio
+        return target,foot_rotation,ankle,support
 
-    def solve_leg(self,worlds,tag,gait,t):
+    def solve_leg(self,worlds,tag,gait,stride,gain,t):
         chain=self.chains[tag]
         a,b,c,d=self.points(chain)
         hip=worlds[chain[0]].translation
         parent=self.parents[chain[0]]
         body_rotation=(worlds[parent]@self.reference[parent].inverted()).to_quaternion()
-        foot,foot_turn,ankle,planted=self.path(tag,gait,t)
+        foot,foot_turn,ankle,support=self.path(tag,gait,stride,gain,t)
+        if tag.startswith('F'):
+            measured=stride.frame(stride.shoulders[tag],t)
+            hip+=Vector((clamp(measured[0]*.23,-.014,.014),
+                         clamp(measured[1]*.46,-.022,.022),
+                         clamp(measured[2]*.57,-.040,.040)))*self.ratio
         first,second,lower=(b-a).length,(c-b).length,(d-c).length
         # Side spacing is folded into the target. Flexion stays in the anatomical plane.
         z_base=atan2((d-c).z,-(d-c).y)
@@ -272,6 +258,10 @@ class CanineRig:
         wrist=hip+direction*reach
         flex=body_rotation@self.poles[tag]
         flex-=direction*flex.dot(direction)
+        captured=Vector(stride.frame(stride.elbows[tag],t))
+        captured-=direction*captured.dot(direction)
+        if captured.length>.18 and captured.dot(flex)>0:
+            flex=flex.lerp(captured.normalized(),.55)
         if flex.length<.05:
             flex=Z*(1 if tag.startswith('H') else -1)
             flex-=direction*direction.dot(flex)
@@ -287,11 +277,18 @@ class CanineRig:
                 delta=foot_turn
             worlds[i]=matrix(points[j],delta@rest)
         sole=worlds[chain[-1]]@self.sole[tag]
-        return planted,sole,extension
+        return support,sole,extension
 
-    def sample(self,gait,t):
-        worlds=self.body(gait,t)
-        contact={tag:self.solve_leg(worlds,tag,gait,t) for tag in LEGS}
+    def sample(self,gait,stride,gain,t):
+        def solve(drop):
+            worlds=self.body(gait,stride,t,drop)
+            contact={tag:self.solve_leg(worlds,tag,gait,stride,gain,t) for tag in LEGS}
+            return worlds,contact
+
+        worlds,contact=solve(0)
+        reach=max(extension*weight for weight,_,extension in contact.values())
+        if reach>.002:
+            worlds,contact=solve(min(.040,reach*1.25/self.ratio))
         return worlds,contact
 
     def bake(self):
@@ -301,10 +298,14 @@ class CanineRig:
             if name not in GAITS:
                 continue
             gait=GAITS[name]
-            count=round(gait.duration*60)+1
-            samples=[self.sample(gait,i/(count-1)) for i in range(count)]
+            stride=self.captures[gait.take]
+            distance=max(float(np.max(np.abs(points[:,2]))) for points in stride.feet.values())
+            gain=gait.reach/distance
+            duration=stride.duration/gait.pace
+            count=round(duration*60)+1
+            samples=[self.sample(gait,stride,gain,i/(count-1)) for i in range(count)]
             data=self.data
-            times=attribute(data,self.binary,np.linspace(0,gait.duration,count),'SCALAR')
+            times=attribute(data,self.binary,np.linspace(0,duration,count),'SCALAR')
             animation['samplers'],animation['channels']=[],[]
             for ref in self.ids:
                 root=self.named['Root']
@@ -319,25 +320,28 @@ class CanineRig:
                     locations.append(location)
                     rotations.append(rotation)
                 paths=[('rotation',rotations,'VEC4')]
-                if ref==root:
+                if ref==root or self.nodes[ref]['name'] in ('FR_Proximal','FL_Proximal'):
                     paths.append(('translation',locations,'VEC3'))
                 for kind,rows,dimension in paths:
                     index=attribute(data,self.binary,rows,dimension)
                     animation['channels'].append(dict(sampler=len(animation['samplers']),target=dict(node=ref,path=kind)))
                     animation['samplers'].append(dict(input=times,output=index,interpolation='LINEAR'))
-            animation['extras']={'locomotion':True,'duty':gait.duty,'strikes':gait.shifts,
-                                 'stride':round(gait.reach*2*self.ratio/gait.duty*2.24,4)}
-            supported=[float(sole.y) for _, contact in samples for planted,sole,_ in contact.values() if planted]
+            contacts=[[round(contact[tag][0],5) for tag in LEGS] for _,contact in samples]
+            animation['extras']={'locomotion':True,'contacts':contacts,'take':stride.source,
+                                 'stride':round(stride.distance*gain*self.ratio*2.24,4)}
+            supported=[float(sole.y) for _, contact in samples for weight,sole,_ in contact.values() if weight>.7]
             clearance=[float(sole.y) for _, contact in samples for _,sole,_ in contact.values()]
             worst=max(gap for _,contact in samples for _,_,gap in contact.values())
-            reports[name]={'samples':count,'stance_min_mm':round(min(supported)*1000,1),
+            reports[name]={'samples':count,'source':stride.source,'frames':stride.frame_range,
+                           'duty':stride.support,'stance_min_mm':round(min(supported)*1000,1),
                            'stance_max_mm':round(max(supported)*1000,1),
                            'minimum_mm':round(min(clearance)*1000,1),'unreachable_mm':round(max(0,worst)*1000,1)}
         return reports
 
 
 def main():
-    source,output=map(Path,sys.argv[sys.argv.index('--')+1:])
+    source,output,archive=map(Path,sys.argv[sys.argv.index('--')+1:])
+    captures={style:read_stride(archive,style) for style in TAKES}
     catalogue=json.loads((source/'import.json').read_text())
     output.mkdir(parents=True,exist_ok=True)
     results={}
@@ -348,7 +352,7 @@ def main():
         f=race['file']
         data,original=read_glb(source/label/f)
         binary=bytearray(original)
-        rig=CanineRig(data,binary)
+        rig=CanineRig(data,binary,captures)
         gait_report=rig.bake()
         support={}
         for tag in LEGS:
