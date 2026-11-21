@@ -28,6 +28,6 @@ Depuis ce dossier, lance `python3 -m http.server 8000` et ouvre `http://localhos
 
 ## Crédits
 
-Nuage utilise le modèle fourni dans `Border-Collie.blend`, avec sa robe d’origine. Les animations proviennent du GLB `Border-Collie-Jeu.glb` et ont été adaptées au squelette du jeu. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
+Nuage utilise le modèle fourni dans `Border-Collie.blend`, avec sa robe d’origine. Les animations proviennent du GLB `Border-Collie-Jeu.glb` et pilotent le squelette du fichier animé. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
 
 Le papier et le lavis de prairie ont été générés avec ImageGen. Three.js est distribué sous licence MIT, reproduite dans le fichier de la bibliothèque.
