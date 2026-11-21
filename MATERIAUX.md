@@ -20,10 +20,10 @@ Le foulard à carreaux utilise les coordonnées de la toile existante. La cloche
 
 ## Chiens de berger
 
-Le Border Collie, le Berger Australien et le Berger des Shetland utilisent chacun leur propre maillage et leur propre squelette. Les seize robes chargent à la demande. Les cartes de normales et de rugosité sont importées des modèles fournis et les accessoires suivent les points d’attache du cou et du thorax.
+Le Border Collie, le Berger Australien et le Berger des Shetland utilisent chacun leur propre maillage et leur propre squelette. Les seize robes chargent à la demande. Les cartes de normales et de rugosité sont importées des modèles fournis et les accessoires suivent les points d’attache du cou et du thorax. Le poids entre le bassin et chaque cuisse a été repeint dans Blender pour entraîner progressivement le volume du haut de la patte.
 
 ## Animations
 
-Blender échantillonne les clips pour chaque squelette, à 60 images par seconde. Unreal permet de contrôler les chaînes articulaires et leur longueur. La marche, le trot, les deux galops, les virages, l’approche du troupeau et les animations de repos utilisent les courbes des fichiers du pack. Le jeu interpole les poses et corrige légèrement les appuis sur le relief.
+Blender échantillonne les clips pour chaque squelette, à 60 images par seconde. Unreal permet de contrôler les chaînes articulaires et leur longueur. La marche, le trot, les deux galops, les virages, l’approche du troupeau et les animations de repos utilisent les courbes des fichiers du pack. Le jeu interpole les poses. À l'arrière, la hanche reste solidaire du bassin et le fémur et le tibia fléchissent pour suivre le relief en gardant la longueur des segments et l’orientation du pied.
 
 Les variantes indiquées « capture » dérivent des mouvements d’un labrador recueillis par Lei Han, Qingxu Zhu, Jiapeng Sheng, Chong Zhang, Tingguang Li, Yizheng Zhang et leurs coauteurs, 2024. Les mouvements ont été adaptés au Border Collie dans le GLB, puis à son squelette dans le jeu. [Jeu de données original](https://springernature.figshare.com/articles/dataset/Lifelike_Agility_and_Play_in_Quadrupedal_Robots_using_Reinforcement_Learning_and_Generative_Pre-trained_Models/24968946), [licence CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

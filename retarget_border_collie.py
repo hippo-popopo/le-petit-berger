@@ -32,10 +32,10 @@ joint_names = {nodes[node]['name']: node for node in joints}
 parents = {child: index for index, node in enumerate(nodes) for child in node.get('children', [])}
 assert all(parents[i] not in indices or indices[parents[i]] < indices[i] for i in joints)
 
-# Spatial order FR, HR, FL, HL matches the rest pose in the game.
+# Spatial order FR, HR, FL, HL matches the rest pose in the game. Hind hips stay fixed to the pelvis.
 paws = [joint_names[name] for name in ('FR_Patte', 'HR_Patte', 'FL_Patte', 'HL_Patte')]
 root = joint_names['Root']
-moving_joints = [root,*[joint_names[name] for name in ('Thorax','FR_Proximal','HR_Proximal','FL_Proximal','HL_Proximal')]]
+moving_joints = [root,*[joint_names[name] for name in ('Thorax','FR_Proximal','FL_Proximal')]]
 scale = 2.24
 height_ratio = nodes[root]['translation'][1]/.425
 
