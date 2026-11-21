@@ -21,3 +21,9 @@ Le foulard à carreaux utilise les coordonnées de la toile existante. La cloche
 ## Modèle jouable de Nuage
 
 Le fichier `Border-Collie.blend` a été conservé dans le projet. Le jeu charge ses 1 951 965 triangles, ses 133 356 brins et ses trois textures de 4 096 × 4 096 pixels. Les données géométriques utilisent une compression gzip sans perte. Dans le jeu, chaque brin utilise les points et les rayons du fichier Blender.
+
+## Animations
+
+Douze clips de `Border-Collie-Jeu.glb` ont été adaptés au squelette du chien jouable avec `retarget_border_collie.py`. Le jeu mélange les allures selon la vitesse et la direction, et recalcule les appuis sur le terrain. Le pelage suit le même squelette que le corps.
+
+Les variantes indiquées « capture » dérivent des mouvements d’un labrador recueillis par Lei Han, Qingxu Zhu, Jiapeng Sheng, Chong Zhang, Tingguang Li, Yizheng Zhang et leurs coauteurs, 2024. Les mouvements ont été adaptés au Border Collie dans le GLB, puis à son squelette dans le jeu. [Jeu de données original](https://springernature.figshare.com/articles/dataset/Lifelike_Agility_and_Play_in_Quadrupedal_Robots_using_Reinforcement_Learning_and_Generative_Pre-trained_Models/24968946), [licence CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
