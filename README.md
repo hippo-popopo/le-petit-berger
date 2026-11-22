@@ -1,6 +1,6 @@
 # Le Petit Berger
 
-Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte 36 cartes dans neuf biomes, dont neuf grands rassemblements de 32 à 80 moutons. Dans le bocage, éloigne les loups et ralentis pour gagner la confiance des agneaux. Dans les marais, actionne les vannes. Dans la garrigue, fais passer le troupeau par ses haltes avant de rentrer. En bonus, pars de l’enclos, réunis les groupes voisins et ramène le troupeau. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
+Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte 47 missions dans onze biomes, dont onze grands rassemblements de 32 à 96 moutons. Les contrats proposent six sorties rejouables, des cabris à l’aurore au volcan des braises. Les bancs de nuages masquent les pattes, les éruptions brûlent le sol et les meutes laissent quelques secondes pour sauver une brebis prise. Termine des missions de campagne pour reconstruire les trois aménagements de la ferme et débloquer des ordres et des contrats. En bonus, pars de l’enclos, réunis les groupes voisins et ramène le troupeau. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
 
 ## Jouer
 
@@ -11,10 +11,11 @@ Ouvre [le jeu publié](https://hippo-popopo.github.io/le-petit-berger/) dans Saf
 - **Sprint** · maintiens le bouton pendant le déplacement
 - **Aboyer** · exerce une pression brève sur les animaux à portée
 - **Ouvrir / Examiner** · apparaît près des portillons, des vannes et des traces
+- **Sifflet** · ouvre les ordres Rassembler, Tenir et Trier lorsque la ferme avance ou que la mission les enseigne
 - **Carte** · met le jeu en pause et montre les animaux, les passages et les objectifs. Utilise « Autour du chien » pour inspecter les alentours
 - **Pause** · affiche l’objectif et donne accès aux conseils, au son et à la météo
 
-Au clavier, utilise les flèches, Maj, Espace, E pour interagir, J et L pour regarder, R pour recentrer la caméra et P pour mettre en pause. La vitesse offerte par les croquettes et le regroupement du sifflet durent quelques secondes. Les anciennes étoiles sont récupérées au premier lancement.
+Au clavier, utilise les flèches, Maj, Espace, E pour interagir, F pour ouvrir le sifflet, J et L pour regarder, R pour recentrer la caméra et P pour mettre en pause. La vitesse offerte par les croquettes et le regroupement du sifflet durent quelques secondes. Les anciennes étoiles sont récupérées au premier lancement.
 
 ## Développement local
 
