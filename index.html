@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="d3b46a44f2892">
+<meta name="berger-version" content="19af6ce8ba73e">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -259,7 +259,7 @@ progress::-moz-progress-bar{background:#577c61;border-radius:100px}
 .item-mark[data-detail="navy"]{filter:hue-rotate(171deg) saturate(.72)}
 .item-mark[data-detail="berry"]{filter:hue-rotate(-42deg) saturate(.90)}
 .item-mark[data-kind="pack"]{background:#c4ad7c;border:1px solid #b79763;border-radius:9px;position:relative}
-.item-mark[data-kind="pack"]::before{content:'';position:absolute;inset:10px 7px 7px;background:#756045;border-radius:5px 5px 8px 8px;border-top:4px solid #a88b59}
+.item-mark[data-kind="pack"]::before{content:'';position:absolute;inset:10px 7px 7px;background:linear-gradient(#a88b59 4px,#756045 4px);border-radius:5px 5px 8px 8px}
 .item-mark[data-kind="pack"]::after{content:'';position:absolute;inset:17px 18px 13px;background:#d3a465;border-radius:2px}
 .settings-list{width:min(100%,470px)}
 .tutorial-coach{position:absolute;z-index:3;inset:calc(var(--haut) + 63px) auto auto var(--gauche);width:min(310px,44vw);background:#f8edcf;border-radius:13px;padding:10px 13px;box-shadow:0 6px 18px #172c2457;color:#243d30}
@@ -322,6 +322,95 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 .dog-model-fields label{min-width:0;display:grid;gap:4px;font-size:12px;font-weight:730}
 .dog-model-fields select{width:100%;min-width:0;min-height:44px;padding:7px 8px;border:1px solid #cbbca1;border-radius:8px;color:#22392d;background:#fef6e7;font:inherit;font-size:16px}
 #dog-model-feedback:empty{display:none}
+
+/* The field reads edge to edge; opening a panel reveals the secondary controls. */
+.hud{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between;gap:12px}
+.hud-left,.hud-right{display:grid;align-content:start;gap:6px;min-width:0}
+.hud-right{justify-items:end}
+.hud-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:none}
+.hud .circle{background:#fbf5e8ed}
+.hud .circle svg,.flock-map-button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.hud #counts{display:flex;flex-wrap:wrap;width:auto;gap:4px;padding:0;max-width:min(360px,65vw);box-shadow:none;background:none;border:0}
+.hud #counts .counter{padding:3px 8px 3px 4px;gap:4px;min-height:31px;background:#fbf5e8ed;border:0;color:#2c4234;box-shadow:0 2px 6px #19322530;font-size:12px}
+.hud #counts .counter canvas{width:22px;height:22px}
+.hud #counts .counter .counter-name{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.hud .mini-map{width:84px;height:auto;border-color:#fff8e6;box-shadow:0 2px 8px #18312742}
+.flock-map-button svg{position:absolute;right:3px;bottom:3px;width:19px;height:19px;background:#fff8e6f5;padding:3px;border-radius:4px}
+.hud .recenter{position:static;width:44px;height:44px;margin:0}
+.hud .hint-compass{position:static}
+.toast{max-width:min(72vw,330px);padding:7px 12px;font-size:12px;line-height:1.3}
+.tutorial-coach{width:min(270px,48vw);padding:8px 11px}
+.tutorial-coach strong{font-size:19px}
+#flock-map-dialog{width:min(755px,calc(100% - 24px))}
+.field-atlas{display:grid;grid-template-columns:minmax(0,1fr) minmax(137px,26%);gap:15px;align-items:center}
+#flock-map{width:100%;height:auto;max-height:min(67dvh,445px);object-fit:contain;background:#eae7d2;border:1px solid #d6cfb2;border-radius:9px}
+#flock-map-caption,#map-encounters{margin:0 0 8px;font-size:13px;font-weight:720;color:#314c3b}
+#map-encounters{color:#825336}
+.map-legend{display:grid;gap:6px;margin:12px 0;padding:0;list-style:none;font-size:12px}
+.map-legend li{display:flex;align-items:center;gap:7px}
+.map-key{display:inline-block;width:11px;height:11px;border:1px solid #6f7054}
+.player-key{background:#274e3e;border:0;clip-path:polygon(50% 0,100% 100%,50% 75%,0 100%)}
+.animals-key{background:#fff8e6;border-radius:50%}
+.pen-key{background:#dfad62;border-radius:2px}
+#map-focus{min-width:100%;padding-inline:7px}
+#map-focus[aria-pressed=true]{background:#dce7d4}
+#pause-dialog{width:min(480px,calc(100vw - 24px))}
+.pause-summary{display:flex;align-items:center;gap:12px;color:#294a39}
+.pause-summary strong{font-size:15px}.pause-summary .hud-time{margin-left:auto}
+#pause-goal,#pause-status{margin:6px 0 10px;font-size:13px}
+#pause-status{color:#825336;font-weight:720}
+.pause-primary,.pause-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.pause-primary button{min-height:44px}
+#pause-book{color:#37553f;background:none;border:0;text-decoration:underline;text-underline-offset:3px;font-size:12px;font-weight:720}
+.pause-details{margin-top:7px;border-top:1px solid #d9cdb4}
+.pause-details summary{padding:11px 1px;color:#344f3c;font-size:13px;font-weight:730;cursor:pointer}
+.pause-details .note-wrap{max-width:none}.pause-details .notes{background:none;border:0;box-shadow:none;padding:0;font-size:12px}
+.pause-weather{font-size:12px}.pause-tools button{white-space:normal}
+.farm-scroll>section[data-farm-panel=farm]{display:grid;align-content:start}
+.farm-scroll>section[data-farm-panel=farm] .farm-heading h2{margin-bottom:13px}
+.farm-cta{margin-top:2px}
+.farm-progress{color:#526345;font-size:11px}
+.farm-nav button{font-weight:730}
+.atlas-cover{margin-bottom:3px}
+.shop-list{gap:0 22px}
+.shop-list li{min-height:70px}
+.shop-list .item-buy{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;min-width:65px;font-size:12px;background:#e3ead7;color:#284435;border-color:#c1cdb3}
+.shop-list .item-buy:disabled{background:transparent;color:#66573f;border-color:#d6c9b0;opacity:1}
+.farm-feedback:empty,#shop-stock:empty{display:none}
+.settings-list{width:min(100%,520px);gap:0}
+.setting-row{min-height:54px;padding:6px 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(126px,44%);align-items:center;gap:14px;border-bottom:1px solid #ded2b9}
+.setting-row label{justify-content:flex-start;gap:8px}
+.setting-volume input{width:100%;height:44px;margin:0}
+.setting-volume output{color:#566a52;font-variant-numeric:tabular-nums}
+.setting-switch{justify-self:end;min-height:44px;min-width:112px;padding:6px 10px;border:1px solid #c9bca1;border-radius:9px;background:#efe5d2;color:#435740;font-weight:740}
+.setting-switch[aria-pressed=true]{background:#dce8d1;border-color:#afc2a8;color:#284d36}
+.setting-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.biome-art:is([data-biome="6"],[data-biome="7"],[data-biome="8"]){background-image:var(--valley-atlas);background-size:auto 300%;background-position:center var(--y,0%)}
+.biome-art[data-biome="7"]{--y:50%;background-color:#9eb4a7}
+.biome-art[data-biome="8"]{--y:100%;background-color:#b0a374}
+.atlas-cover .biome-art:is([data-biome="6"],[data-biome="7"],[data-biome="8"]){background-size:100% 300%}
+@media(orientation:portrait){
+  .field-atlas{grid-template-columns:1fr;gap:10px}
+  .map-legend{grid-template-columns:repeat(3,1fr)}
+}
+@media(orientation:landscape) and (max-height:520px){
+  #flock-map-dialog{width:min(calc(100% - 24px),calc(95dvh + 202px))}
+  #flock-map{max-height:calc(100dvh - 106px)}
+}
+@media(orientation:landscape) and (max-height:445px){
+  [data-farm-panel="missions"] .panel-top{align-items:center;padding:1px 0 3px}
+  [data-farm-panel="missions"] .farm-heading h2{font-size:clamp(26px,4vw,36px)}
+  .atlas{grid-template-columns:minmax(178px,31%) minmax(0,1fr)}
+  .biome-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .biome-button{grid-template-columns:minmax(0,1fr);justify-items:center;min-height:44px;text-align:center}
+  .biome-button .biome-art{height:23px}
+  .biome-button strong{line-height:1.04}
+  .biome-button small{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .atlas-cover{min-height:58px}
+  .atlas-caption{bottom:8px}
+  .atlas-caption h3{font-size:clamp(22px,3.8vw,33px)}
+  .outing-row{min-height:44px}
+}
 </style>
 </head>
 <body>
@@ -330,28 +419,21 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
     <canvas id="world" tabindex="0" aria-label="Terrain. Les flèches déplacent Nuage par rapport à la caméra. J et L orientent la caméra. R la recentre. Maj pour sprinter, Espace pour aboyer, E pour interagir. Glisse à droite pour déplacer la caméra."></canvas>
     <div class="paper-texture" id="paper" aria-hidden="true"></div>
     <div class="hud overlay">
-      <div class="hud-bar">
-        <button id="pause" class="circle" type="button" aria-label="Mettre en pause" aria-haspopup="dialog">Ⅱ</button>
-        <div class="mission-tag">
-          <div><div class="chapter-kicker" id="chapter-kicker"></div><h1 id="mission-title">Le Petit Berger</h1></div>
-          <span id="mission-timer" class="hud-time" aria-label="Temps de jeu">0:00</span>
+      <div class="hud-left">
+        <div class="hud-bar">
+          <button id="pause" class="circle" type="button" aria-label="Mettre en pause" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14m6-14v14"/></svg></button>
+          <div id="counts" class="progress" role="status" aria-live="polite" aria-atomic="true"></div>
         </div>
-        <button id="hint" class="circle" type="button" aria-label="Obtenir un indice"><canvas data-icon="compass" width="48" height="48" aria-hidden="true"></canvas></button>
+        <aside class="tutorial-coach" id="tutorial-coach" role="status" aria-live="polite" aria-atomic="true" hidden>
+          <small id="tutorial-step"></small><strong id="tutorial-title"></strong><p id="tutorial-help"></p>
+        </aside>
       </div>
-      <div id="counts" class="progress" role="status" aria-live="polite" aria-atomic="true"></div>
-      <aside class="tutorial-coach" id="tutorial-coach" role="status" aria-live="polite" aria-atomic="true" hidden>
-        <small id="tutorial-step"></small><strong id="tutorial-title"></strong><p id="tutorial-help"></p>
-      </aside>
-      <div class="help-strip">
-        <div class="note-wrap" id="notes-wrap"><p id="mission-note" class="notes"></p></div>
-        <div class="map-wrap">
-          <button type="button" class="flock-map-button" id="open-flock-map" aria-label="Agrandir la carte des troupeaux" aria-haspopup="dialog">
-            <canvas class="mini-map" id="mini-map" width="220" height="152" aria-hidden="true"></canvas>
-            <span aria-hidden="true">Carte ↗</span>
-          </button>
-          <button class="circle recenter" id="recenter" type="button" aria-label="Recentrer la caméra">↻</button>
-          <span class="weather-chip" aria-hidden="true"><span id="weather-icon">☀</span> <span id="weather"></span></span>
-        </div>
+      <div class="hud-right">
+        <button type="button" class="flock-map-button" id="open-flock-map" aria-label="Ouvrir la carte" aria-haspopup="dialog">
+          <canvas class="mini-map" id="mini-map" width="220" height="152" aria-hidden="true"></canvas>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5h6v6M19 5l-7 7M11 19H5v-6"/></svg>
+        </button>
+        <button class="circle recenter" id="recenter" type="button" aria-label="Recentrer la caméra"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 1-3-5m3-2v7h-7"/></svg></button>
         <div class="hint-compass" id="hint-compass" hidden aria-hidden="true"><b id="compass-arrow">↑</b><span id="compass-distance"></span></div>
       </div>
     </div>
@@ -359,7 +441,7 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <div class="move-zone" id="move-zone" aria-hidden="true"><div class="joystick" id="joystick"><span class="joystick-thumb" id="joystick-thumb"></span></div></div>
     <div class="stage-bottom overlay">
-      <div class="controls-label" aria-hidden="true"><kbd>↑ ↓</kbd> <kbd>← →</kbd> Déplacer · <kbd>R</kbd> Recentrer</div>
+      <div class="controls-label" hidden aria-hidden="true"><kbd>↑ ↓</kbd> <kbd>← →</kbd> Déplacer · <kbd>R</kbd> Recentrer</div>
 
       <div class="play-actions">
         <div class="terrain-tools">
@@ -387,7 +469,6 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
       </div>
       <div class="farm-totals">
         <span><i class="seed-icon" aria-hidden="true"></i><b id="farm-seeds">18</b><small>graines</small></span>
-        <span><canvas data-icon="star" width="48" height="48" aria-hidden="true"></canvas><b id="farm-stars">0</b><small>étoiles</small></span>
         <button type="button" class="farm-settings" data-farm-nav="settings" aria-label="Réglages"><canvas data-icon="settings" width="48" height="48" aria-hidden="true"></canvas></button>
       </div>
     </header>
@@ -398,14 +479,13 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
       </div>
       <div class="farm-scroll" id="farm-scroll">
         <section data-farm-panel="farm" aria-labelledby="farm-title">
-          <div class="farm-heading"><h2 id="farm-title" tabindex="-1">La ferme</h2></div>
+          <div class="farm-heading"><h2 id="farm-title" tabindex="-1">Au pré</h2></div>
           <div class="next-outing">
             <div class="biome-art" id="farm-next-picture" data-biome="0" aria-hidden="true"></div>
             <div class="next-meta"><small id="farm-region">Les prés</small><strong id="farm-next">Le premier rassemblement</strong></div>
           </div>
-          <p id="farm-description" class="farm-description"></p>
           <button class="primary farm-cta" id="farm-continue" type="button" disabled>Partir avec Nuage</button>
-          <button class="quiet-button" id="open-missions" type="button">Voir la carte des missions</button>
+          <button class="quiet-button" id="open-missions" type="button">Toutes les missions</button>
           <label class="farm-progress" for="farm-progress"><span id="home-progress"></span><progress id="farm-progress" value="0"></progress></label>
         </section>
         <section data-farm-panel="missions" aria-labelledby="missions-title" hidden>
@@ -422,9 +502,8 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
                 <div class="biome-art" id="atlas-picture" data-biome="0" aria-hidden="true"></div>
                 <div class="atlas-caption"><h3 id="atlas-region"></h3><span id="atlas-bio"></span></div>
               </div>
-              <div class="atlas-tally"><p id="atlas-context"></p><span id="atlas-stars"></span></div>
               <ol id="map-missions" class="outing-list"></ol>
-              <button type="button" id="chapters" class="quiet-button" aria-haspopup="dialog">Index des missions</button>
+              <button type="button" id="chapters" class="quiet-button" aria-haspopup="dialog" hidden>Index des missions</button>
             </div>
           </div>
         </section>
@@ -456,9 +535,8 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
           <div class="panel-top">
             <div class="farm-heading"><h2 id="shop-title" tabindex="-1">Boutique</h2><p id="shop-stock"></p></div>
             <div class="segments" aria-label="Filtrer la boutique">
-              <button type="button" data-shop-filter="all" aria-pressed="true">Tout</button>
               <button type="button" data-shop-filter="accessoires" aria-pressed="false">Accessoires</button>
-              <button type="button" data-shop-filter="terrain" aria-pressed="false">Terrain</button>
+              <button type="button" data-shop-filter="terrain" aria-pressed="true">Outils</button>
             </div>
           </div>
           <ul class="farm-list shop-list" id="shop-list"></ul>
@@ -467,23 +545,28 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
         <section data-farm-panel="settings" aria-labelledby="settings-title" hidden>
           <div class="farm-heading"><h2 id="settings-title" tabindex="-1">Réglages</h2></div>
           <div class="settings-list">
-            <button class="secondary" id="farm-sound" type="button" aria-pressed="false">Son désactivé</button>
-            <label for="farm-volume">Volume <output id="volume-value" for="farm-volume">65 %</output></label>
-            <input id="farm-volume" type="range" min="0" max="100" value="65">
-            <label for="quality-setting">Qualité 3D</label>
-            <select id="quality-setting"><option value="auto">Automatique</option><option value="smooth">Fluidité</option><option value="detail">Détails</option></select>
-            <button class="secondary" id="repeat-lesson" type="button">Rejouer le tutoriel</button>
-            <button class="secondary" id="install" type="button" hidden>Installer sur cet appareil</button>
+            <div class="setting-row"><strong>Son du jeu</strong><button class="setting-switch" id="farm-sound" type="button" aria-label="Son du jeu" aria-pressed="false">Désactivé</button></div>
+            <div class="setting-row setting-volume">
+              <label for="farm-volume">Volume <output id="volume-value" for="farm-volume">65 %</output></label>
+              <input id="farm-volume" type="range" min="0" max="100" value="65">
+            </div>
+            <div class="setting-row"><label for="quality-setting">Qualité 3D</label>
+              <select id="quality-setting"><option value="auto">Automatique</option><option value="smooth">Fluidité</option><option value="detail">Détails</option></select>
+            </div>
+            <div class="setting-links">
+              <button class="secondary" id="repeat-lesson" type="button">Rejouer le tutoriel</button>
+              <button class="secondary" id="install" type="button" hidden>Installer sur cet appareil</button>
+            </div>
             <p class="farm-feedback" id="sound-feedback" role="status"></p>
-            <p class="model-credit">Border Collie · Modèle 3D fourni pour le projet. Robe d’origine.</p>
+
           </div>
         </section>
       </div>
     </div>
     <nav class="farm-nav" aria-label="Navigation principale">
-      <button type="button" data-farm-nav="farm" aria-current="page"><canvas data-icon="farm" width="48" height="48" aria-hidden="true"></canvas>Ferme</button>
+      <button type="button" data-farm-nav="farm" aria-current="page"><canvas data-icon="farm" width="48" height="48" aria-hidden="true"></canvas>Accueil</button>
       <button type="button" data-farm-nav="missions"><canvas data-icon="book" width="48" height="48" aria-hidden="true"></canvas>Missions</button>
-      <button type="button" data-farm-nav="dog"><canvas data-icon="paw" width="48" height="48" aria-hidden="true"></canvas>Apparence</button>
+      <button type="button" data-farm-nav="dog"><canvas data-icon="paw" width="48" height="48" aria-hidden="true"></canvas>Chien</button>
       <button type="button" data-farm-nav="shop"><canvas data-icon="shop" width="48" height="48" aria-hidden="true"></canvas>Boutique</button>
     </nav>
     <button class="update-banner" id="update-game" type="button" hidden>Actualiser le jeu</button>
@@ -540,23 +623,43 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 </dialog>
 <dialog id="flock-map-dialog" aria-labelledby="flock-map-title">
   <button type="button" class="circle dialog-close" aria-label="Fermer la carte" data-close autofocus>×</button>
-  <h2 id="flock-map-title">Carte des troupeaux</h2>
-  <canvas id="flock-map" width="660" height="456" role="img" aria-labelledby="flock-map-title" aria-describedby="flock-map-caption"></canvas>
-  <p id="flock-map-caption"></p>
+  <h2 id="flock-map-title">Carte du terrain</h2>
+  <div class="field-atlas">
+    <canvas id="flock-map" width="660" height="456" role="img" aria-labelledby="flock-map-title" aria-describedby="flock-map-caption"></canvas>
+    <div class="field-atlas-notes">
+      <p id="flock-map-caption"></p>
+      <p id="map-encounters" hidden></p>
+      <ul class="map-legend" aria-label="Légende">
+        <li><i class="map-key player-key"></i>Ton chien</li>
+        <li><i class="map-key animals-key"></i>Animaux</li>
+        <li><i class="map-key pen-key"></i>Enclos</li>
+      </ul>
+      <button class="secondary" id="map-focus" type="button" aria-pressed="false">Autour du chien</button>
+    </div>
+  </div>
 </dialog>
 <dialog id="pause-dialog" aria-labelledby="pause-title">
-<button type="button" class="circle dialog-close" aria-label="Reprendre la mission" data-close>×</button>
-<h2 id="pause-title">En pause</h2>
-<p id="pause-goal"></p>
-<p class="challenge" id="pause-challenge"></p>
-<div class="dialog-actions">
-  <button id="resume" class="primary" type="button">Reprendre</button>
-  <button id="pause-book" class="secondary" type="button">Choisir une mission</button>
-  <button id="restart" class="secondary" type="button">Recommencer</button>
-  <button id="sky-mode" class="secondary" type="button">Météo automatique</button>
-  <button id="sound" class="secondary" type="button" aria-pressed="false">Son désactivé</button>
-  <button id="home-button" class="secondary" type="button">Retour à l’accueil</button>
-</div>
+  <button type="button" class="circle dialog-close" aria-label="Reprendre la mission" data-close>×</button>
+  <h2 id="pause-title">En pause</h2>
+  <p id="chapter-kicker" hidden></p>
+  <div class="pause-summary"><strong id="mission-title"></strong><span id="mission-timer" class="hud-time">0:00</span></div>
+  <p id="pause-goal"></p>
+  <p id="pause-status" hidden></p>
+  <div class="pause-primary">
+    <button id="resume" class="primary" type="button">Reprendre</button>
+    <button id="restart" class="secondary" type="button">Recommencer</button>
+    <button id="home-button" class="secondary" type="button">Accueil</button>
+    <button id="pause-book" type="button" hidden>Choisir une mission</button>
+  </div>
+  <details class="pause-details">
+    <summary>Conseils et réglages</summary>
+    <div class="note-wrap" id="notes-wrap"><p id="mission-note" class="notes"></p></div>
+    <p class="challenge" id="pause-challenge"></p>
+    <p class="pause-weather"><span id="weather-icon"></span> <span id="weather"></span></p>
+    <div class="pause-tools"><button id="hint" class="secondary" type="button">Afficher un indice</button>
+      <button id="sky-mode" class="secondary" type="button">Météo automatique</button>
+      <button id="sound" class="secondary" type="button" aria-pressed="false">Son désactivé</button></div>
+  </details>
 </dialog>
 <dialog id="win-dialog" aria-labelledby="win-title">
 <button type="button" class="circle dialog-close" aria-label="Fermer le bilan" data-close>×</button>
@@ -570,9 +673,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three-2d31b9c81aca6.min.js?v=d3b46a44f2892"></script>
-<script defer src="./assets-03fb79b02eb92.js?v=d3b46a44f2892"></script>
-<script defer src="./game-d3b46a44f2892.js?v=d3b46a44f2892"></script>
-<script defer src="./launch-d3b46a44f2892.js?v=d3b46a44f2892"></script>
+<script defer src="./three-2d31b9c81aca6.min.js?v=19af6ce8ba73e"></script>
+<script defer src="./assets-c1b904e2c9319.js?v=19af6ce8ba73e"></script>
+<script defer src="./game-19af6ce8ba73e.js?v=19af6ce8ba73e"></script>
+<script defer src="./launch-19af6ce8ba73e.js?v=19af6ce8ba73e"></script>
 </body>
 </html>

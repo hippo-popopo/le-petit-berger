@@ -1,6 +1,6 @@
 # Le Petit Berger
 
-Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte dix-huit missions sur des cartes distinctes et un bonus dans chacun des six biomes. Dans chaque bonus, pars de l’enclos, repère trois à cinq groupes voisins, réunis les 32 à 64 moutons et ramène-les. Le portail s’ouvre quand le troupeau est réuni. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
+Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte 36 cartes dans neuf biomes, dont neuf grands rassemblements de 32 à 80 moutons. Dans le bocage, éloigne les loups et ralentis pour gagner la confiance des agneaux. Dans les marais, actionne les vannes. Dans la garrigue, fais passer le troupeau par ses haltes avant de rentrer. En bonus, pars de l’enclos, réunis les groupes voisins et ramène le troupeau. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
 
 ## Jouer
 
@@ -10,9 +10,9 @@ Ouvre [le jeu publié](https://hippo-popopo.github.io/le-petit-berger/) dans Saf
 - **Pouce droit** · glisse sur le terrain pour regarder. Le bouton ↻ replace la caméra derrière Nuage
 - **Sprint** · maintiens le bouton pendant le déplacement
 - **Aboyer** · exerce une pression brève sur les animaux à portée
-- **Ouvrir / Examiner** · apparaît près des portillons ou des traces utiles pour se repérer
-- **Carte** · agrandit la carte, permet de voir le troupeau dès le départ et met le jeu en pause
-- **Pause** · permet de comparer le temps clair, l’heure dorée et la pluie
+- **Ouvrir / Examiner** · apparaît près des portillons, des vannes et des traces
+- **Carte** · met le jeu en pause et montre les animaux, les passages et les objectifs. Utilise « Autour du chien » pour inspecter les alentours
+- **Pause** · affiche l’objectif et donne accès aux conseils, au son et à la météo
 
 Au clavier, utilise les flèches, Maj, Espace, E pour interagir, J et L pour regarder, R pour recentrer la caméra et P pour mettre en pause. La vitesse offerte par les croquettes et le regroupement du sifflet durent quelques secondes. Les anciennes étoiles sont récupérées au premier lancement.
 
@@ -28,6 +28,6 @@ Depuis ce dossier, lance `python3 -m http.server 8000` et ouvre `http://localhos
 
 ## Crédits
 
-Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les trois races sont disponibles dans Apparence. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
+Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les trois races sont disponibles dans Chien. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
 
 Le papier et le lavis de prairie ont été générés avec ImageGen. Three.js est distribué sous licence MIT, reproduite dans le fichier de la bibliothèque.
