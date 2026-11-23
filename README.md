@@ -23,12 +23,12 @@ Depuis ce dossier, lance `python3 -m http.server 8000` et ouvre `http://localhos
 
 - `index.html` contient l’interface et les styles.
 - `game-<version>.js` contient le jeu, les missions, les commandes, l’éclairage et les modèles de la ferme. Chaque version publiée garde son propre fichier pour que les anciennes installations chargent le bon moteur.
-- `assets-<version>.js` contient les illustrations du jeu et référence les fichiers des trois chiens et de leurs équipements.
+- `assets-<version>.js` contient les illustrations du jeu et référence les fichiers des quinze races de chiens et de leurs équipements.
 - `export_pack_web.py` et `retarget_border_collie.py` exportent les modèles, matériaux et animations pour le navigateur à partir des ressources normalisées pour Unreal.
 - `sw.js` et `manifest.webmanifest` gèrent le chargement hors connexion et l’installation.
 
 ## Crédits
 
-Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les trois races sont disponibles dans Chien. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
+Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les quinze races et leurs 88 robes sont disponibles dans Chien, dont les douze races du Pack 12 Races Chiens 3D. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
 
 Le papier et le lavis de prairie ont été générés avec ImageGen. Three.js est distribué sous licence MIT, reproduite dans le fichier de la bibliothèque.

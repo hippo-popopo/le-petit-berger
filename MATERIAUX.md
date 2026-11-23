@@ -20,7 +20,7 @@ Le foulard à carreaux utilise les coordonnées de la toile existante. La cloche
 
 ## Chiens de berger
 
-Le Border Collie, le Berger Australien et le Berger des Shetland utilisent chacun leur propre maillage et leur propre squelette. Les seize robes chargent à la demande. Les cartes de normales et de rugosité sont importées des modèles fournis et les accessoires suivent les points d’attache du cou et du thorax. La transition du bassin vers la cuisse et les poids près des coussinets ont été repeints dans Blender. Les pivots du carpe, du jarret et du pied sont ajustés à chaque maillage.
+Le Border Collie, le Berger Australien et le Berger des Shetland utilisent chacun leur propre maillage et leur propre squelette. Le catalogue propose aussi les douze races du Pack 12 Races Chiens 3D. Leurs maillages ont reçu un squelette et des poids dédiés sous Blender. Les 88 robes chargent à la demande. Les cartes de normales et de rugosité sont importées des modèles fournis et les accessoires suivent les points d’attache du cou et du thorax. La transition du bassin vers la cuisse et les poids près des coussinets ont été repeints dans Blender. Les pivots du carpe, du jarret et du pied sont ajustés à chaque maillage.
 
 ## Animations
 

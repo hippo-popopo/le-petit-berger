@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="01799366ee713">
+<meta name="berger-version" content="b48c0ac6e46bd">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -444,6 +444,55 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 }
 
 .brief-letter{margin:8px 0;color:#6b563e;font:italic 600 14px/1.35 var(--livre)}
+
+/* A portrait on the left and a single, illustrated catalogue on the right. */
+.home[data-screen="dog"] .farm-scroll{background:#f7efdf}
+.home[data-screen="dog"] .farm-scroll>section{padding:0 12px 14px}
+.home[data-screen="dog"] .farm-hero{outline:1px solid #fff3d8;outline-offset:-1px}
+.home[data-screen="dog"] .hero-caption{left:10px;bottom:9px;min-width:0;max-width:calc(100% - 65px);padding:6px 7px;background:#eee7d7e8;color:#284136;box-shadow:none;border-radius:7px;gap:3px}
+.home[data-screen="dog"] .hero-caption strong{color:#284136;font-size:clamp(22px,3.8vw,40px);overflow-wrap:anywhere}
+.home[data-screen="dog"] .hero-caption span{color:#324a3b;line-height:1.15;overflow-wrap:anywhere}
+.hero-coat{display:none}
+.home[data-screen="dog"] .hero-coat{display:block;color:#644b37;font-weight:600}
+.home[data-screen="dog"] .hero-orbit{right:10px;bottom:10px}
+.home[data-screen="dog"] .farm-hero[data-changing="true"]::after{position:absolute;inset:1px;content:"";background:#e8e2c72e;pointer-events:none}
+.dog-wardrobe-head{position:sticky;z-index:2;top:0;padding:10px 0 8px;background:#f7efdf}
+.dog-wardrobe-title{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:7px}
+.dog-wardrobe-title h2{margin:0;color:#263f34;font:500 clamp(29px,4.4vw,47px)/.93 var(--livre);letter-spacing:-.037em}
+.dog-rename{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding-inline:5px;border:0;background:transparent;color:#34513e;font-weight:730;font-size:11px}
+.dog-rename svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dog-wardrobe-head .wardrobe-tabs{margin:0;width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.dog-wardrobe-head .segments button{min-height:38px;padding-inline:4px}
+.dog-wardrobe-head .name-form{margin:0 0 8px}
+.dog-wardrobe-head #dog-model-feedback{margin:7px 0 0;color:#6b5034;font-size:12px}
+.dog-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;list-style:none;padding:0;margin:0}
+.dog-gallery>li{min-width:0}
+.dog-gallery-card{width:100%;height:100%;min-height:70px;display:grid;align-content:stretch;grid-template-rows:auto minmax(27px,1fr);text-align:left;padding:3px;color:#2d4539;background:#eee5d3;border:1px solid transparent;border-radius:9px;overflow:hidden}
+.dog-gallery-card[aria-pressed=true]{background:#dae4d0;border-color:#78906f}
+.dog-gallery-card[data-loading=true]{background:#e6dec6;border-color:#b08d61}
+.dog-gallery-card:hover{border-color:#9caa86}
+.dog-gallery-card:focus-visible{outline-offset:0}
+.dog-thumbnail{display:block;aspect-ratio:1.58;overflow:hidden;border-radius:6px;background-color:#ded5c2;background-repeat:no-repeat}
+.dog-thumbnail img{display:block;width:100%;height:100%;object-fit:cover}
+.dog-gallery-caption{display:flex;align-items:center;padding:3px 4px;line-height:1.12;min-width:0;overflow-wrap:anywhere;font-size:11.5px;font-weight:740}
+.coat-filters{display:flex;gap:4px;margin:0 0 5px}
+.coat-filters button{min-height:38px;padding:4px 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:#45604b;font-weight:730;font-size:11.5px}
+.coat-filters button[aria-pressed=true]{border-color:#b3bea4;background:#e4e9d8;color:#264335}
+.wardrobe-gear{border-color:#d6cbb2;margin:3px 0 0}
+.wardrobe-gear #gear-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.wardrobe-gear button{min-height:46px;color:#2c4837;text-align:left}
+@media(min-width:730px) and (orientation:landscape){
+  .home[data-screen="dog"] .farm-body{grid-template-columns:minmax(0,44%) minmax(0,1fr)}
+  .dog-gallery{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-height:445px) and (orientation:landscape){
+  .dog-wardrobe-title{margin-bottom:4px}
+  .dog-wardrobe-head{padding-top:4px}
+}
+@media(max-width:360px) and (orientation:portrait){
+  .dog-wardrobe-title h2{font-size:27px}
+  .dog-gallery-caption{font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -511,7 +560,7 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
     <div class="farm-body">
       <div class="farm-hero" id="farm-hero" aria-label="Aperçu 3D du chien">
         <span class="farm-landmark" id="farm-landmark" hidden></span>
-        <div class="hero-caption"><strong id="dog-name-display">Nuage</strong><span id="dog-breed-display">Border collie</span></div>
+        <div class="hero-caption"><strong id="dog-name-display">Nuage</strong><span id="dog-breed-display">Border Collie</span><span class="hero-coat" id="dog-look-coat"></span></div>
         <button class="hero-orbit" id="rotate-dog" type="button" aria-label="Tourner le chien"><canvas data-icon="rotate" width="48" height="48" aria-hidden="true"></canvas></button>
       </div>
       <div class="farm-scroll" id="farm-scroll">
@@ -552,27 +601,37 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
           </div>
         </section>
         <section data-farm-panel="dog" aria-labelledby="dog-title" hidden>
-          <div class="farm-heading"><h2 id="dog-title" tabindex="-1">Apparence</h2></div>
-          <div class="segments wardrobe-tabs" aria-label="Personnaliser le chien">
-            <button type="button" data-wardrobe-tab="identite" aria-pressed="true">Identité</button>
-            <button type="button" data-wardrobe-tab="equipement" aria-pressed="false">Équipement</button>
-          </div>
-          <div data-wardrobe-panel="identite">
-            <form id="dog-name-form" class="name-form">
+          <div class="dog-wardrobe-head">
+            <div class="dog-wardrobe-title"><h2 id="dog-title" tabindex="-1">Apparence</h2>
+              <button id="edit-dog-name" class="dog-rename" type="button" aria-expanded="false" aria-controls="dog-name-form">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 15 10-10 4 4L9 19l-5 1zM13 7l4 4"/></svg> Renommer
+              </button>
+            </div>
+            <form id="dog-name-form" class="name-form" hidden>
               <label for="dog-name">Nom du chien</label>
-              <div><input id="dog-name" name="dog-name" value="Nuage" maxlength="36" autocomplete="off" autocapitalize="words">
+              <div><input id="dog-name" name="dog-name" value="Nuage" maxlength="18" autocomplete="off" autocapitalize="words">
               <button class="secondary" type="submit">Enregistrer</button></div>
-              <p id="name-feedback" class="farm-feedback" role="status"></p>
             </form>
-            <div class="dog-model-fields">
-              <label>Race<select id="breed-choice"></select></label>
-              <label>Robe<select id="coat-choice"></select></label>
+            <div class="segments wardrobe-tabs" aria-label="Personnaliser le chien">
+              <button type="button" data-wardrobe-tab="identite" aria-pressed="true" aria-controls="dog-tab-breeds">Races</button>
+              <button type="button" data-wardrobe-tab="robe" aria-pressed="false" aria-controls="dog-tab-coats">Robes</button>
+              <button type="button" data-wardrobe-tab="equipement" aria-pressed="false" aria-controls="dog-tab-gear">Accessoires</button>
             </div>
             <p id="dog-model-feedback" class="farm-feedback" role="status"></p>
           </div>
-          <div data-wardrobe-panel="equipement" hidden>
-            <fieldset class="wardrobe"><legend id="wardrobe-stock">Accessoires</legend><div id="gear-options"></div></fieldset>
-            <button class="quiet-button" id="to-shop" type="button">Voir les accessoires en boutique</button>
+          <div data-wardrobe-panel="identite" id="dog-tab-breeds">
+            <ul id="breed-gallery" class="dog-gallery" aria-label="Races"></ul>
+          </div>
+          <div data-wardrobe-panel="robe" id="dog-tab-coats" hidden>
+            <div class="coat-filters" id="coat-filters" aria-label="Types de robe" hidden>
+              <button type="button" id="natural-coats" data-coat-category="naturel" aria-pressed="true">Naturelles</button>
+              <button type="button" id="fantasy-coats" data-coat-category="fantaisie" aria-pressed="false">Fantaisie</button>
+            </div>
+            <ul id="coat-gallery" class="dog-gallery" aria-label="Robes"></ul>
+          </div>
+          <div data-wardrobe-panel="equipement" id="dog-tab-gear" hidden>
+            <fieldset class="wardrobe wardrobe-gear"><legend id="wardrobe-stock">Accessoires</legend><div id="gear-options"></div></fieldset>
+            <button class="quiet-button" id="to-shop" type="button">Voir la boutique</button>
           </div>
         </section>
         <section data-farm-panel="shop" aria-labelledby="shop-title" hidden>
@@ -744,9 +803,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three-2d31b9c81aca6.min.js?v=01799366ee713"></script>
-<script defer src="./assets-45840c015fcfc.js?v=01799366ee713"></script>
-<script defer src="./game-01799366ee713.js?v=01799366ee713"></script>
-<script defer src="./launch-01799366ee713.js?v=01799366ee713"></script>
+<script defer src="./three-2d31b9c81aca6.min.js?v=b48c0ac6e46bd"></script>
+<script defer src="./assets-a0f7e01b19881.js?v=b48c0ac6e46bd"></script>
+<script defer src="./game-b48c0ac6e46bd.js?v=b48c0ac6e46bd"></script>
+<script defer src="./launch-b48c0ac6e46bd.js?v=b48c0ac6e46bd"></script>
 </body>
 </html>
