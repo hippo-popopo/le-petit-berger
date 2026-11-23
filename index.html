@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Le Petit Berger</title>
-<meta name="berger-version" content="b48c0ac6e46bd">
+<meta name="berger-version" content="ed9b7bee989f4">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <link rel="icon" href="./icon-192.png">
@@ -493,6 +493,69 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
   .dog-wardrobe-title h2{font-size:27px}
   .dog-gallery-caption{font-size:11px}
 }
+
+/* The mission book follows the appearance catalogue, then opens a world's route. */
+.home[data-screen="missions"] .farm-scroll{background:#f7efdf}
+.farm-scroll>section[data-farm-panel="missions"]{padding:0 12px 12px}
+[data-farm-panel="missions"] .panel-top{position:sticky;z-index:3;top:0;align-items:center;margin:0;padding:9px 0 8px;background:#f7efdf}
+[data-farm-panel="missions"] .farm-heading h2{margin:0;color:#263f34;font-size:clamp(28px,4.4vw,47px)}
+[data-farm-panel="missions"] .segments button{min-height:40px}
+.world-gallery,.world-levels{list-style:none;padding:0;margin:0}
+.world-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.world-card{width:100%;height:100%;min-height:70px;display:grid;grid-template-rows:auto minmax(27px,1fr);padding:3px;color:#2d4539;background:#eee5d3;border:1px solid transparent;border-radius:9px;overflow:hidden;text-align:left}
+.world-card[data-recommended=true]{background:#dae4d0;border-color:#78906f}
+.world-card:hover{border-color:#9caa86}
+.world-card>.biome-art{display:block;width:100%;aspect-ratio:2.18;border-radius:6px}
+.world-card-caption{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;padding:4px;line-height:1.12}
+.world-card-caption strong{overflow-wrap:anywhere;font-size:12px}
+.world-card-tally{flex:none;color:#52644f;font-size:10px;font-weight:720;font-variant-numeric:tabular-nums}
+.world-detail{display:grid;grid-template-columns:minmax(0,31%) minmax(0,1fr);align-items:start;gap:12px}
+.world-overview{position:sticky;top:60px;min-width:0;background:#ede3d0;padding:9px;border-radius:10px}
+.world-back{min-height:40px;display:flex;align-items:center;gap:6px;margin:-4px 0 2px;padding:0;background:transparent;color:#365844;border:0;text-align:left;font-size:12px;font-weight:750}
+.world-back svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.world-picture{width:100%;aspect-ratio:3.26;border-radius:6px}
+.world-overview h3{margin:7px 0 2px;font:550 clamp(19px,2.7vw,34px)/1 var(--livre);letter-spacing:-.025em;color:#294539}
+.world-overview p{margin:0;color:#50634d;font-size:11px;line-height:1.3}
+.world-overview-meta{display:grid;gap:4px;margin-top:8px;font-size:11px;color:#406048;font-weight:740}
+#atlas-prize{color:#845b35}
+.world-levels{display:grid;gap:5px}
+.mission-line{width:100%;min-height:47px;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 8px;background:#efe6d5;border:1px solid transparent;border-radius:8px;color:#294539;text-align:left}
+.mission-line:hover:enabled{border-color:#8fa484}
+.mission-line:disabled{opacity:1;color:#586454;background:#f2eadc}
+.mission-line[data-finale=true]{background:#ebdcbc;color:#64472e}
+.mission-line[data-bonus=true]{background:#e2e8d2}
+.mission-line-step{font:650 16px/1 var(--livre);font-variant-numeric:tabular-nums}
+.mission-line-copy{display:grid;gap:2px;min-width:0;overflow-wrap:anywhere;line-height:1.2}
+.mission-line-copy strong{font-size:13px}
+.mission-line-copy small,.mission-line-status{font-size:10.5px}
+.mission-line-status{font-weight:750;max-width:96px;text-align:right}
+.field-time{display:inline-flex;align-items:center;min-height:31px;padding:4px 10px;background:#283f33ef;color:#fff4d9;border-radius:100px;font-variant-numeric:tabular-nums;font-size:13px;font-weight:800}
+.field-time[data-urgent=true]{background:#7f4934}
+.dog-gallery-card[data-locked=true] .dog-thumbnail{filter:saturate(.6)}
+.dog-gallery-card[data-locked=true] .dog-gallery-caption{justify-content:space-between;gap:4px}
+.dog-gallery-caption .race-lock{flex:none;width:13px;height:13px;fill:none;stroke:#775b40;stroke-width:1.6}
+#dog-trial-link{min-height:34px}
+.biome-art:is([data-biome="11"],[data-biome="12"],[data-biome="13"],[data-biome="14"]){background-image:var(--fantasy-atlas);background-size:200% 200%}
+.biome-art[data-biome="12"]{--x:100%}
+.biome-art[data-biome="13"]{--y:100%}
+.biome-art[data-biome="14"]{--x:100%;--y:100%}
+@media(min-width:745px) and (orientation:landscape){
+  .world-gallery{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+@media(orientation:landscape) and (max-height:445px){
+  [data-farm-panel="missions"] .panel-top{padding:4px 0 6px}
+  .world-overview{top:55px}
+  .world-card>.biome-art{aspect-ratio:2.45}
+}
+@media(orientation:portrait){
+  .world-detail{grid-template-columns:1fr}
+  .world-overview{position:relative;top:0}
+  .world-picture{aspect-ratio:4.7}
+  .world-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+.race-lock-symbol{display:none;line-height:0}
+.dog-gallery-card[data-locked=true] .race-lock-symbol{display:inline-flex}
 </style>
 </head>
 <body>
@@ -505,6 +568,7 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
         <div class="hud-bar">
           <button id="pause" class="circle" type="button" aria-label="Mettre en pause" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14m6-14v14"/></svg></button>
           <div id="counts" class="progress" role="status" aria-live="polite" aria-atomic="true"></div>
+          <output id="field-time" class="field-time" aria-label="Temps restant" aria-live="off" hidden></output>
         </div>
         <p id="field-risk" class="field-risk" role="status" hidden></p>
         <aside class="tutorial-coach" id="tutorial-coach" role="status" aria-live="polite" aria-atomic="true" hidden>
@@ -585,16 +649,24 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
               <button id="mission-mode-contract" type="button" aria-pressed="false">Contrats</button>
             </div>
           </div>
-          <div class="atlas" id="campaign-atlas">
-            <div class="biome-list" id="biome-list" aria-label="Choisir un biome"></div>
-            <div class="atlas-content">
-              <div class="atlas-cover">
-                <div class="biome-art" id="atlas-picture" data-biome="0" aria-hidden="true"></div>
-                <div class="atlas-caption"><h3 id="atlas-region"></h3><span id="atlas-bio"></span></div>
-              </div>
-              <ol id="map-missions" class="outing-list"></ol>
-              <button type="button" id="chapters" class="quiet-button" aria-haspopup="dialog" hidden>Index des missions</button>
+          <div id="campaign-atlas">
+            <ol id="world-gallery" class="world-gallery" aria-label="Mondes"></ol>
+            <div class="world-detail" id="world-detail" hidden>
+              <aside class="world-overview">
+                <button id="back-to-worlds" type="button" class="world-back">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 12H5m0 0 5-5m-5 5 5 5"/></svg> Tous les mondes
+                </button>
+                <div class="world-picture biome-art" id="atlas-picture" data-biome="0" aria-hidden="true"></div>
+                <h3 id="atlas-region" tabindex="-1"></h3>
+                <p id="atlas-bio"></p>
+                <div class="world-overview-meta">
+                  <span id="atlas-completed"></span>
+                  <span id="atlas-prize" hidden></span>
+                </div>
+              </aside>
+              <ol id="map-missions" class="world-levels" aria-label="Niveaux du monde"></ol>
             </div>
+            <button type="button" id="chapters" hidden>Index des missions</button>
           </div>
           <div id="contract-atlas" hidden>
             <ol id="contract-list" class="outing-list" aria-label="Carnet de sorties"></ol>
@@ -618,6 +690,7 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
               <button type="button" data-wardrobe-tab="equipement" aria-pressed="false" aria-controls="dog-tab-gear">Accessoires</button>
             </div>
             <p id="dog-model-feedback" class="farm-feedback" role="status"></p>
+            <button id="dog-trial-link" class="quiet-button" type="button" hidden>Voir l’épreuve</button>
           </div>
           <div data-wardrobe-panel="identite" id="dog-tab-breeds">
             <ul id="breed-gallery" class="dog-gallery" aria-label="Races"></ul>
@@ -803,9 +876,9 @@ dialog.lesson-dialog{max-width:420px;overflow:auto}
 <button id="replay" class="secondary" type="button">Rejouer</button>
 </div>
 </dialog>
-<script defer src="./three-2d31b9c81aca6.min.js?v=b48c0ac6e46bd"></script>
-<script defer src="./assets-a0f7e01b19881.js?v=b48c0ac6e46bd"></script>
-<script defer src="./game-b48c0ac6e46bd.js?v=b48c0ac6e46bd"></script>
-<script defer src="./launch-b48c0ac6e46bd.js?v=b48c0ac6e46bd"></script>
+<script defer src="./three-2d31b9c81aca6.min.js?v=ed9b7bee989f4"></script>
+<script defer src="./assets-2b230de282ddb.js?v=ed9b7bee989f4"></script>
+<script defer src="./game-ed9b7bee989f4.js?v=ed9b7bee989f4"></script>
+<script defer src="./launch-ed9b7bee989f4.js?v=ed9b7bee989f4"></script>
 </body>
 </html>

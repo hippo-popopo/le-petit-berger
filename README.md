@@ -1,6 +1,6 @@
 # Le Petit Berger
 
-Jeu mobile 3D en paysage. Nuage rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte 47 missions dans onze biomes, dont onze grands rassemblements de 32 à 96 moutons. Les contrats proposent six sorties rejouables, des cabris à l’aurore au volcan des braises. Les bancs de nuages masquent les pattes, les éruptions brûlent le sol et les meutes laissent quelques secondes pour sauver une brebis prise. Termine des missions de campagne pour reconstruire les trois aménagements de la ferme et débloquer des ordres et des contrats. En bonus, pars de l’enclos, réunis les groupes voisins et ramène le troupeau. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
+Jeu mobile 3D en paysage. Le chien rassemble les troupeaux en se plaçant du côté opposé à leur destination. La campagne compte 150 niveaux dans 15 mondes, dont onze grands rassemblements de 32 à 96 moutons. Six contrats complètent la campagne. Les quatre derniers mondes se jouent avec des ressorts, des carillons, des rafales ou des lanternes. Termine les niveaux d’un monde pour accéder à sa finale chronométrée. Chaque chrono battu débloque une race de chien. Le premier monde permet de découvrir le jeu avec le Border Collie. Le tutoriel se lance la première fois et reste accessible depuis les réglages.
 
 ## Jouer
 
@@ -29,6 +29,6 @@ Depuis ce dossier, lance `python3 -m http.server 8000` et ouvre `http://localhos
 
 ## Crédits
 
-Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les quinze races et leurs 88 robes sont disponibles dans Chien, dont les douze races du Pack 12 Races Chiens 3D. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
+Le jeu utilise les maillages, robes et clips fournis dans le Pack Chiens de Berger. Les quinze races et leurs 88 robes figurent dans Chien, dont les douze races du Pack 12 Races Chiens 3D. Voir [les matériaux et les crédits des animations](MATERIAUX.md).
 
 Le papier et le lavis de prairie ont été générés avec ImageGen. Three.js est distribué sous licence MIT, reproduite dans le fichier de la bibliothèque.
